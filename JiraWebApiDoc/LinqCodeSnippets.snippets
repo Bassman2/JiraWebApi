@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!-- Linq code snippets -->
+<examples>
+  <item id="Linq#after">
+    <sampleCode language="CSharp">
+      var issues = from i in jira.Issues where i.Resolution.Was("Open").After(new DateTime(2005, 10, 1)) select i;
+    </sampleCode>
+    <sampleCode language="VisualBasic">
+      Dim issues = From i In jira.Issues Where i.Resolution.Was("Open").After(new DateTime(2005, 10, 1)) Select i
+    </sampleCode>
+  </item>
+</examples>
+

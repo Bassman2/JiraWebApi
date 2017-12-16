@@ -1,0 +1,386 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="7f320af7-b704-443a-822f-ce89cb6e00a2" revisionNumber="1">
+  <developerSDKTechnologyOverviewArchitectureDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    
+    <summary>
+      <para>Optional summary abstract</para>
+    </summary>
+    
+
+    <introduction>
+      <autoOutline/>
+      <para>Required introduction</para>
+    </introduction>
+
+    <!-- Add one or more top-level section elements.  These are collapsible.
+         If using <autoOutline />, add an address attribute to identify it
+         and specify a title so that it can be jumped to with a hyperlink. -->
+    <section address="Section1">
+      <title>Optional section title</title>
+      <content>
+        <!-- Uncomment this to create a sub-section outline
+        <autoOutline /> -->
+        <para>Add one or more sections with content</para>
+      </content>
+    </section>
+
+    <section>
+      <title>Operators</title>
+      <content>
+        <para>The following table shows the between LINQ and JQL.</para>
+        <table>
+          <title>Operators</title>
+          <tableHeader>
+            <row>
+              <entry>
+                <para>Linq</para>
+              </entry>
+              <entry>
+                <para>JQL</para>
+              </entry>
+              <entry>
+                <para>Description</para>
+              </entry>
+            </row>
+          </tableHeader>
+          <row>
+            <entry>
+              <para>==</para>
+            </entry>
+            <entry>
+              <para>= / ~</para>
+            </entry>
+            <entry>
+              <para>Compare if equal.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>!=</para>
+            </entry>
+            <entry>
+              <para>!= / !~</para>
+            </entry>
+            <entry>
+              <para>Compare if not equal.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>&lt;</para>
+            </entry>
+            <entry>
+              <para>&lt;</para>
+            </entry>
+            <entry>
+              <para>Compare if less than.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>&lt;=</para>
+            </entry>
+            <entry>
+              <para>&lt;=</para>
+            </entry>
+            <entry>
+              <para>Compare if less than or equal.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>&gt;</para>
+            </entry>
+            <entry>
+              <para>&gt;</para>
+            </entry>
+            <entry>
+              <para>Compare if greater than.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>&gt;=</para>
+            </entry>
+            <entry>
+              <para>&gt;=</para>
+            </entry>
+            <entry>
+              <para>Compare if greater than or equal.</para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>In()</para>
+            </entry>
+            <entry>
+              <para>in</para>
+            </entry>
+            <entry>
+              <para></para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>NotIn()</para>
+            </entry>
+            <entry>
+              <para>not in</para>
+            </entry>
+            <entry>
+              <para></para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>Is()</para>
+            </entry>
+            <entry>
+              <para>is</para>
+            </entry>
+            <entry>
+              <para></para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>IsNot()</para>
+            </entry>
+            <entry>
+              <para>is not</para>
+            </entry>
+            <entry>
+              <para></para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>Was()</para>
+            </entry>
+            <entry>
+              <para>was</para>
+            </entry>
+            <entry>
+              <para></para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>WasNot()</para>
+            </entry>
+            <entry>
+              <para>was not</para>
+            </entry>
+            <entry>
+              <para></para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>WasIn()</para>
+            </entry>
+            <entry>
+              <para>was in</para>
+            </entry>
+            <entry>
+              <para></para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>WasNotIn()</para>
+            </entry>
+            <entry>
+              <para>was not in</para>
+            </entry>
+            <entry>
+              <para></para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>Changed()</para>
+            </entry>
+            <entry>
+              <para>changed</para>
+            </entry>
+            <entry>
+              <para></para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>After()</para>
+            </entry>
+            <entry>
+              <para>after</para>
+            </entry>
+            <entry>
+              <para></para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>Before()</para>
+            </entry>
+            <entry>
+              <para>before</para>
+            </entry>
+            <entry>
+              <para></para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>By()</para>
+            </entry>
+            <entry>
+              <para>by</para>
+            </entry>
+            <entry>
+              <para></para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>During()</para>
+            </entry>
+            <entry>
+              <para>during</para>
+            </entry>
+            <entry>
+              <para></para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>On()</para>
+            </entry>
+            <entry>
+              <para>on</para>
+            </entry>
+            <entry>
+              <para></para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>From()</para>
+            </entry>
+            <entry>
+              <para>from</para>
+            </entry>
+            <entry>
+              <para></para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>To()</para>
+            </entry>
+            <entry>
+              <para>to</para>
+            </entry>
+            <entry>
+              <para></para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>&amp;&amp;</para>
+            </entry>
+            <entry>
+              <para>and</para>
+            </entry>
+            <entry>
+              <para></para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>||</para>
+            </entry>
+            <entry>
+              <para>or</para>
+            </entry>
+            <entry>
+              <para></para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>order by</para>
+            </entry>
+            <entry>
+              <para>order by</para>
+            </entry>
+            <entry>
+              <para></para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>Take()</para>
+            </entry>
+            <entry>
+              <para></para>
+            </entry>
+            <entry>
+              <para></para>
+            </entry>
+          </row>
+          <row>
+            <entry>
+              <para>Skip()</para>
+            </entry>
+            <entry>
+              <para></para>
+            </entry>
+            <entry>
+              <para></para>
+            </entry>
+          </row>
+        </table>
+
+      </content>
+      
+    </section>
+
+    <relatedTopics>
+      <!-- One or more of the following:
+           - A local link
+           - An external link
+           - A code entity reference
+
+      <link xlink:href="Other Topic's ID">Link text</link>
+      <externalLink>
+          <linkText>Link text</linkText>
+          <linkAlternateText>Optional alternate link text</linkAlternateText>
+          <linkUri>URI</linkUri>
+      </externalLink>
+      <codeEntityReference>API member ID</codeEntityReference>
+
+      Examples:
+
+      <link xlink:href="00e97994-e9e6-46e0-b420-5be86b2f8278">Some other topic</link>
+
+      <externalLink>
+          <linkText>SHFB on CodePlex</linkText>
+          <linkAlternateText>Go to CodePlex</linkAlternateText>
+          <linkUri>http://shfb.codeplex.com</linkUri>
+      </externalLink>
+
+      <codeEntityReference>T:TestDoc.TestClass</codeEntityReference>
+      <codeEntityReference>P:TestDoc.TestClass.SomeProperty</codeEntityReference>
+      <codeEntityReference>M:TestDoc.TestClass.#ctor</codeEntityReference>
+      <codeEntityReference>M:TestDoc.TestClass.#ctor(System.String,System.Int32)</codeEntityReference>
+      <codeEntityReference>M:TestDoc.TestClass.ToString</codeEntityReference>
+      <codeEntityReference>M:TestDoc.TestClass.FirstMethod</codeEntityReference>
+      <codeEntityReference>M:TestDoc.TestClass.SecondMethod(System.Int32,System.String)</codeEntityReference>
+      -->
+    </relatedTopics>
+  </developerSDKTechnologyOverviewArchitectureDocument>
+</topic>

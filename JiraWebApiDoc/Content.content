@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Topics>
+  <Topic id="92371be2-5556-4604-bd65-6a0ede5c65e0" visible="True" title="Introduction" />
+  <Topic id="7f320af7-b704-443a-822f-ce89cb6e00a2" visible="True" title="LINQ to JQL" linkText="test link text" />
+  <Topic id="128ff108-bce9-41f2-9aac-ed6ee98060e4" visible="True" isSelected="true" apiParentMode="InsertAsChild" />
+</Topics>
