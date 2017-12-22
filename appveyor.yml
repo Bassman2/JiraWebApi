@@ -1,0 +1,54 @@
+version: 1.0.{build}
+image: Visual Studio 2017
+
+
+environment:
+  matrix:
+    - PlatformToolset: VS15
+    - PlatformToolset: VS17
+
+platform:
+    - Any CPU
+
+configuration:
+    - Release
+    - Debug
+
+
+install:
+    - if "%platform%"=="Any CPU" set archi=x86
+    - if "%platform%"=="Any CPU" set platform_input=Any CPU
+
+    - nuget restore "%APPVEYOR_BUILD_FOLDER%"\JiraWebApi\packages.config -PackagesDirectory "%APPVEYOR_BUILD_FOLDER%"\packages
+
+
+build_script:
+    - cd "%APPVEYOR_BUILD_FOLDER%"
+    - msbuild JiraWebApi.sln /m /t:JiraWebApi /p:configuration="%configuration%" /p:platform="%platform_input%" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+
+after_build:
+    - cd "%APPVEYOR_BUILD_FOLDER%"
+    - ps: >-
+        Push-AppveyorArtifact "JiraWebApi\bin\$env:CONFIGURATION\JiraWebApi.dll" -FileName JiraWebApi.dll
+
+        if ($($env:APPVEYOR_REPO_TAG) -eq "true" -and $env:CONFIGURATION -eq "Release" -and $env:PLATFORMTOOLSET -eq "VS17") {
+            $ZipFileName = "JiraWebApi_$($env:APPVEYOR_REPO_TAG_NAME).zip"
+            7z a $ZipFileName "%APPVEYOR_BUILD_FOLDER%\JiraWebApi\bin\$env:CONFIGURATION\JiraWebApi.dll"
+        }
+
+artifacts:
+  - path: JiraWebApi_*.zip
+    name: releases
+
+deploy:
+    provider: GitHub
+    auth_token:
+        secure: !!TODO, see https://www.appveyor.com/docs/deployment/github/#provider-settings!!
+    artifact: releases
+    draft: false
+    prerelease: false
+    force_update: true
+    on:
+        appveyor_repo_tag: true
+        PlatformToolset: VS17
+        configuration: Release
