@@ -22,7 +22,7 @@ namespace JiraWebApi
         /// Author of the JIRA comment.
         /// </summary>
         [JsonProperty("author")]
-        public User Author { get; private set; }
+        public User Author { get; set; }
 
         /// <summary>
         /// Body of the JIRA comment.
@@ -34,7 +34,7 @@ namespace JiraWebApi
         /// Update author of the JIRA comment.
         /// </summary>
         [JsonProperty("updateAuthor")]
-        public User UpdateAuthor { get; private set; }
+        public User UpdateAuthor { get; set; }
 
         /// <summary>
         /// Creation data of the JIRA comment.

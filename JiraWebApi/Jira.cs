@@ -18,15 +18,15 @@ namespace JiraWebApi
     /// <summary>
     /// JIRA Wep Api main class.
     /// </summary>
-    public sealed class Jira : IDisposable
+    public sealed class Jira : IJira, IDisposable
     {
-        private Uri host;
+        private readonly Uri host;
         private WebRequestHandler handler;
         private HttpClient client;
         private bool disposed = false;
         private readonly JiraQueryProvider provider;
-        private IEnumerable<MediaTypeFormatter> jsonFormatters;
-        private JsonMediaTypeFormatter jsonMediaTypeFormatter;
+        private readonly IEnumerable<MediaTypeFormatter> jsonFormatters;
+        private readonly JsonMediaTypeFormatter jsonMediaTypeFormatter;
         
         /// <summary>
         /// Initializes a new instance of the Jira class.
@@ -224,6 +224,28 @@ namespace JiraWebApi
         }
 
         /// <summary>
+        /// Create a issue type.
+        /// </summary>
+        /// <param name="issueType">IssueType class to create.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        public async Task<IssueTypeBase> CreateIssueTypeAsync(IssueTypeBase issueType)
+        {
+            if (issueType == (IssueTypeBase)null)
+            {
+                throw new ArgumentNullException("issueType");
+            }
+
+            IssueTypeBase res = null;
+            JsonTrace.WriteRequest(this, issueType);
+            using (HttpResponseMessage response = await this.client.PostAsJsonAsync("rest/api/2/issuetype", issueType))
+            {
+                response.EnsureSuccess();
+                res = await response.Content.ReadAsAsync<IssueTypeBase>();
+            }
+            return res;
+        }
+
+        /// <summary>
         /// Returns a full representation of the issue type that has the given id.
         /// </summary>
         /// <param name="issueTypeId">Id of the issue type.</param>
@@ -386,6 +408,28 @@ namespace JiraWebApi
         }
 
         /// <summary>
+        /// Create a issue link type.
+        /// </summary>
+        /// <param name="issueLinkType">IssueLinkType class to create.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        public async Task<IssueLinkTypeBase> CreateIssueLinkTypeAsync(IssueLinkTypeBase issueLinkType)
+        {
+            if (issueLinkType == (IssueLinkTypeBase)null)
+            {
+                throw new ArgumentNullException("issueLinkType");
+            }
+
+            IssueLinkTypeBase res = null;
+            JsonTrace.WriteRequest(this, issueLinkType);
+            using (HttpResponseMessage response = await this.client.PostAsJsonAsync("rest/api/2/issueLinkType", issueLinkType))
+            {
+                response.EnsureSuccess();
+                res = await response.Content.ReadAsAsync<IssueLinkTypeBase>();
+            }
+            return res;
+        }
+
+        /// <summary>
         /// Returns for a given issue link type id all information about this issue link type.
         /// </summary>
         /// <param name="issueLinkTypeId">Id of the link type.</param>
@@ -421,6 +465,28 @@ namespace JiraWebApi
             {
                 response.EnsureSuccess();
                 res = await response.Content.ReadAsAsync<IEnumerable<Field>>();
+            }
+            return res;
+        }
+
+        /// <summary>
+        /// Create a custom field.
+        /// </summary>
+        /// <param name="customField">CustomField class to create.</param>
+        /// <returns>The task object representing the asynchronous operation.</returns>
+        public async Task<CustomFieldBase> CreateCustomFieldAsync(CustomFieldBase customField)
+        {
+            if (customField == (CustomFieldBase)null)
+            {
+                throw new ArgumentNullException("customField");
+            }
+
+            CustomFieldBase res = null;
+            JsonTrace.WriteRequest(this, customField);
+            using (HttpResponseMessage response = await this.client.PostAsJsonAsync("rest/api/2/field", customField))
+            {
+                response.EnsureSuccess();
+                res = await response.Content.ReadAsAsync<CustomFieldBase>();
             }
             return res;
         }
@@ -1021,6 +1087,11 @@ namespace JiraWebApi
                 throw new ArgumentNullException("comment");
             }
 
+            // TODO find a way to suppress deserialize
+            DateTime? created = comment.Created;
+            DateTime? updated = comment.Updated;
+            comment.Created = null;
+            comment.Updated = null;
             Comment res = null;
             JsonTrace.WriteRequest(this, comment);
             using (HttpResponseMessage response = await this.client.PostAsJsonAsync<Comment>(string.Format("rest/api/2/issue/{0}/comment", issueIdOrKey), comment))
@@ -1028,6 +1099,8 @@ namespace JiraWebApi
                 response.EnsureSuccess();
                 res = await response.Content.ReadAsAsync<Comment>();
             }
+            comment.Created = created;
+            comment.Updated = updated;
             return res;
         }
 
@@ -1381,7 +1454,7 @@ namespace JiraWebApi
         }
 
         /// <summary>
-        /// Perform a transition on an issue. When performing the transition you can udate or set other issue fields. 
+        /// Perform a transition on an issue. When performing the transition you can update or set other issue fields. 
         /// </summary>
         /// <param name="issueIdOrKey">Id or key of the issue.</param>
         /// <param name="transition">Transition class.</param>

@@ -1,13 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.168
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JiraWebApi", "JiraWebApi\JiraWebApi.csproj", "{2C0D3B03-6AC2-450B-BE36-D81ABB857784}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JiraWebApiTest", "JiraWebApiTest\JiraWebApiTest.csproj", "{D797A1EB-BA00-4D37-8C53-7F75460721A8}"
-EndProject
-Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "JiraWebApiDoc", "JiraWebApiDoc\JiraWebApiDoc.shfbproj", "{1383FAF4-AF5A-4016-ACC8-902FC6C31AD7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,15 +15,11 @@ Global
 		{2C0D3B03-6AC2-450B-BE36-D81ABB857784}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C0D3B03-6AC2-450B-BE36-D81ABB857784}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C0D3B03-6AC2-450B-BE36-D81ABB857784}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D797A1EB-BA00-4D37-8C53-7F75460721A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D797A1EB-BA00-4D37-8C53-7F75460721A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D797A1EB-BA00-4D37-8C53-7F75460721A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D797A1EB-BA00-4D37-8C53-7F75460721A8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1383FAF4-AF5A-4016-ACC8-902FC6C31AD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1383FAF4-AF5A-4016-ACC8-902FC6C31AD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1383FAF4-AF5A-4016-ACC8-902FC6C31AD7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {56A7F353-6ADD-4FF6-8E3E-BF853E07ABB6}
 	EndGlobalSection
 EndGlobal

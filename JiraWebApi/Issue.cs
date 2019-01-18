@@ -979,7 +979,7 @@ namespace JiraWebApi
         /// Summary of the JIRA issue.
         /// </summary>
         [JqlFieldAttribute("key", JqlFieldCompare.Comparable | JqlFieldCompare.Sortable | JqlFieldCompare.Include)]
-        public SortableString Key { get; private set; }
+        public SortableString Key { get; set; }
 
         /// <summary>
         /// Σ Progress
@@ -1502,7 +1502,11 @@ namespace JiraWebApi
             set
             {
                 this.timeTracking = value;
-                this.timeTrackingChanged = true;
+
+                if (value != null)
+                    this.timeTrackingChanged = true;
+                else
+                    this.timeTrackingChanged = false;
             }
         }
         private bool timeTrackingChanged = false;
@@ -1549,6 +1553,8 @@ namespace JiraWebApi
         public IEnumerable<User> Watchers
         {
             get { return this.watchers != null ? this.watchers.Users : null; }
+
+            set { this.watchers.Users = value; }
         }
 
         /// <summary>

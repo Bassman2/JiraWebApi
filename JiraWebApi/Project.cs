@@ -86,7 +86,7 @@ namespace JiraWebApi
         /// Issue types of the JIRY project.
         /// </summary>
         [JsonProperty("issueTypes")]
-        public IEnumerable<IssueType> IssueTypes { get; private set; }
+        public IEnumerable<IssueType> IssueTypes { get; set; }
 
         /// <summary>
         /// URL of the JIRY project.
