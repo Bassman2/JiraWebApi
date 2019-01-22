@@ -21,7 +21,7 @@ namespace JiraWebApi
     {
         internal SerializeMode SerializeMode { get; set; }
         
-        private class CustomField
+        public class CustomField
         {
             public CustomField()
             { }
@@ -1601,6 +1601,7 @@ namespace JiraWebApi
             }
         }
         private List<CustomField> customFields;
+        public List<CustomField> CustomFields => customFields;
 
         #endregion
 
