@@ -1601,7 +1601,7 @@ namespace JiraWebApi
             }
         }
         private List<CustomField> customFields;
-        public List<CustomField> CustomFields => customFields;
+        public List<CustomField> CustomFields { get => customFields; set => customFields = value; }
 
         #endregion
 
