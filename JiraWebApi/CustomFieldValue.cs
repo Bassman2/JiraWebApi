@@ -14,12 +14,12 @@ namespace JiraWebApi
         /// <summary>
         /// Value of the custom field value.
         /// </summary>
-        public object Value { get; private set; }
+        public object Value { get; set; }
 
         /// <summary>
         /// Type of the custom field value Value.
         /// </summary>
-        public CustomFieldType Type { get; private set; }
+        public CustomFieldType Type { get; set; }
 
         #region constructors
 
@@ -54,7 +54,7 @@ namespace JiraWebApi
             this.Value = value;
             this.Type = CustomFieldType.DateTime;
         }
-        
+
         /// <summary>
         /// Initializes a new instance of the CustomFieldValue class.
         /// </summary>
@@ -64,7 +64,7 @@ namespace JiraWebApi
             this.Value = value;
             this.Type = CustomFieldType.Double;
         }
-        
+
         /// <summary>
         /// Initializes a new instance of the CustomFieldValue class.
         /// </summary>
@@ -258,7 +258,7 @@ namespace JiraWebApi
         {
             return new CustomFieldValue(value);
         }
-        
+
         #endregion
 
         #region explicit casts
@@ -312,7 +312,7 @@ namespace JiraWebApi
         {
             return (IssueVersion)value.Value;
         }
-        
+
         /// <summary>
         /// Get Version array from custom field.
         /// </summary>
@@ -322,7 +322,7 @@ namespace JiraWebApi
         {
             return (IssueVersion[])value.Value;
         }
-        
+
         /// <summary>
         /// Get User from custom field.
         /// </summary>
@@ -400,7 +400,7 @@ namespace JiraWebApi
         }
 
         /// <summary>
-        /// Serves as a hash function for a particular type. 
+        /// Serves as a hash function for a particular type.
         /// </summary>
         /// <returns>A hash code for the current Object.</returns>
         public override int GetHashCode()
