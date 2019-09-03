@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>d7374dcf-a794-4ead-be4d-954aa00956e4</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>JiraWebApiShare</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AdjustEstimate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Application.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Attachment.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AttachmentMeta.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AvatarUrls.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Comment.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ComparableElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ComparableList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Component.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CreateMeta.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CustomFieldOption.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CustomFieldType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CustomFieldValue.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Date.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EditMeta.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Element.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Enumerable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Field.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FieldMeta.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Fields.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Filter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Gojira.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Group.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Icon.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Internal\AssignPutRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Internal\CommentGetResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Internal\ComponentRelatedIssueCounts.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Internal\ExceptionMessages.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Internal\HttpClientExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Internal\HttpContentExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Internal\IssueLinkTypesResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Internal\MessageEnsure.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Internal\SearchRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Internal\SearchResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Internal\SerializeMode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Internal\SessionGetResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Internal\SessionPostRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Internal\SessionPostResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Internal\TransitionGetResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Internal\TransitionPostReq.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Internal\VersionMoveAfterPostRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Internal\VersionMovePositionPostRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Internal\VersionRelatedIssueCounts.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Internal\VersionUnresolvedIssueCount.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Internal\WorklogGetResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Issue.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IssueLink.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IssueLinkType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IssueType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IssueVersion.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Jira.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JiraError.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JiraException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JsonTrace.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Linq\JiraQueryable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Linq\JiraQueryProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Linq\JqlExpressionVisitor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Linq\JqlFieldAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Linq\JqlFieldCompare.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Linq\JqlFunctionAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LoginInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Notify.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NotifyTo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Object.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Permission.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Position.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Priority.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Progress.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Project.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RemoteLink.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolution.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Restrict.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Roles.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Schema.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ServerInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SortableElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SortableString.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Sprint.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Status.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Subscriptions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TimeTracking.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Transition.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)User.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Users.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Visibility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Votes.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Watchers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Worklog.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)JiraWebApiLicense.txt" />
+  </ItemGroup>
+</Project>

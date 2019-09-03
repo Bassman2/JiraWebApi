@@ -1,24 +1,30 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.421
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29209.152
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JiraWebApi", "JiraWebApi\JiraWebApi.csproj", "{2C0D3B03-6AC2-450B-BE36-D81ABB857784}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JiraWebApiTest", "JiraWebApiTest\JiraWebApiTest.csproj", "{D797A1EB-BA00-4D37-8C53-7F75460721A8}"
 EndProject
 Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "JiraWebApiDoc", "JiraWebApiDoc\JiraWebApiDoc.shfbproj", "{1383FAF4-AF5A-4016-ACC8-902FC6C31AD7}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "JiraWebApiShare", "JiraWebApiShare\JiraWebApiShare.shproj", "{D7374DCF-A794-4EAD-BE4D-954AA00956E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JiraWebApiCore30", "JiraWebApiCore30\JiraWebApiCore30.csproj", "{5CABB435-A603-4051-951F-81DC2C6B42B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JiraWebApiFramework461", "JiraWebApiFramework461\JiraWebApiFramework461.csproj", "{BFCCB085-2A7B-470B-A213-05197CDD6C4D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JiraWebApiCore20", "JiraWebApiCore20\JiraWebApiCore20.csproj", "{59681E4D-05D6-4564-BD01-68A6B3D6A960}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		JiraWebApiShare\JiraWebApiShare.projitems*{bfccb085-2a7b-470b-a213-05197cdd6c4d}*SharedItemsImports = 4
+		JiraWebApiShare\JiraWebApiShare.projitems*{d7374dcf-a794-4ead-be4d-954aa00956e4}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2C0D3B03-6AC2-450B-BE36-D81ABB857784}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2C0D3B03-6AC2-450B-BE36-D81ABB857784}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2C0D3B03-6AC2-450B-BE36-D81ABB857784}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2C0D3B03-6AC2-450B-BE36-D81ABB857784}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D797A1EB-BA00-4D37-8C53-7F75460721A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D797A1EB-BA00-4D37-8C53-7F75460721A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D797A1EB-BA00-4D37-8C53-7F75460721A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -26,6 +32,18 @@ Global
 		{1383FAF4-AF5A-4016-ACC8-902FC6C31AD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1383FAF4-AF5A-4016-ACC8-902FC6C31AD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1383FAF4-AF5A-4016-ACC8-902FC6C31AD7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CABB435-A603-4051-951F-81DC2C6B42B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CABB435-A603-4051-951F-81DC2C6B42B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CABB435-A603-4051-951F-81DC2C6B42B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CABB435-A603-4051-951F-81DC2C6B42B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFCCB085-2A7B-470B-A213-05197CDD6C4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFCCB085-2A7B-470B-A213-05197CDD6C4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFCCB085-2A7B-470B-A213-05197CDD6C4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFCCB085-2A7B-470B-A213-05197CDD6C4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59681E4D-05D6-4564-BD01-68A6B3D6A960}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59681E4D-05D6-4564-BD01-68A6B3D6A960}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59681E4D-05D6-4564-BD01-68A6B3D6A960}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59681E4D-05D6-4564-BD01-68A6B3D6A960}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="14.0">
   <PropertyGroup>
     <!-- The configuration and platform will be used to determine which
          assemblies to include from solution and project documentation
@@ -21,8 +21,7 @@
     <ApiFilter />
     <ComponentConfigurations />
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\JiraWebApi\bin\Release\JiraWebApi.dll" />
-      <DocumentationSource sourceFile="..\JiraWebApi\bin\Release\JiraWebApi.xml" />
+      <DocumentationSource sourceFile="..\JiraWebApiFramework461\JiraWebApiFramework461.csproj" />
     </DocumentationSources>
     <HelpAttributes />
     <NamespaceSummaries>
@@ -78,13 +77,6 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Win32' ">
   </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\JiraWebApi\JiraWebApi.csproj">
-      <Name>JiraWebApi</Name>
-      <Project>{2c0d3b03-6ac2-450b-be36-d81abb857784}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-  </ItemGroup>
   <ItemGroup>
     <CodeSnippets Include="LinqCodeSnippets.snippets" />
   </ItemGroup>
