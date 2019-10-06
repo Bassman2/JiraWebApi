@@ -1,0 +1,63 @@
+version: 1.0.{build}
+image: Visual Studio 2017
+
+
+platform:
+    - Any CPU
+
+configuration:
+    - Release
+    - Debug
+
+install:
+    - if "%platform%"=="Any CPU" set archi=x86
+    - if "%platform%"=="Any CPU" set platform_input=Any CPU
+
+    - nuget restore "%APPVEYOR_BUILD_FOLDER%"\JiraWebApi\packages.config -PackagesDirectory "%APPVEYOR_BUILD_FOLDER%"\packages
+
+    - ps: >-
+        Start-FileDownload 'https://github.com/EWSoftware/SHFB/releases/download/v2019.9.15.0/SHFBInstaller_v2019.9.15.0.zip'
+
+        7z x -y SHFBInstaller_v2019.9.15.0.zip | Out-Null
+
+        Write-Host "Installing MSI..."
+
+        cmd /c start /wait msiexec /i InstallResources\SandcastleHelpFileBuilder.msi /quiet
+
+        Write-Host "Installing VSIX..."
+
+        . "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VSIXInstaller.exe" /q /a InstallResources\SHFBVisualStudioPackage_VS2015AndLater.vsix
+        Write-Host "Sandcastle installed" -ForegroundColor Green
+
+
+build_script:
+    - set SHFBROOT=C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\
+    - cd "%APPVEYOR_BUILD_FOLDER%"
+    - msbuild JiraWebApi.sln /m /verbosity:minimal /p:configuration="%configuration%" /p:platform="%platform_input%" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+
+after_build:
+    - cd "%APPVEYOR_BUILD_FOLDER%"
+    - ps: >-
+        Push-AppveyorArtifact "JiraWebApi\bin\$env:CONFIGURATION\JiraWebApi.dll" -FileName JiraWebApi.dll
+
+        if ($($env:APPVEYOR_REPO_TAG) -eq "true" -and $env:CONFIGURATION -eq "Release") {
+            $ZipFileName = "JiraWebApi_$($env:APPVEYOR_REPO_TAG_NAME).zip"
+            7z a $ZipFileName "%APPVEYOR_BUILD_FOLDER%\JiraWebApi\bin\$env:CONFIGURATION\JiraWebApi.dll"
+        }
+
+artifacts:
+  - path: JiraWebApi_*.zip
+    name: releases
+
+deploy:
+    provider: GitHub
+    auth_token:
+        secure: !!TODO, see https://www.appveyor.com/docs/deployment/github/#provider-settings!!
+    artifact: releases
+    draft: false
+    prerelease: false
+    force_update: true
+    on:
+        appveyor_repo_tag: true
+        PlatformToolset: VS17
+        configuration: Release
