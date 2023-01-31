@@ -8,6 +8,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JiraWebApiTest", "JiraWebApiTest\JiraWebApiTest.csproj", "{D797A1EB-BA00-4D37-8C53-7F75460721A8}"
 EndProject
 Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "JiraWebApiDoc", "JiraWebApiDoc\JiraWebApiDoc.shfbproj", "{1383FAF4-AF5A-4016-ACC8-902FC6C31AD7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2C0D3B03-6AC2-450B-BE36-D81ABB857784} = {2C0D3B03-6AC2-450B-BE36-D81ABB857784}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
