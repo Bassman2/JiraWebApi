@@ -6,6 +6,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 
+#pragma warning disable CS0414 
+#pragma warning disable CS0649 
+
 namespace JiraWebApi
 {
     /// <summary>

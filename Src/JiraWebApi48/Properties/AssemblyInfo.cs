@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("JiraWebApiFramework461")]
+[assembly: AssemblyTitle("JiraWebApi48")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Elektrobit Automotive GmbH")]
-[assembly: AssemblyProduct("JiraWebApiFramework461")]
-[assembly: AssemblyCopyright("Copyright © Elektrobit Automotive GmbH 2019")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("JiraWebApi48")]
+[assembly: AssemblyCopyright("Copyright ©  2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("bfccb085-2a7b-470b-a213-05197cdd6c4d")]
+[assembly: Guid("9dc1a4b2-a33f-449c-be76-090f3e275e22")]
 
 // Version information for an assembly consists of the following four values:
 //

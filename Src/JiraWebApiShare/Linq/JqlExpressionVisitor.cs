@@ -268,7 +268,7 @@ namespace JiraWebApi.Linq
                     ConstantExpression constantExpression = methodCallExpression.Arguments[0] as ConstantExpression;
                     if (constantExpression != null)
                     {
-                        name = "\"" + constantExpression.Value as string + "\"";
+                        name = "\"" + (constantExpression.Value as string) + "\"";
                     }
                     return new JqlFieldAttribute(name, JqlFieldCompare.Contains);
                 }

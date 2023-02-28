@@ -6,7 +6,7 @@
     <SharedGUID>d7374dcf-a794-4ead-be4d-954aa00956e4</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>JiraWebApiShare</Import_RootNamespace>
+    <Import_RootNamespace>JiraWebApi</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)AdjustEstimate.cs" />
@@ -37,8 +37,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Internal\CommentGetResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Internal\ComponentRelatedIssueCounts.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Internal\ExceptionMessages.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\HttpClientExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\HttpContentExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Internal\IssueLinkTypesResponse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Internal\MessageEnsure.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Internal\SearchRequest.cs" />
@@ -84,6 +82,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Roles.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Schema.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ServerInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Session.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SortableElement.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SortableString.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Sprint.cs" />
