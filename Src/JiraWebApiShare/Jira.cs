@@ -516,7 +516,7 @@ namespace JiraWebApi
         /// </summary>
         /// <param name="component">Component class to create.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<Component> CreateComponentAsync(Component component)
+        public async Task<Component> CreateComponentAsync(Component component, CancellationToken cancellationToken = default)
         {
             if (component == (Component)null)
             {
@@ -525,7 +525,7 @@ namespace JiraWebApi
 
             Component res = null;
             JsonTrace.WriteRequest(this, component);            
-            using (HttpResponseMessage response = await this.client.PostAsJsonAsync("rest/api/2/component", component))
+            using (HttpResponseMessage response = await this.client.PostAsJsonAsync("rest/api/2/component", component, this.options, cancellationToken))
             {
                 response.EnsureSuccess();
                 res = await response.Content.ReadFromJsonAsync<Component>();
@@ -538,19 +538,14 @@ namespace JiraWebApi
         /// </summary>
         /// <param name="componentId">Id of the component to get.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<Component> GetComponentAsync(string componentId)
+        public async Task<Component> GetComponentAsync(string componentId, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(componentId))
             {
                 throw new ArgumentException("The componentId is null or empty.");
             }
 
-            Component res = null;
-            using (HttpResponseMessage response = await this.client.GetAsync($"rest/api/2/component/{componentId}"))
-            {
-                response.EnsureSuccess();
-                res = await response.Content.ReadFromJsonAsync<Component>();
-            }
+            Component res = await this.client.GetFromJsonAsync<Component>($"rest/api/2/component/{componentId}", this.options, cancellationToken);
             return res;
         }
 
@@ -559,7 +554,7 @@ namespace JiraWebApi
         /// </summary>
         /// <param name="component">Component class to update.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<Component> UpdateComponentAsync(Component component)
+        public async Task<Component> UpdateComponentAsync(Component component, CancellationToken cancellationToken = default)
         {
             if (component == (Component)null)
             {
@@ -567,7 +562,7 @@ namespace JiraWebApi
             }
 
             Component res = null;
-            using (HttpResponseMessage response = await this.client.PutAsJsonAsync($"rest/api/2/component/{component.Id}", component))
+            using (HttpResponseMessage response = await this.client.PutAsJsonAsync($"rest/api/2/component/{component.Id}", component, this.options, cancellationToken))
             {
                 response.EnsureSuccess();
                 res = await response.Content.ReadFromJsonAsync<Component>();
@@ -581,14 +576,14 @@ namespace JiraWebApi
         /// <param name="componentId">Id of the component to delete.</param>
         /// <param name="moveIssuesTo">The new component applied to issues whose 'id' component will be deleted. If this value is null, then the 'id' component is simply removed from the related isues.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task DeleteComponentAsync(string componentId, string moveIssuesTo = null)
+        public async Task DeleteComponentAsync(string componentId, string moveIssuesTo = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(componentId))
             {
                 throw new ArgumentException("The componentId is null or empty.");
             }
 
-            using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/component/{componentId}?{moveIssuesTo ?? string.Empty}"))
+            using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/component/{componentId}?{moveIssuesTo ?? string.Empty}", cancellationToken))
             {
                 response.EnsureSuccess();
             }
@@ -599,19 +594,14 @@ namespace JiraWebApi
         /// </summary>
         /// <param name="componentId">Id of the component.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<int> ComponentRelatedIssuesCountAsync(string componentId)
+        public async Task<int> ComponentRelatedIssuesCountAsync(string componentId, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(componentId))
             {
                 throw new ArgumentException("The componentId is null or empty.");
-            } 
-
-            ComponentRelatedIssueCounts res = null;
-            using (HttpResponseMessage response = await this.client.GetAsync($"rest/api/2/component/{componentId}/relatedIssueCounts"))
-            {
-                response.EnsureSuccess();
-                res = await response.Content.ReadFromJsonAsync<ComponentRelatedIssueCounts>();
             }
+
+            ComponentRelatedIssueCounts res = await this.client.GetFromJsonAsync<ComponentRelatedIssueCounts>($"rest/api/2/component/{componentId}/relatedIssueCounts", this.options, cancellationToken);
             return res.IssueCount;
         }
 
@@ -624,19 +614,14 @@ namespace JiraWebApi
         /// </summary>
         /// <param name="projectKey">Key of the project.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IEnumerable<IssueVersion>> GetVersionsAsync(string projectKey)
+        public async Task<IEnumerable<IssueVersion>> GetVersionsAsync(string projectKey, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(projectKey))
             {
                 throw new ArgumentException("The projectKey is null or empty.");
             }
 
-            IEnumerable<IssueVersion> res = null;
-            using (HttpResponseMessage response = await this.client.GetAsync("rest/api/2/project/{projectKey}/versions"))
-            {
-                response.EnsureSuccess();
-                res = await response.Content.ReadFromJsonAsync<IEnumerable<IssueVersion>>();
-            }
+            IEnumerable<IssueVersion> res = await this.client.GetFromJsonAsync<IEnumerable<IssueVersion>>("rest/api/2/project/{projectKey}/versions", this.options, cancellationToken);
             return res;
         }
 
@@ -645,7 +630,7 @@ namespace JiraWebApi
         /// </summary>
         /// <param name="version">Class of the version to create.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IssueVersion> CreateVersionAsync(IssueVersion version)
+        public async Task<IssueVersion> CreateVersionAsync(IssueVersion version, CancellationToken cancellationToken = default)
         {
             if (version == (IssueVersion)null)
             {
@@ -654,7 +639,7 @@ namespace JiraWebApi
 
             IssueVersion res = null;
             JsonTrace.WriteRequest(this, version);
-            using (HttpResponseMessage response = await this.client.PostAsJsonAsync("rest/api/2/version", version))
+            using (HttpResponseMessage response = await this.client.PostAsJsonAsync("rest/api/2/version", version, this.options, cancellationToken))
             {
                 response.EnsureSuccess();
                 res = await response.Content.ReadFromJsonAsync<IssueVersion>();
@@ -667,19 +652,14 @@ namespace JiraWebApi
         /// </summary>
         /// <param name="versionId">Id of the version.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IssueVersion> GetVersionAsync(string versionId)
+        public async Task<IssueVersion> GetVersionAsync(string versionId, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(versionId))
             {
                 throw new ArgumentException("The versionId is null or empty.");
             }
 
-            IssueVersion res = null;
-            using (HttpResponseMessage response = await this.client.GetAsync("rest/api/2/version/{versionId}"))
-            {
-                response.EnsureSuccess();
-                res = await response.Content.ReadFromJsonAsync<IssueVersion>();
-            }
+            IssueVersion res = await this.client.GetFromJsonAsync<IssueVersion>("rest/api/2/version/{versionId}", this.options, cancellationToken);
             return res;
         }
 
@@ -688,7 +668,7 @@ namespace JiraWebApi
         /// </summary>
         /// <param name="version">Class of the version to update.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IssueVersion> UpdateVersionAsync(IssueVersion version)
+        public async Task<IssueVersion> UpdateVersionAsync(IssueVersion version, CancellationToken cancellationToken = default)
         {
             if (version == (IssueVersion)null)
             {
@@ -696,7 +676,7 @@ namespace JiraWebApi
             }
 
             IssueVersion res = null;
-            using (HttpResponseMessage response = await this.client.PutAsJsonAsync($"rest/api/2/version/{version.Id}", version))
+            using (HttpResponseMessage response = await this.client.PutAsJsonAsync($"rest/api/2/version/{version.Id}", version, this.options, cancellationToken))
             {
                 response.EnsureSuccess();
                 res = await response.Content.ReadFromJsonAsync<IssueVersion>();
@@ -711,14 +691,14 @@ namespace JiraWebApi
         /// <param name="moveFixIssuesTo">Id of the version to move fix issues to.</param>
         /// <param name="moveAffectedIssuesTo">Id of the version to move affected issues to.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task DeleteVersionAsync(string versionId, string moveFixIssuesTo = null, string moveAffectedIssuesTo = null)
+        public async Task DeleteVersionAsync(string versionId, string moveFixIssuesTo = null, string moveAffectedIssuesTo = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(versionId))
             {
                 throw new ArgumentException("The versionId is null or empty.");
             }
 
-            using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/version/{versionId}?{moveFixIssuesTo ?? string.Empty}{moveAffectedIssuesTo ?? string.Empty}"))
+            using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/version/{versionId}?{moveFixIssuesTo ?? string.Empty}{moveAffectedIssuesTo ?? string.Empty}", cancellationToken))
             {
                 response.EnsureSuccess();
             }
@@ -730,7 +710,7 @@ namespace JiraWebApi
         /// <param name="versionId">Id of the version to move.</param>
         /// <param name="versionIdAfter">Id of the version to move after.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IssueVersion> MoveVersionAsync(string versionId, string versionIdAfter)
+        public async Task<IssueVersion> MoveVersionAsync(string versionId, string versionIdAfter, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(versionId))
             {
@@ -744,7 +724,7 @@ namespace JiraWebApi
             VersionMoveAfterPostRequest req = new VersionMoveAfterPostRequest() { After = versionIdAfter };
             IssueVersion res = null;
             JsonTrace.WriteRequest(this, req);
-            using (HttpResponseMessage response = await this.client.PostAsJsonAsync($"rest/api/2/version/{versionId}/move", req))
+            using (HttpResponseMessage response = await this.client.PostAsJsonAsync($"rest/api/2/version/{versionId}/move", req, this.options, cancellationToken))
             {
                 response.EnsureSuccess();
                 res = await response.Content.ReadFromJsonAsync<IssueVersion>();
@@ -758,7 +738,7 @@ namespace JiraWebApi
         /// <param name="versionId">Id of the version to move.</param>
         /// <param name="position">Position to move the version to.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IssueVersion> MoveVersionAsync(string versionId, Position position)
+        public async Task<IssueVersion> MoveVersionAsync(string versionId, Position position, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(versionId))
             {
@@ -768,7 +748,7 @@ namespace JiraWebApi
             VersionMovePositionPostRequest req = new VersionMovePositionPostRequest() { Position = position };
             IssueVersion res = null;
             JsonTrace.WriteRequest(this, req);
-            using (HttpResponseMessage response = await this.client.PostAsJsonAsync($"rest/api/2/version/{versionId}/move", req))
+            using (HttpResponseMessage response = await this.client.PostAsJsonAsync($"rest/api/2/version/{versionId}/move", req, this.options, cancellationToken))
             {
                 response.EnsureSuccess();
                 res = await response.Content.ReadFromJsonAsync<IssueVersion>();
@@ -781,14 +761,14 @@ namespace JiraWebApi
         /// </summary>
         /// <param name="versionId">Id of the version.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<int> VersionRelatedIssuesCountsAsync(string versionId)
+        public async Task<int> VersionRelatedIssuesCountsAsync(string versionId, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(versionId))
             {
                 throw new ArgumentException("The versionId is null or empty.");
             }
 
-            VersionRelatedIssueCounts res = await this.client.GetFromJsonAsync<VersionRelatedIssueCounts>($"rest/api/2/version/{versionId}/relatedIssueCounts");
+            VersionRelatedIssueCounts res = await this.client.GetFromJsonAsync<VersionRelatedIssueCounts>($"rest/api/2/version/{versionId}/relatedIssueCounts", this.options, cancellationToken);
             return res.IssuesAffectedCount;
         }
 
@@ -797,19 +777,14 @@ namespace JiraWebApi
         /// </summary>
         /// <param name="versionId">Id of the version.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<int> VersionUnresolvedIssueCountAsync(string versionId)
+        public async Task<int> VersionUnresolvedIssueCountAsync(string versionId, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(versionId))
             {
                 throw new ArgumentException("The versionId is null or empty.");
             }
 
-            VersionUnresolvedIssueCount res = null;
-            using (HttpResponseMessage response = await this.client.GetAsync($"rest/api/2/version/{versionId}/unresolvedIssueCount"))
-            {
-                response.EnsureSuccess();
-                res = await response.Content.ReadFromJsonAsync<VersionUnresolvedIssueCount>();
-            }
+            VersionUnresolvedIssueCount res = await this.client.GetFromJsonAsync<VersionUnresolvedIssueCount>($"rest/api/2/version/{versionId}/unresolvedIssueCount", this.options, cancellationToken);
             return res.IssuesUnresolvedCount;
         }
 
@@ -822,15 +797,9 @@ namespace JiraWebApi
         /// </summary>
         /// <returns>The task object representing the asynchronous operation.</returns>
         /// <remarks>Only the fields Self, Id, Key, Name and AvatarUrls will be filled by GetProjectsAsync. Call GetProjectAsync to get all fields. </remarks>
-        public async Task<IEnumerable<Project>> GetProjectsAsync()
+        public async Task<IEnumerable<Project>> GetProjectsAsync(CancellationToken cancellationToken = default)
         {
-            IEnumerable<Project> res = null;
-
-            using (HttpResponseMessage response = await this.client.GetAsync("rest/api/2/project"))
-            {
-                response.EnsureSuccess();
-                res = await response.Content.ReadFromJsonAsync<IEnumerable<Project>>();
-            }
+            IEnumerable<Project> res = await this.client.GetFromJsonAsync<IEnumerable<Project>>("rest/api/2/project", this.options, cancellationToken);
             return res;
         }
 
@@ -839,14 +808,14 @@ namespace JiraWebApi
         /// </summary>
         /// <param name="projectKey">Key of the project.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<Project> GetProjectAsync(string projectKey)
+        public async Task<Project> GetProjectAsync(string projectKey, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(projectKey))
             {
                 throw new ArgumentException("The projectKey is null or empty.");
             }
 
-            Project res = await this.client.GetFromJsonAsync<Project>($"rest/api/2/project/{projectKey}");
+            Project res = await this.client.GetFromJsonAsync<Project>($"rest/api/2/project/{projectKey}", this.options, cancellationToken);
             return res;
         }
 
@@ -876,7 +845,7 @@ namespace JiraWebApi
         /// <param name="issueIdOrKey">Id or key of the issue.</param>
         /// <param name="comment">Comment class to add.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<Comment> AddCommentAsync(string issueIdOrKey, Comment comment)
+        public async Task<Comment> AddCommentAsync(string issueIdOrKey, Comment comment, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(issueIdOrKey))
             {
@@ -889,7 +858,7 @@ namespace JiraWebApi
 
             Comment res = null;
             JsonTrace.WriteRequest(this, comment);
-            using (HttpResponseMessage response = await this.client.PostAsJsonAsync<Comment>($"rest/api/2/issue/{issueIdOrKey}/comment", comment))
+            using (HttpResponseMessage response = await this.client.PostAsJsonAsync<Comment>($"rest/api/2/issue/{issueIdOrKey}/comment", comment, this.options, cancellationToken))
             {
                 response.EnsureSuccess();
                 res = await response.Content.ReadFromJsonAsync<Comment>();
@@ -903,7 +872,7 @@ namespace JiraWebApi
         /// <param name="issueIdOrKey">Id or key of the issue.</param>
         /// <param name="commentId">Id of the comment.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<Comment> GetCommentAsync(string issueIdOrKey, string commentId)
+        public async Task<Comment> GetCommentAsync(string issueIdOrKey, string commentId, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(issueIdOrKey))
             {
@@ -914,7 +883,7 @@ namespace JiraWebApi
                 throw new ArgumentException("The commentId is null or empty.");
             }
 
-            Comment res = await this.client.GetFromJsonAsync<Comment>($"rest/api/2/issue/{issueIdOrKey}/comment/{commentId}");
+            Comment res = await this.client.GetFromJsonAsync<Comment>($"rest/api/2/issue/{issueIdOrKey}/comment/{commentId}", this.options, cancellationToken);
             return res;
         }
 
@@ -925,7 +894,7 @@ namespace JiraWebApi
         /// <param name="comment">Class of the comment to update.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
         /// <remarks>Json bug in JIRA 5.0.4</remarks>
-        public async Task<Comment> UpdateCommentAsync(string issueIdOrKey, Comment comment)
+        public async Task<Comment> UpdateCommentAsync(string issueIdOrKey, Comment comment, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(issueIdOrKey))
             {
@@ -942,7 +911,7 @@ namespace JiraWebApi
             comment.Created = null;
             comment.Updated = null;
             Comment res = null;
-            using (HttpResponseMessage response = await this.client.PutAsJsonAsync<Comment>($"rest/api/2/issue/{issueIdOrKey}/comment/{comment.Id}", comment))
+            using (HttpResponseMessage response = await this.client.PutAsJsonAsync<Comment>($"rest/api/2/issue/{issueIdOrKey}/comment/{comment.Id}", comment, this.options, cancellationToken))
             {
                 response.EnsureSuccess();
                 res = await response.Content.ReadFromJsonAsync<Comment>();
@@ -958,7 +927,7 @@ namespace JiraWebApi
         /// <param name="issueIdOrKey">Id or key of the issue.</param>
         /// <param name="commentId">Id of the comment.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task DeleteCommentAsync(string issueIdOrKey, string commentId)
+        public async Task DeleteCommentAsync(string issueIdOrKey, string commentId, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(issueIdOrKey))
             {
@@ -969,7 +938,7 @@ namespace JiraWebApi
                 throw new ArgumentException("The commentId is null or empty.");
             }
             
-            using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/issue/{issueIdOrKey}/comment/{commentId}"))
+            using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/issue/{issueIdOrKey}/comment/{commentId}", cancellationToken))
             {
                 response.EnsureSuccess();
             }
@@ -985,9 +954,9 @@ namespace JiraWebApi
         /// Projects will not be returned if the user does not have permission to create issues in that project. 
         /// </summary>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<CreateMeta> GetCreateMetaAsync(/*string projectKey, string issueTypeId*/)
+        public async Task<CreateMeta> GetCreateMetaAsync(/*string projectKey, string issueTypeId*/ CancellationToken cancellationToken = default)
         {
-            CreateMeta res = await this.client.GetFromJsonAsync<CreateMeta>($"rest/api/2/issue/createmeta?expand=projects.issuetypes.fields"/*?projectKeys={0}&issuetypeIds={1}", projectKey, issueTypeId*/);
+            CreateMeta res = await this.client.GetFromJsonAsync<CreateMeta>($"rest/api/2/issue/createmeta?expand=projects.issuetypes.fields"/*?projectKeys={0}&issuetypeIds={1}", projectKey, issueTypeId*/, this.options, cancellationToken);
             return res;
         }
 
@@ -1018,7 +987,7 @@ namespace JiraWebApi
         /// <param name="notify">Class with the notify nformations.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
         /// <remarks>Only for JIRA 5.2.1 or later.</remarks>
-        public async Task SendNotifyAsync(string issueIdOrKey, Notify notify)
+        public async Task SendNotifyAsync(string issueIdOrKey, Notify notify, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(issueIdOrKey))
             {
@@ -1030,7 +999,7 @@ namespace JiraWebApi
             }
 
             JsonTrace.WriteRequest(this, notify);
-            using (HttpResponseMessage response = await this.client.PostAsJsonAsync<Notify>($"rest/api/2/issue/{issueIdOrKey}/notify", notify))
+            using (HttpResponseMessage response = await this.client.PostAsJsonAsync<Notify>($"rest/api/2/issue/{issueIdOrKey}/notify", notify, this.options, cancellationToken))
             {
                 response.EnsureSuccess();
             }
@@ -1045,30 +1014,20 @@ namespace JiraWebApi
         /// </summary>
         /// <param name="issueIdOrKey">Id or key of the issue.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IEnumerable<RemoteLink>> GetIssueRemoteLinksAsync(string issueIdOrKey)
+        public async Task<IEnumerable<RemoteLink>> GetIssueRemoteLinksAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(issueIdOrKey))
             {
                 throw new ArgumentException("The issueIdOrKey is null or empty.");
             }
 
-            IEnumerable<RemoteLink> res = null;
-            using (HttpResponseMessage response = await this.client.GetAsync($"rest/api/2/issue/{issueIdOrKey}/remotelink"))
-            {
-                response.EnsureSuccess();
-                res = await response.Content.ReadFromJsonAsync<IEnumerable<RemoteLink>>();
-            }
+            IEnumerable<RemoteLink> res = await this.client.GetFromJsonAsync<IEnumerable<RemoteLink>>($"rest/api/2/issue/{issueIdOrKey}/remotelink", this.options, cancellationToken);
             return res;
         }
 
         //public async Task<RemoteLink> GetIssueRemoteLinkAsync(string issueIdOrKey, string globalId)
         //{
-        //    IEnumerable<RemoteLink> res = null;
-        //    using (HttpResponseMessage response = await this.client.GetAsync($"rest/api/2/issue/{issueIdOrKey}/remotelink?globalId={globalId}"))
-        //    {
-        //        response.EnsureSuccess();
-        //        res = await response.Content.ReadAsAsync<IEnumerable<RemoteLink>>();
-        //    }
+        //    IEnumerable<RemoteLink> res = await this.client.GetFromJsonAsync<IEnumerable<RemoteLink>>($"rest/api/2/issue/{issueIdOrKey}/remotelink?globalId={globalId}", this.options, cancellationToken);
         //    return res.ElementAtOrDefault(0);
         //}
 
@@ -1079,7 +1038,7 @@ namespace JiraWebApi
         /// <param name="remoteLink">Class of the remote link to create.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
         /// <remarks>If a globalId is provided and a remote issue link exists with that globalId, the remote issue link is updated. Otherwise, the remote issue link is created.</remarks>
-        public async Task<RemoteLink> CreateIssueRemoteLinkAsync(string issueIdOrKey, RemoteLink remoteLink)
+        public async Task<RemoteLink> CreateIssueRemoteLinkAsync(string issueIdOrKey, RemoteLink remoteLink, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(issueIdOrKey))
             {
@@ -1092,7 +1051,7 @@ namespace JiraWebApi
 
             RemoteLink res = null;
             JsonTrace.WriteRequest(this, remoteLink);
-            using (HttpResponseMessage response = await this.client.PostAsJsonAsync<RemoteLink>($"rest/api/2/issue/{issueIdOrKey}/remotelink", remoteLink))
+            using (HttpResponseMessage response = await this.client.PostAsJsonAsync<RemoteLink>($"rest/api/2/issue/{issueIdOrKey}/remotelink", remoteLink, this.options, cancellationToken))
             {
                 response.EnsureSuccess();
                 res = await response.Content.ReadFromJsonAsync<RemoteLink>();
@@ -1100,9 +1059,9 @@ namespace JiraWebApi
             return res;
         }
 
-        //public async Task DeleteIssueRemoteLinkAsync(string issueIdOrKey, string globalId)
+        //public async Task DeleteIssueRemoteLinkAsync(string issueIdOrKey, string globalId, CancellationToken cancellationToken = default)
         //{
-        //    using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/issue/{issueIdOrKey}/remotelink?globalId={globalId}"))
+        //    using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/issue/{issueIdOrKey}/remotelink?globalId={globalId}", cancellationToken))
         //    {
         //        response.EnsureSuccess();
         //    }
@@ -1135,7 +1094,7 @@ namespace JiraWebApi
         /// <param name="issueIdOrKey">Id or key of the issue.</param>
         /// <param name="remoteLink">Remote link to update.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task UpdateIssueRemoteLinkAsync(string issueIdOrKey, RemoteLink remoteLink)
+        public async Task UpdateIssueRemoteLinkAsync(string issueIdOrKey, RemoteLink remoteLink, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(issueIdOrKey))
             {
@@ -1146,7 +1105,7 @@ namespace JiraWebApi
                 throw new ArgumentNullException("remoteLink");
             }
 
-            using (HttpResponseMessage response = await this.client.PutAsJsonAsync<RemoteLink>($"rest/api/2/issue/{issueIdOrKey}/remotelink/{remoteLink.Id}", remoteLink))
+            using (HttpResponseMessage response = await this.client.PutAsJsonAsync<RemoteLink>($"rest/api/2/issue/{issueIdOrKey}/remotelink/{remoteLink.Id}", remoteLink, this.options, cancellationToken))
             {
                 response.EnsureSuccess();
             }
@@ -1158,7 +1117,7 @@ namespace JiraWebApi
         /// <param name="issueIdOrKey">Id or key of the issue.</param>
         /// <param name="remoteLinkId">Id of the remote link.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task DeleteIssueRemoteLinkAsync(string issueIdOrKey, string remoteLinkId)
+        public async Task DeleteIssueRemoteLinkAsync(string issueIdOrKey, string remoteLinkId, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(issueIdOrKey))
             {
@@ -1169,7 +1128,7 @@ namespace JiraWebApi
                 throw new ArgumentException("The remoteLinkId is null or empty.");
             }
 
-            using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/issue/{issueIdOrKey}/remotelink/{remoteLinkId}"))
+            using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/issue/{issueIdOrKey}/remotelink/{remoteLinkId}", cancellationToken))
             {
                 response.EnsureSuccess();
             }
@@ -1184,14 +1143,14 @@ namespace JiraWebApi
         /// </summary>
         /// <param name="issueIdOrKey">Id or key of the issue.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IEnumerable<Transition>> GetTransitionsAsync(string issueIdOrKey)
+        public async Task<IEnumerable<Transition>> GetTransitionsAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(issueIdOrKey))
             {
                 throw new ArgumentException("The issueIdOrKey is null or empty.");
             }
 
-            TransitionGetResult res = await this.client.GetFromJsonAsync<TransitionGetResult>($"rest/api/2/issue/{issueIdOrKey}/transitions");
+            TransitionGetResult res = await this.client.GetFromJsonAsync<TransitionGetResult>($"rest/api/2/issue/{issueIdOrKey}/transitions", this.options, cancellationToken);
             return res.Transitions;
         }
 
@@ -1201,7 +1160,7 @@ namespace JiraWebApi
         /// <param name="issueIdOrKey">Id or key of the issue.</param>
         /// <param name="transitionId">Id of the transition.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<Transition> GetTransitionAsync(string issueIdOrKey, string transitionId)
+        public async Task<Transition> GetTransitionAsync(string issueIdOrKey, string transitionId, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(issueIdOrKey))
             {
@@ -1212,7 +1171,7 @@ namespace JiraWebApi
                 throw new ArgumentException("The transitionId is null or empty.");
             }
 
-            TransitionGetResult res = await this.client.GetFromJsonAsync<TransitionGetResult>($"rest/api/2/issue/{issueIdOrKey}/transitions?transitionId={transitionId}");
+            TransitionGetResult res = await this.client.GetFromJsonAsync<TransitionGetResult>($"rest/api/2/issue/{issueIdOrKey}/transitions?transitionId={transitionId}", this.options, cancellationToken);
             return res.Transitions.FirstOrDefault();
         }
 
@@ -1222,7 +1181,7 @@ namespace JiraWebApi
         /// <param name="issueIdOrKey">Id or key of the issue.</param>
         /// <param name="transition">Transition class.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task TransitionAsync(string issueIdOrKey, Transition transition)
+        public async Task TransitionAsync(string issueIdOrKey, Transition transition, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(issueIdOrKey))
             {
@@ -1235,7 +1194,7 @@ namespace JiraWebApi
 
             TransitionPostReq req = new TransitionPostReq() { Transition = transition };
             JsonTrace.WriteRequest(this, req);
-            using (HttpResponseMessage response = await this.client.PostAsJsonAsync<TransitionPostReq>($"rest/api/2/issue/{issueIdOrKey}/transitions", req))
+            using (HttpResponseMessage response = await this.client.PostAsJsonAsync<TransitionPostReq>($"rest/api/2/issue/{issueIdOrKey}/transitions", req, this.options, cancellationToken))
             {
                 response.EnsureSuccess();
             }
@@ -1306,14 +1265,14 @@ namespace JiraWebApi
         /// </summary>
         /// <param name="issueIdOrKey">Id or key of the issue.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<Watchers> GetIssueWatchersAsync(string issueIdOrKey)
+        public async Task<Watchers> GetIssueWatchersAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(issueIdOrKey))
             {
                 throw new ArgumentException("The issueIdOrKey is null or empty.");
             }
 
-            Watchers res = await this.client.GetFromJsonAsync<Watchers>($"rest/api/2/issue/{issueIdOrKey}/watchers");
+            Watchers res = await this.client.GetFromJsonAsync<Watchers>($"rest/api/2/issue/{issueIdOrKey}/watchers", this.options, cancellationToken);
             return res;
         }
 
@@ -1323,7 +1282,7 @@ namespace JiraWebApi
         /// <param name="issueIdOrKey">Id or key of the issue.</param>
         /// <param name="username">Username of the new watcher.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task AddIssueWatcherAsync(string issueIdOrKey, string username)
+        public async Task AddIssueWatcherAsync(string issueIdOrKey, string username, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(issueIdOrKey))
             {
@@ -1335,7 +1294,7 @@ namespace JiraWebApi
             }
 
             JsonTrace.WriteRequest(this, username);
-            using (HttpResponseMessage response = await this.client.PostAsJsonAsync<string>($"rest/api/2/issue/{issueIdOrKey}/watchers", username))
+            using (HttpResponseMessage response = await this.client.PostAsJsonAsync<string>($"rest/api/2/issue/{issueIdOrKey}/watchers", username, this.options, cancellationToken))
             {
                 response.EnsureSuccess();
             }
@@ -1347,7 +1306,7 @@ namespace JiraWebApi
         /// <param name="issueIdOrKey">Id or key of the issue.</param>
         /// <param name="username">Username of the watcher to delete.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task DeleteIssueWatcherAsync(string issueIdOrKey, string username)
+        public async Task DeleteIssueWatcherAsync(string issueIdOrKey, string username, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(issueIdOrKey))
             {
@@ -1358,7 +1317,7 @@ namespace JiraWebApi
                 throw new ArgumentException("The username is null or empty.");
             }
 
-            using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/issue/{issueIdOrKey}/watchers?username={username}"))
+            using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/issue/{issueIdOrKey}/watchers?username={username}", cancellationToken))
             {
                 response.EnsureSuccess();
             }
@@ -1373,14 +1332,14 @@ namespace JiraWebApi
         /// </summary>
         /// <param name="issueIdOrKey">Id or key of the issue.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IEnumerable<Worklog>> GetIssueWorklogsAsync(string issueIdOrKey)
+        public async Task<IEnumerable<Worklog>> GetIssueWorklogsAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(issueIdOrKey))
             {
                 throw new ArgumentException("The issueIdOrKey is null or empty.");
             }
 
-            WorklogGetResult res = await this.client.GetFromJsonAsync<WorklogGetResult>($"rest/api/2/issue/{issueIdOrKey}/worklog");
+            WorklogGetResult res = await this.client.GetFromJsonAsync<WorklogGetResult>($"rest/api/2/issue/{issueIdOrKey}/worklog", this.options, cancellationToken);
             return res.Worklogs;
         }
 
@@ -1392,7 +1351,7 @@ namespace JiraWebApi
         /// <param name="adjustEstimate">Adjust estimate flags.</param>
         /// <param name="value">Value for AdjustEstimate.New and AdjustEstimate.Manual.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task AddIssueWorklogAsync(string issueIdOrKey, Worklog worklog, AdjustEstimate adjustEstimate = AdjustEstimate.Auto, string value = null)
+        public async Task AddIssueWorklogAsync(string issueIdOrKey, Worklog worklog, AdjustEstimate adjustEstimate = AdjustEstimate.Auto, string value = null, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(issueIdOrKey))
             {
@@ -1421,7 +1380,7 @@ namespace JiraWebApi
             }
 
             JsonTrace.WriteRequest(this, worklog);
-            using (HttpResponseMessage response = await this.client.PostAsJsonAsync<Worklog>(uri, worklog))
+            using (HttpResponseMessage response = await this.client.PostAsJsonAsync<Worklog>(uri, worklog, this.options, cancellationToken))
             {
                 response.EnsureSuccess();
             }
@@ -1486,7 +1445,7 @@ namespace JiraWebApi
         /// <param name="issueIdOrKey">Id or key of the issue.</param>
         /// <param name="worklogId">Id of the worklog to delete.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task DeleteIssueWorklogAsync(string issueIdOrKey, string worklogId)
+        public async Task DeleteIssueWorklogAsync(string issueIdOrKey, string worklogId, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(issueIdOrKey))
             {
@@ -1497,7 +1456,7 @@ namespace JiraWebApi
                 throw new ArgumentException("The worklogId is null or empty.");
             }
 
-            using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/issue/{issueIdOrKey}/worklog/{worklogId}"))
+            using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/issue/{issueIdOrKey}/worklog/{worklogId}", cancellationToken))
             {
                 response.EnsureSuccess();
             }
@@ -1511,14 +1470,9 @@ namespace JiraWebApi
         /// Returns the meta informations for an attachments, specifically if they are enabled and the maximum upload size allowed.
         /// </summary>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<AttachmentMeta> GetAttachmentMetaAsync()
+        public async Task<AttachmentMeta> GetAttachmentMetaAsync(CancellationToken cancellationToken = default)
         {
-            AttachmentMeta res = null;
-            using (HttpResponseMessage response = await this.client.GetAsync("rest/api/2/attachment/meta"))
-            {
-                response.EnsureSuccess();
-                res = await response.Content.ReadFromJsonAsync<AttachmentMeta>();
-            }
+            AttachmentMeta res = await this.client.GetFromJsonAsync<AttachmentMeta>("rest/api/2/attachment/meta", this.options, cancellationToken);
             return res;
         }
 
@@ -1543,14 +1497,14 @@ namespace JiraWebApi
         /// </summary>
         /// <param name="attachmentId">The id of the attachment to delete.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task DeleteAttachmentAsync(string attachmentId)
+        public async Task DeleteAttachmentAsync(string attachmentId, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(attachmentId))
             {
                 throw new ArgumentException("The attachmentId is null or empty.");
             }
 
-            using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/attachment/{attachmentId}"))
+            using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/attachment/{attachmentId}", cancellationToken))
             {
                 response.EnsureSuccess();
             }
@@ -1593,23 +1547,14 @@ namespace JiraWebApi
         /// </summary>
         /// <param name="attachmentUrl">Url of the attachment.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<Stream> GetAttachmentStreamAsync(Uri attachmentUrl)
+        public async Task<Stream> GetAttachmentStreamAsync(Uri attachmentUrl, CancellationToken cancellationToken = default)
         {
             if (attachmentUrl == null)
             {
                 throw new ArgumentNullException("attachmentUrl");
             }
-            //Stream stream = null;
-            //using (HttpResponseMessage response = await this.client.GetAsync(attachmentUrl))
-            //{
-            //    response.EnsureSuccess();
-            //    stream = await response.Content.ReadAsStreamAsync();
-            //}
-            //return stream;
 
-            HttpResponseMessage response = await this.client.GetAsync(attachmentUrl);
-            response.EnsureSuccess();
-            return await response.Content.ReadAsStreamAsync();
+            return await this.client.GetStreamAsync(attachmentUrl);  // TODO , cancellationToken
         }
 
         #endregion
@@ -1621,7 +1566,7 @@ namespace JiraWebApi
         /// </summary>
         /// <param name="issueLink">IssueLink class to create.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task CreateIssueLinkAsync(IssueLink issueLink)
+        public async Task CreateIssueLinkAsync(IssueLink issueLink, CancellationToken cancellationToken = default)
         {
             if (issueLink == null)
             {
@@ -1629,7 +1574,7 @@ namespace JiraWebApi
             }
 
             JsonTrace.WriteRequest(this, issueLink);
-            using (HttpResponseMessage response = await this.client.PostAsJsonAsync<IssueLink>("rest/api/2/issueLink", issueLink))
+            using (HttpResponseMessage response = await this.client.PostAsJsonAsync<IssueLink>("rest/api/2/issueLink", issueLink, this.options, cancellationToken))
             {
                 response.EnsureSuccess();
             }
@@ -1640,19 +1585,14 @@ namespace JiraWebApi
         /// </summary>
         /// <param name="issueLinkId">Id of the link.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IssueLink> GetIssueLinkAsync(string issueLinkId)
+        public async Task<IssueLink> GetIssueLinkAsync(string issueLinkId, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(issueLinkId))
             {
                 throw new ArgumentException("The issueLinkId is null or empty.");
             }
 
-            IssueLink res = null;
-            using (HttpResponseMessage response = await this.client.GetAsync($"rest/api/2/issueLink/{issueLinkId}"))
-            {
-                response.EnsureSuccess();
-                res = await response.Content.ReadFromJsonAsync<IssueLink>();
-            }
+            IssueLink res = await this.client.GetFromJsonAsync<IssueLink>($"rest/api/2/issueLink/{issueLinkId}", this.options, cancellationToken);
             return res;
         }
 
@@ -1661,14 +1601,14 @@ namespace JiraWebApi
         /// </summary>
         /// <param name="linkId">Id of the link to delete.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task DeleteIssueLinkAsync(string linkId)
+        public async Task DeleteIssueLinkAsync(string linkId, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(linkId))
             {
                 throw new ArgumentException("The linkId is null or empty.");
             }
 
-            using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/issueLink/{linkId}"))
+            using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/issueLink/{linkId}", cancellationToken))
             {
                 response.EnsureSuccess();
             }
@@ -1740,7 +1680,7 @@ namespace JiraWebApi
         /// </summary>
         /// <param name="issue">Issue class to update.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task UpdateIssueAsync(Issue issue)
+        public async Task UpdateIssueAsync(Issue issue, CancellationToken cancellationToken = default)
         {
             if (issue == null)
             {
@@ -1750,7 +1690,7 @@ namespace JiraWebApi
             //issue.SerializeMode = SerializeMode.Update; // set for trace
             //JsonTrace.WriteRequest(this, issue);
             issue.SerializeMode = SerializeMode.Update; // set for update
-            using (HttpResponseMessage response = await this.client.PutAsJsonAsync($"rest/api/2/issue/{issue.Key}", issue))
+            using (HttpResponseMessage response = await this.client.PutAsJsonAsync($"rest/api/2/issue/{issue.Key}", issue, this.options, cancellationToken))
             {
                 response.EnsureSuccess();
             }
@@ -1763,7 +1703,7 @@ namespace JiraWebApi
         /// <param name="issueIdOrKey">Id or key of the issue.</param>
         /// <param name="deleteSubtasks">A String of true or false indicating that any subtasks should also be deleted. If the issue has no subtasks this parameter is ignored. If the issue has subtasks and this parameter is missing or false, then the issue will not be deleted and an error will be returned.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task DeleteIssueAsync(string issueIdOrKey, bool deleteSubtasks = false)
+        public async Task DeleteIssueAsync(string issueIdOrKey, bool deleteSubtasks = false, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(issueIdOrKey))
             {
@@ -1771,7 +1711,7 @@ namespace JiraWebApi
             }
             string delPar = deleteSubtasks ? "true" : "false";
 
-            using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/issue/{issueIdOrKey}?deleteSubtasks={delPar}"))
+            using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/issue/{issueIdOrKey}?deleteSubtasks={delPar}", cancellationToken))
             {
                 response.EnsureSuccess();
             }
@@ -1785,7 +1725,7 @@ namespace JiraWebApi
         /// <param name="issueIdOrKey">Id or key of the issue.</param>
         /// <param name="userName">User name to assign issue to.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task AssignIssueAsync(string issueIdOrKey, string userName)
+        public async Task AssignIssueAsync(string issueIdOrKey, string userName, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(issueIdOrKey))
             {
@@ -1797,7 +1737,7 @@ namespace JiraWebApi
             }
 
             AssignPutRequest req = new AssignPutRequest() { Name = userName };
-            using (HttpResponseMessage response = await this.client.PutAsJsonAsync($"rest/api/2/issue/{issueIdOrKey}/assignee", req))
+            using (HttpResponseMessage response = await this.client.PutAsJsonAsync($"rest/api/2/issue/{issueIdOrKey}/assignee", req, this.options, cancellationToken))
             {
                 response.EnsureSuccess();
             }
