@@ -13,7 +13,7 @@ namespace JiraWebApi
     /// <typeparam name="TSource">The type of elements in the list.</typeparam>
     public class ComparableList<TSource> : IEnumerable<TSource>
     {
-        private List<TSource> list;
+        private readonly List<TSource> list;
 
         /// <summary>
         /// Initializes a new instance of the ComparableList class.

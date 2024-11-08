@@ -606,7 +606,7 @@ public sealed class Issue : ISerializable
 
     private void CheckCustomFieldValue(CustomField customField, CustomFieldType customFieldType)
     {
-        if (customField.Value.Type != customFieldType)
+        if (customField.Value!.Type != customFieldType)
         {
             Trace.TraceError("Wrong type for custom field '{0}'. Type '{1}' needed.", customField.Name, customFieldType.ToString());
         }
@@ -620,7 +620,7 @@ public sealed class Issue : ISerializable
     /// <param name="context">The destination <see cref="System.Runtime.Serialization.StreamingContext">System.Runtime.Serialization.StreamingContext</see> for this serialization.</param>
     private void GetObjectDataSerialize(SerializationInfo info, StreamingContext context)
     {
-        Jira jira = context.Context as Jira;
+        Jira? jira = (Jira?)context.Context;
         
 
         //info.AddValue("key", (string)this.Key);
@@ -1591,14 +1591,9 @@ public sealed class Issue : ISerializable
     /// </summary>
     /// <param name="obj">The object to compare with the current object.</param>
     /// <returns>true if the specified object is equal to the current object; otherwise, false.</returns>
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
-        if (obj == null)
-        {
-            return false;
-        }
-        Issue issue = obj as Issue;
-        if ((object)issue == null)
+        if (obj is not Issue issue)
         {
             return false;
         }

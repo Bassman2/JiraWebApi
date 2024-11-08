@@ -434,7 +434,7 @@ namespace JiraWebApi
         /// <returns>true if the first operand is greater than or equal to the second, false otherwise.</returns>
         public static bool operator ==(CustomFieldValue element, string name)
         {
-            return (object)element != null && element.Type == CustomFieldType.String && (string)element.Value == name;
+            return (object)element != null && element.Type == CustomFieldType.String && ((string)element.Value!) == name;
         }
 
         /// <summary>

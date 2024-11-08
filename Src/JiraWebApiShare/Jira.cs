@@ -1315,11 +1315,7 @@ public sealed class Jira : JsonService
     private IEnumerable<Field?>? fields;
     internal async Task<IEnumerable<Field?>?> GetCachedFieldsAsync()
     {
-        if (this.fields == null)
-        {
-            this.fields = await GetFieldsAsync();
-        }
-        return this.fields;
+        return this.fields ??= await GetFieldsAsync();
     }
 
 
