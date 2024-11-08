@@ -22,6 +22,6 @@ namespace JiraWebApi
         /// E-mail of the JIRY project.
         /// </summary>
         [JsonPropertyName("Developers")]
-        public Uri Developers { get; private set; }
+        public Uri? Developers { get; private set; }
     }
 }

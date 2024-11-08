@@ -18,13 +18,13 @@ namespace JiraWebApi
         /// Description of the JIRA issue type.
         /// </summary>
         [JsonPropertyName("description")]
-        public string Description { get; private set; }
+        public string? Description { get; private set; }
 
         /// <summary>
         /// Url of the issue type icon.
         /// </summary>
         [JsonPropertyName("iconUrl")]
-        public Uri IconUrl { get; private set; }
+        public Uri? IconUrl { get; private set; }
 
         /// <summary>
         /// Signals if the issue type is a subtask issue type.
@@ -36,14 +36,14 @@ namespace JiraWebApi
         /// Name of the classes which should be expanded.
         /// </summary>
         [JsonPropertyName("expand")]
-        public string Expand { get; private set; }
+        public string? Expand { get; private set; }
 
         /// <summary>
         /// Fields which are editable for this issue type. Used by meta information.
         /// </summary>
         /// <remarks>Only filled by <see cref="Jira.GetCreateMetaAsync">GetCreateMetaAsync</see> and <see cref="Jira.GetEditMetaAsync">GetEditMetaAsync</see>.</remarks>
         [JsonPropertyName("fields")]
-        public Fields Fields { get; private set; }
+        public Fields? Fields { get; private set; }
                 
         /// <summary>
         /// Returns a string that represents the issue type.

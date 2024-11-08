@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace JiraWebApi
+﻿namespace JiraWebApi
 {
     /// <summary>
     /// Representation of a JIRA issue link type.

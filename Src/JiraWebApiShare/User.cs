@@ -71,25 +71,25 @@ namespace JiraWebApi
         /// Name of the JIRA user.
         /// </summary>
         [JsonPropertyName("name")]
-        public string Name { get; internal set; }
+        public string? Name { get; internal set; }
 
         /// <summary>
         /// E-mail address of the JIRA user.
         /// </summary>
         [JsonPropertyName("emailAddress")]
-        public string EmailAddress { get; private set; }
+        public string? EmailAddress { get; private set; }
 
         /// <summary>
         /// Avatar URLs of the JIRA user.
         /// </summary>
         [JsonPropertyName("avatarUrls")]
-        public AvatarUrls AvatarUrls { get; private set; }
+        public AvatarUrls? AvatarUrls { get; private set; }
 
         /// <summary>
         /// Display name of the JIRA user.
         /// </summary>
         [JsonPropertyName("displayName")]
-        public string DisplayName { get; private set; }
+        public string? DisplayName { get; private set; }
 
         /// <summary>
         /// Signals if the JIRA user is actve.
@@ -101,7 +101,7 @@ namespace JiraWebApi
         /// Time zone of the JIRA user.
         /// </summary>
         [JsonPropertyName("timeZone")]
-        public string TimeZone { get; private set; }
+        public string? TimeZone { get; private set; }
 
         /// <summary>
         /// Returns a string that represents the user.
@@ -117,14 +117,13 @@ namespace JiraWebApi
         /// </summary>
         /// <param name="obj">The object to compare with the current object.</param>
         /// <returns>true if the specified object is equal to the current object; otherwise, false.</returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj == null)
             {
                 return false;
             }
-            User user = obj as User;
-            if ((object)user == null)
+            if (obj is not User user)
             {
                 return false;
             }

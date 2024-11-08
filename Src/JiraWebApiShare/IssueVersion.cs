@@ -1,7 +1,5 @@
 ﻿using JiraWebApi.Internal;
 using JiraWebApi.Linq;
-using System;
-using System.Text.Json.Serialization;
 
 namespace JiraWebApi
 {
@@ -79,7 +77,7 @@ namespace JiraWebApi
         /// Description of the JIRA version.
         /// </summary>
         [JsonPropertyName("description")]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
         /// Is version archived.
@@ -115,6 +113,6 @@ namespace JiraWebApi
         /// Project to which the version belongs.
         /// </summary>
         [JsonPropertyName("project")]
-        public string ProjectKey { private get; set; }   // to create only
+        public string? ProjectKey { private get; set; }   // to create only
     }
 }

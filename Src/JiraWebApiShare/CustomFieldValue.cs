@@ -14,7 +14,7 @@ namespace JiraWebApi
         /// <summary>
         /// Value of the custom field value.
         /// </summary>
-        public object Value { get; private set; }
+        public object? Value { get; private set; }
 
         /// <summary>
         /// Type of the custom field value Value.
@@ -28,7 +28,7 @@ namespace JiraWebApi
         /// </summary>
         /// <param name="type">Type of the parameter to initialize with.</param>
         /// <param name="value">Parameter to initialize with.</param>
-        public CustomFieldValue(CustomFieldType type, object value = null)
+        public CustomFieldValue(CustomFieldType type, object? value = null)
         {
             this.Value = value;
             this.Type = type;
@@ -270,7 +270,7 @@ namespace JiraWebApi
         /// <returns>Casted Value of CustomFieldValue.</returns>
         public static explicit operator string(CustomFieldValue value)
         {
-            return (string)value.Value;
+            return (string)value.Value!;
         }
 
         /// <summary>
@@ -300,7 +300,7 @@ namespace JiraWebApi
         /// <returns>Casted Value of CustomFieldValue.</returns>
         public static explicit operator Project(CustomFieldValue value)
         {
-            return (Project)value.Value;
+            return (Project)value.Value!;
         }
 
         /// <summary>
@@ -310,7 +310,7 @@ namespace JiraWebApi
         /// <returns>Casted Value of CustomFieldValue.</returns>
         public static explicit operator IssueVersion(CustomFieldValue value)
         {
-            return (IssueVersion)value.Value;
+            return (IssueVersion)value.Value!;
         }
         
         /// <summary>
@@ -320,7 +320,7 @@ namespace JiraWebApi
         /// <returns>Casted Value of CustomFieldValue.</returns>
         public static explicit operator IssueVersion[](CustomFieldValue value)
         {
-            return (IssueVersion[])value.Value;
+            return (IssueVersion[])value.Value!;
         }
         
         /// <summary>
@@ -330,7 +330,7 @@ namespace JiraWebApi
         /// <returns>Casted Value of CustomFieldValue.</returns>
         public static explicit operator User(CustomFieldValue value)
         {
-            return (User)value.Value;
+            return (User)value.Value!;
         }
 
         /// <summary>
@@ -340,7 +340,7 @@ namespace JiraWebApi
         /// <returns>Casted Value of CustomFieldValue.</returns>
         public static explicit operator User[](CustomFieldValue value)
         {
-            return (User[])value.Value;
+            return (User[])value.Value!;
         }
 
         /// <summary>
@@ -350,7 +350,7 @@ namespace JiraWebApi
         /// <returns>Casted Value of CustomFieldValue.</returns>
         public static explicit operator Group(CustomFieldValue value)
         {
-            return (Group)value.Value;
+            return (Group)value.Value!;
         }
 
         /// <summary>
@@ -360,7 +360,7 @@ namespace JiraWebApi
         /// <returns>Casted Value of CustomFieldValue.</returns>
         public static explicit operator Group[](CustomFieldValue value)
         {
-            return (Group[])value.Value;
+            return (Group[])value.Value!;
         }
 
         /// <summary>
@@ -375,7 +375,7 @@ namespace JiraWebApi
             //    IEnumerable<CustomFieldOption> customFieldOptions = (CustomFieldOption[])value.Value;
             //    return customFieldOptions.Select(c => c.Value).ToArray();
             //}
-            return (string[])value.Value;
+            return (string[])value.Value!;
         }
 
         #endregion
@@ -385,14 +385,13 @@ namespace JiraWebApi
         /// </summary>
         /// <param name="obj">The object to compare with the current object.</param>
         /// <returns>true if the specified object is equal to the current object; otherwise, false.</returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj == null)
             {
                 return false;
             }
-            CustomFieldValue element = obj as CustomFieldValue;
-            if ((object)element == null)
+            if (obj is not CustomFieldValue element)
             {
                 return false;
             }

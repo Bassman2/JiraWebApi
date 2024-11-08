@@ -1,1847 +1,1362 @@
-﻿using JiraWebApi.Internal;
-using JiraWebApi.Linq;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Reflection;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading;
-using System.Threading.Tasks;
+﻿namespace JiraWebApi;
 
-namespace JiraWebApi
+/// <summary>
+/// JIRA Wep Api main class.
+/// </summary>
+public sealed class Jira : JsonService
 {
+    private readonly JiraQueryProvider provider;
+
     /// <summary>
-    /// JIRA Wep Api main class.
+    /// Initializes a new instance of the Jira class.
     /// </summary>
-    public sealed class Jira : IDisposable
+    /// <param name="host">Host URL of the JIRA server.</param>
+    /// <param name="username">Name of the user to login.</param>
+    /// <param name="password">Password of the user to login.</param>
+    /// <example>
+    /// <code>
+    /// using (Jira jira = new Jira(new Uri("https://jira.atlassian.com")))
+    /// {
+    ///     LoginInfo loginInfo = jira.GetLoginInfoAsync().Result;
+    /// }
+    /// </code>
+    /// </example>
+#if NET8_0_OR_GREATER
+    /// <param name="context">Json serializer context.</param>
+    public Jira(Uri host, JsonSerializerContext context, string? username = null, string? password = null)
+    : base(host, context, new JiraAutenticator(username, password))
+#else
+    public Jira(Uri host, string? username = null, string? password = null)
+    : base(host, new JiraAutenticator(username, password))
+#endif
     {
-        private Uri host;
-        private HttpClientHandler handler;
-        private HttpClient client;
-        private readonly JsonSerializerOptions options = new JsonSerializerOptions() { AllowTrailingCommas = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
-        private readonly JiraQueryProvider provider;
-        //private IEnumerable<MediaTypeFormatter> jsonFormatters;
-        //private JsonMediaTypeFormatter jsonMediaTypeFormatter;
-        private bool disposed = false;
-
-        /// <summary>
-        /// Initializes a new instance of the Jira class.
-        /// </summary>
-        /// <param name="host">Host URL of the JIRA server.</param>
-        /// <param name="username">Name of the user to login.</param>
-        /// <param name="password">Password of the user to login.</param>
-        /// <example>
-        /// <code>
-        /// using (Jira jira = new Jira(new Uri("https://jira.atlassian.com")))
-        /// {
-        ///     LoginInfo loginInfo = jira.GetLoginInfoAsync().Result;
-        /// }
-        /// </code>
-        /// </example>
-        public Jira(Uri host, string username = null, string password = null)
-        {
-            if (host == null)
-            {
-                throw new ArgumentNullException("host");
-            }
-            
-            this.host = host;
-            this.provider = new JiraQueryProvider(this);
-                        
-            // connect
-            this.handler = new HttpClientHandler();
-            this.handler.CookieContainer = new System.Net.CookieContainer();
-            this.handler.UseCookies = true;
-            this.client = new HttpClient(this.handler);
-            this.client.BaseAddress = host;
-
-            
-            //this.jsonMediaTypeFormatter = new JsonMediaTypeFormatter()
-            //{ 
-            //    SerializerSettings = new JsonSerializerSettings()
-            //    { 
-            //        Context = new StreamingContext(StreamingContextStates.All, this),
-            //        NullValueHandling = NullValueHandling.Ignore,
-            //        //DateTimeZoneHandling = DateTimeZoneHandling.RoundtripKind
-            //    }
-            //};
-            //this.jsonFormatters = new MediaTypeFormatter[] { this.jsonMediaTypeFormatter };
-            
-            if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
-            {
-                this.LoginAsync(username, password).Wait();
-            }
-        }
-
-        /// <summary>
-        /// Release allocated resources.
-        /// </summary>
-        /// <remarks>
-        /// Short dispose handling because of sealed class.
-        /// </remarks>
-        public void Dispose()
-        {
-            if (!this.disposed)
-            {
-                if (this.client != null)
-                {
-                    this.client.Dispose();
-                    this.client = null;
-                }
-                if (this.handler != null)
-                {
-                    this.handler.Dispose();
-                    this.handler = null;
-                }
-
-                // note disposing has been done.
-                this.disposed = true;
-            }
-            GC.SuppressFinalize(this);
-        }
-
-        #region Login
-
-        /// <summary>
-        /// Creates a new session for a user in JIRA.
-        /// </summary>
-        /// <param name="username">Name of the user to login.</param>
-        /// <param name="password">Password of the user to login.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<Session> LoginAsync(string username, string password, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(username))
-            {
-                throw new ArgumentException("The username is null or empty.");
-            }
-            if (string.IsNullOrEmpty(password))
-            {
-                throw new ArgumentException("The password is null or empty.");
-            }
-
-            SessionPostRequest req = new SessionPostRequest() { Username = username, Password = password };
-            JsonTrace.WriteRequest(this, req);            
-            using (HttpResponseMessage response = await this.client.PostAsJsonAsync("rest/auth/1/session", req, this.options, cancellationToken))
-            {
-                response.EnsureSuccess();
-                SessionPostResult res = await response.Content.ReadFromJsonAsync<SessionPostResult>(this.options, cancellationToken);
-                return res.Session;
-            }
-        }
-
-        /// <summary>
-        /// Logs the current user out of JIRA, destroying the existing session, if any.
-        /// </summary>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task LogoutAsync(CancellationToken cancellationToken = default)
-        {
-            using (HttpResponseMessage response = await this.client.DeleteAsync("rest/auth/1/session", cancellationToken))
-            {
-                response.EnsureSuccess();
-            }
-        }
-
-        /// <summary>
-        /// Returns information about the currently authenticated user's session.
-        /// </summary>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<LoginInfo> GetLoginInfoAsync(CancellationToken cancellationToken = default)
-        {
-            SessionGetResult res = await this.client.GetFromJsonAsync<SessionGetResult>("rest/auth/1/session", this.options, cancellationToken);
-            return res?.LoginInfo;
-        }
-
-        #endregion
-
-        #region ServerInfo
-
-        /// <summary>
-        /// Returns general information about the current JIRA server.
-        /// </summary>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<ServerInfo> GetServerInfoAsync(CancellationToken cancellationToken = default)
-        {
-            ServerInfo res = await this.client.GetFromJsonAsync<ServerInfo>("rest/api/2/serverInfo", this.options, cancellationToken);
-            return res;
-        }
-
-        #endregion
-
-        #region IssueType
-
-        /// <summary>
-        /// Returns a list of all issue types visible to the user.
-        /// </summary>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IEnumerable<IssueType>> GetIssueTypesAsync(CancellationToken cancellationToken = default)
-        {
-            IEnumerable<IssueType> res = await this.client.GetFromJsonAsync<IEnumerable<IssueType>>("rest/api/2/issuetype", this.options, cancellationToken);
-            return res;
-        }
-
-        /// <summary>
-        /// Returns a full representation of the issue type that has the given id.
-        /// </summary>
-        /// <param name="issueTypeId">Id of the issue type.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IssueType> GetIssueTypeAsync(string issueTypeId, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(issueTypeId))
-            {
-                throw new ArgumentException("The issueTypeId is null or empty.");
-            }
-            
-            IssueType res = await this.client.GetFromJsonAsync<IssueType>($"rest/api/2/issuetype/{issueTypeId}", this.options, cancellationToken);
-            return res;
-        }
-
-        #endregion
-
-        #region Priority
-
-        /// <summary>
-        /// Returns a list of all issue priorities.
-        /// </summary>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IEnumerable<Priority>> GetPrioritiesAsync(CancellationToken cancellationToken = default)
-        {
-            IEnumerable<Priority> res = await this.client.GetFromJsonAsync<IEnumerable<Priority>>("rest/api/2/priority", this.options, cancellationToken);
-            return res;
-        }
-
-        /// <summary>
-        /// Returns an issue priority.
-        /// </summary>
-        /// <param name="priorityId">Id of the priority.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<Priority> GetPriorityAsync(string priorityId, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(priorityId))
-            {
-                throw new ArgumentException("The priorityId is null or empty.");
-            }
-
-            Priority res = await this.client.GetFromJsonAsync<Priority>($"rest/api/2/priority/{priorityId}", this.options, cancellationToken);
-            return res;
-        }
-
-        #endregion
-
-        #region Resolution
-
-        /// <summary>
-        /// Returns a list of all resolutions.
-        /// </summary>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IEnumerable<Resolution>> GetResolutionsAsync(CancellationToken cancellationToken = default)
-        {
-            IEnumerable<Resolution> res = await this.client.GetFromJsonAsync<IEnumerable<Resolution>>("rest/api/2/resolution", this.options, cancellationToken);
-            return res;
-        }
-
-        /// <summary>
-        /// Returns a resolution.
-        /// </summary>
-        /// <param name="resolutionId">Id of the resolution.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<Resolution> GetResolutionAsync(string resolutionId, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(resolutionId))
-            {
-                throw new ArgumentException("The resolutionId is null or empty.");
-            }
-
-            Resolution res = await this.client.GetFromJsonAsync<Resolution>($"rest/api/2/resolution/{resolutionId}", this.options, cancellationToken);
-            return res;
-        }
-
-        #endregion
-
-        #region Status
-
-        /// <summary>
-        /// Returns a list of all statuses.
-        /// </summary>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IEnumerable<Status>> GetStatusesAsync(CancellationToken cancellationToken = default)
-        {
-            IEnumerable<Status> res = await this.client.GetFromJsonAsync<IEnumerable<Status>>("rest/api/2/status", this.options, cancellationToken);
-            return res;
-        }
-
-        /// <summary>
-        /// Returns a full representation of the Status having the given id or name.
-        /// </summary>
-        /// <param name="statusIdOrName">Id or name of the status.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<Status> GetStatusAsync(string statusIdOrName, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(statusIdOrName))
-            {
-                throw new ArgumentException("The statusIdOrName is null or empty.");
-            }
-
-            Status res = await this.client.GetFromJsonAsync<Status>($"rest/api/2/status/{statusIdOrName}", this.options, cancellationToken);
-            return res;
-        }
-
-        #endregion
-
-        #region IssueLinkType
-
-        /// <summary>
-        /// Returns a list of available issue link types, if issue linking is enabled. Each issue link type has an id, a name and a label for the outward and inward link relationship.
-        /// </summary>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IEnumerable<IssueLinkType>> GetIssueLinkTypesAsync(CancellationToken cancellationToken = default)
-        {
-            IssueLinkTypesRespnse res = await this.client.GetFromJsonAsync<IssueLinkTypesRespnse>("rest/api/2/issueLinkType", this.options, cancellationToken);
-            return res?.IssueLinkTypes;
-        }
-
-        /// <summary>
-        /// Returns for a given issue link type id all information about this issue link type.
-        /// </summary>
-        /// <param name="issueLinkTypeId">Id of the link type.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IssueLinkType> GetIssueLinkTypeAsync(string issueLinkTypeId, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(issueLinkTypeId))
-            {
-                throw new ArgumentException("The issueLinkTypeId is null or empty.");
-            }
-
-            IssueLinkType res = await this.client.GetFromJsonAsync<IssueLinkType>($"rest/api/2/issueLinkType/{issueLinkTypeId}", this.options, cancellationToken);
-            return res;
-        }
-
-        #endregion
-
-        #region Field
-
-        /// <summary>
-        /// Returns a list of all fields, both System and Custom.
-        /// </summary>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IEnumerable<Field>> GetFieldsAsync(CancellationToken cancellationToken = default)
-        {
-            IEnumerable<Field> res = await this.client.GetFromJsonAsync<IEnumerable<Field>>("rest/api/2/field", this.options, cancellationToken);
-            return res;
-        }
-
-        /// <summary>
-        /// Returns a full representation of the Custom Field Option that has the given id.
-        /// </summary>
-        /// <param name="customFieldOptionId">Id of the custom field option.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<CustomFieldOption> GetCustomFieldOptionAsync(string customFieldOptionId, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(customFieldOptionId))
-            {
-                throw new ArgumentException("The customFieldOptionId is null or empty.");
-            }
-
-            CustomFieldOption res = await this.client.GetFromJsonAsync<CustomFieldOption>($"rest/api/2/customFieldOption/{customFieldOptionId}", this.options, cancellationToken);
-            return res;
-        }
-
-        #endregion
-
-        #region Group
-
-        /// <summary>
-        /// Get group with specified group name.
-        /// </summary>
-        /// <param name="groupName">Name of the group</param>
-        /// <param name="expandGroup">Expand group parameter.</param>
-        /// <returns>Jira group.</returns>
-        /// <remarks>Only supported with JIRA 6.0 or later</remarks>
-        public async Task<Group> GetGroupAsync(string groupName, string expandGroup = null, CancellationToken cancellationToken = default) 
-        {
-            if (string.IsNullOrEmpty(groupName))
-            {
-                throw new ArgumentException("The groupName is null or empty.");
-            }
-
-            string expand = string.IsNullOrEmpty(expandGroup) ? "" : $"&expand={expandGroup}";
-            Group res = await this.client.GetFromJsonAsync<Group>($"rest/api/2/group?groupname={groupName}{expand}", this.options, cancellationToken);
-            return res;
-        }
-
-        #endregion
-
-        #region User
-
-        /// <summary>
-        /// Returns a user.
-        /// </summary>
-        /// <param name="username">Name of the user.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        /// <remarks>This resource cannot be accessed anonymously.</remarks>
-        public async Task<User> GetUserAsync(string username, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(username))
-            {
-                throw new ArgumentException("The username is null or empty.");
-            }
-
-            User res = await this.client.GetFromJsonAsync<User>($"rest/api/2/user?username={username}", this.options, cancellationToken);
-            return res;
-        }
-
-        #endregion
-
-        #region Filter
-
-        /// <summary>
-        /// Creates a new filter, and returns newly created filter Currently sets permissions just using the users default sharing permissions.
-        /// </summary>
-        /// <param name="filter">Filter class to create.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        /// <remarks>Only for JIRA 5.2.1 or later.</remarks>
-        public async Task<Filter> CreateFilterAsync(Filter filter, CancellationToken cancellationToken = default)
-        {
-            if (filter == (Filter)null)
-            {
-                throw new ArgumentNullException("filter");
-            }
-
-            //FilterPostRequest req = new FilterPostRequest() { Name = filter.Name, Description = filter.Description, Jql = filter.Jql };
-            Filter res = null;
-            JsonTrace.WriteRequest(this, filter);
-            using (HttpResponseMessage response = await this.client.PostAsJsonAsync("rest/api/2/filter", filter, this.options, cancellationToken))
-            {
-                response.EnsureSuccess();
-                res = await response.Content.ReadFromJsonAsync<Filter>();
-            }
-            return res;
-        }
-
-        /// <summary>
-        /// Returns the favourite filters of the logged-in user.
-        /// </summary>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IEnumerable<Filter>> GetFilterFavouritesAsync(CancellationToken cancellationToken = default)
-        {
-            IEnumerable<Filter> res = await this.client.GetFromJsonAsync<IEnumerable<Filter>>("rest/api/2/filter/favourite", this.options, cancellationToken);
-            return res;
-        }
-
-        /// <summary>
-        /// Returns a filter given an id.
-        /// </summary>
-        /// <param name="filterId">Id of the filter.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<Filter> GetFilterAsync(string filterId, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(filterId))
-            {
-                throw new ArgumentException("The filterId is null or empty.");
-            }
-
-            Filter res = await this.client.GetFromJsonAsync<Filter>($"rest/api/2/filter/{filterId}", this.options, cancellationToken);
-            return res;
-        }
-
-        /// <summary>
-        /// Updates an existing filter, and returns its new value.
-        /// </summary>
-        /// <param name="filter">Filter class to update.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        /// <remarks>Only for JIRA 5.2.1 or later.</remarks>
-        public async Task<Filter> UpdateFilterAsync(Filter filter, CancellationToken cancellationToken = default)
-        {
-            if (filter == (Filter)null)
-            {
-                throw new ArgumentNullException("filter");
-            }
-
-            Filter res = null;
-            using (HttpResponseMessage response = await this.client.PutAsJsonAsync($"rest/api/2/filter/{filter.Id}", this.options, cancellationToken))
-            {
-                response.EnsureSuccess();
-                res = await response.Content.ReadFromJsonAsync<Filter>();
-            } 
-            return res;
-        }
-
-        /// <summary>
-        /// Delete a filter.
-        /// </summary>
-        /// <param name="filterId">Id of the filter to delete.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        /// <remarks>Only for JIRA 5.2.1 or later.</remarks>
-        public async Task DeleteFilterAsync(string filterId, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(filterId))
-            {
-                throw new ArgumentException("The filterId is null or empty.");
-            }
-
-            using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/filter/{filterId}", cancellationToken))
-            {
-                response.EnsureSuccess();
-            }
-        }
-
-        #endregion
-
-        #region Component
-
-        /// <summary>
-        /// Contains a full representation of a the specified project's components.
-        /// </summary>
-        /// <param name="projectKey">Key of the project.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IEnumerable<Component>> GetComponentsAsync(string projectKey, CancellationToken cancellationToken = default)
-        {
-            string function = MethodBase.GetCurrentMethod().Name;
-            if (string.IsNullOrEmpty(projectKey))
-            {
-                throw new ArgumentException("The projectKey is null or empty.");
-            }
-
-            IEnumerable<Component> res = await this.client.GetFromJsonAsync<IEnumerable<Component>>($"rest/api/2/project/{projectKey}/components", this.options, cancellationToken);
-            return res;
-        }
-
-        /// <summary>
-        /// Create a component.
-        /// </summary>
-        /// <param name="component">Component class to create.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<Component> CreateComponentAsync(Component component, CancellationToken cancellationToken = default)
-        {
-            if (component == (Component)null)
-            {
-                throw new ArgumentNullException("component");
-            }
-
-            Component res = null;
-            JsonTrace.WriteRequest(this, component);            
-            using (HttpResponseMessage response = await this.client.PostAsJsonAsync("rest/api/2/component", component, this.options, cancellationToken))
-            {
-                response.EnsureSuccess();
-                res = await response.Content.ReadFromJsonAsync<Component>();
-            }
-            return res;
-        }
-
-        /// <summary>
-        /// Returns a project component.
-        /// </summary>
-        /// <param name="componentId">Id of the component to get.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<Component> GetComponentAsync(string componentId, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(componentId))
-            {
-                throw new ArgumentException("The componentId is null or empty.");
-            }
-
-            Component res = await this.client.GetFromJsonAsync<Component>($"rest/api/2/component/{componentId}", this.options, cancellationToken);
-            return res;
-        }
-
-        /// <summary>
-        /// Modify a component.
-        /// </summary>
-        /// <param name="component">Component class to update.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<Component> UpdateComponentAsync(Component component, CancellationToken cancellationToken = default)
-        {
-            if (component == (Component)null)
-            {
-                throw new ArgumentNullException("component");
-            }
-
-            Component res = null;
-            using (HttpResponseMessage response = await this.client.PutAsJsonAsync($"rest/api/2/component/{component.Id}", component, this.options, cancellationToken))
-            {
-                response.EnsureSuccess();
-                res = await response.Content.ReadFromJsonAsync<Component>();
-            }
-            return res;
-        }
-
-        /// <summary>
-        /// Delete a project component.
-        /// </summary>
-        /// <param name="componentId">Id of the component to delete.</param>
-        /// <param name="moveIssuesTo">The new component applied to issues whose 'id' component will be deleted. If this value is null, then the 'id' component is simply removed from the related isues.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task DeleteComponentAsync(string componentId, string moveIssuesTo = null, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(componentId))
-            {
-                throw new ArgumentException("The componentId is null or empty.");
-            }
-
-            using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/component/{componentId}?{moveIssuesTo ?? string.Empty}", cancellationToken))
-            {
-                response.EnsureSuccess();
-            }
-        }
-
-        /// <summary>
-        /// Returns counts of issues related to this component.
-        /// </summary>
-        /// <param name="componentId">Id of the component.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<int> ComponentRelatedIssuesCountAsync(string componentId, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(componentId))
-            {
-                throw new ArgumentException("The componentId is null or empty.");
-            }
-
-            ComponentRelatedIssueCounts res = await this.client.GetFromJsonAsync<ComponentRelatedIssueCounts>($"rest/api/2/component/{componentId}/relatedIssueCounts", this.options, cancellationToken);
-            return res.IssueCount;
-        }
-
-        #endregion
-
-        #region Version
-
-        /// <summary>
-        /// Contains a full representation of a the specified project's versions.
-        /// </summary>
-        /// <param name="projectKey">Key of the project.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IEnumerable<IssueVersion>> GetVersionsAsync(string projectKey, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(projectKey))
-            {
-                throw new ArgumentException("The projectKey is null or empty.");
-            }
-
-            IEnumerable<IssueVersion> res = await this.client.GetFromJsonAsync<IEnumerable<IssueVersion>>("rest/api/2/project/{projectKey}/versions", this.options, cancellationToken);
-            return res;
-        }
-
-        /// <summary>
-        /// Create a version.
-        /// </summary>
-        /// <param name="version">Class of the version to create.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IssueVersion> CreateVersionAsync(IssueVersion version, CancellationToken cancellationToken = default)
-        {
-            if (version == (IssueVersion)null)
-            {
-                throw new ArgumentNullException("version");
-            }
-
-            IssueVersion res = null;
-            JsonTrace.WriteRequest(this, version);
-            using (HttpResponseMessage response = await this.client.PostAsJsonAsync("rest/api/2/version", version, this.options, cancellationToken))
-            {
-                response.EnsureSuccess();
-                res = await response.Content.ReadFromJsonAsync<IssueVersion>();
-            }
-            return res;
-        }
-
-        /// <summary>
-        /// Returns a project version.
-        /// </summary>
-        /// <param name="versionId">Id of the version.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IssueVersion> GetVersionAsync(string versionId, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(versionId))
-            {
-                throw new ArgumentException("The versionId is null or empty.");
-            }
-
-            IssueVersion res = await this.client.GetFromJsonAsync<IssueVersion>("rest/api/2/version/{versionId}", this.options, cancellationToken);
-            return res;
-        }
-
-        /// <summary>
-        /// Modify a version.
-        /// </summary>
-        /// <param name="version">Class of the version to update.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IssueVersion> UpdateVersionAsync(IssueVersion version, CancellationToken cancellationToken = default)
-        {
-            if (version == (IssueVersion)null)
-            {
-                throw new ArgumentNullException("version");
-            }
-
-            IssueVersion res = null;
-            using (HttpResponseMessage response = await this.client.PutAsJsonAsync($"rest/api/2/version/{version.Id}", version, this.options, cancellationToken))
-            {
-                response.EnsureSuccess();
-                res = await response.Content.ReadFromJsonAsync<IssueVersion>();
-            }
-            return res;
-        }
-
-        /// <summary>
-        /// Delete a project version.
-        /// </summary>
-        /// <param name="versionId">Id of the version to delete.</param>
-        /// <param name="moveFixIssuesTo">Id of the version to move fix issues to.</param>
-        /// <param name="moveAffectedIssuesTo">Id of the version to move affected issues to.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task DeleteVersionAsync(string versionId, string moveFixIssuesTo = null, string moveAffectedIssuesTo = null, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(versionId))
-            {
-                throw new ArgumentException("The versionId is null or empty.");
-            }
-
-            using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/version/{versionId}?{moveFixIssuesTo ?? string.Empty}{moveAffectedIssuesTo ?? string.Empty}", cancellationToken))
-            {
-                response.EnsureSuccess();
-            }
-        }
-
-        /// <summary>
-        /// Modify a version's sequence within a project. 
-        /// </summary>
-        /// <param name="versionId">Id of the version to move.</param>
-        /// <param name="versionIdAfter">Id of the version to move after.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IssueVersion> MoveVersionAsync(string versionId, string versionIdAfter, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(versionId))
-            {
-                throw new ArgumentException("The versionId is null or empty.");
-            }
-            if (string.IsNullOrEmpty(versionIdAfter))
-            {
-                throw new ArgumentException("The versionIdAfter is null or empty.");
-            }
-
-            VersionMoveAfterPostRequest req = new VersionMoveAfterPostRequest() { After = versionIdAfter };
-            IssueVersion res = null;
-            JsonTrace.WriteRequest(this, req);
-            using (HttpResponseMessage response = await this.client.PostAsJsonAsync($"rest/api/2/version/{versionId}/move", req, this.options, cancellationToken))
-            {
-                response.EnsureSuccess();
-                res = await response.Content.ReadFromJsonAsync<IssueVersion>();
-            }
-            return res;
-        }
-
-        /// <summary>
-        /// Modify a version's sequence within a project. 
-        /// </summary>
-        /// <param name="versionId">Id of the version to move.</param>
-        /// <param name="position">Position to move the version to.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IssueVersion> MoveVersionAsync(string versionId, Position position, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(versionId))
-            {
-                throw new ArgumentException("The versionId is null or empty.");
-            }
-
-            VersionMovePositionPostRequest req = new VersionMovePositionPostRequest() { Position = position };
-            IssueVersion res = null;
-            JsonTrace.WriteRequest(this, req);
-            using (HttpResponseMessage response = await this.client.PostAsJsonAsync($"rest/api/2/version/{versionId}/move", req, this.options, cancellationToken))
-            {
-                response.EnsureSuccess();
-                res = await response.Content.ReadFromJsonAsync<IssueVersion>();
-            }
-            return res;
-        }
-
-        /// <summary>
-        /// Returns a bean containing the number of fixed in and affected issues for the given version.
-        /// </summary>
-        /// <param name="versionId">Id of the version.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<int> VersionRelatedIssuesCountsAsync(string versionId, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(versionId))
-            {
-                throw new ArgumentException("The versionId is null or empty.");
-            }
-
-            VersionRelatedIssueCounts res = await this.client.GetFromJsonAsync<VersionRelatedIssueCounts>($"rest/api/2/version/{versionId}/relatedIssueCounts", this.options, cancellationToken);
-            return res.IssuesAffectedCount;
-        }
-
-        /// <summary>
-        /// Returns the number of unresolved issues for the given version.
-        /// </summary>
-        /// <param name="versionId">Id of the version.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<int> VersionUnresolvedIssueCountAsync(string versionId, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(versionId))
-            {
-                throw new ArgumentException("The versionId is null or empty.");
-            }
-
-            VersionUnresolvedIssueCount res = await this.client.GetFromJsonAsync<VersionUnresolvedIssueCount>($"rest/api/2/version/{versionId}/unresolvedIssueCount", this.options, cancellationToken);
-            return res.IssuesUnresolvedCount;
-        }
-
-        #endregion
-
-        #region Project
-
-        /// <summary>
-        /// Returns all projects which are visible for the currently logged in user. If no user is logged in, it returns the list of projects that are visible when using anonymous access.
-        /// </summary>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        /// <remarks>Only the fields Self, Id, Key, Name and AvatarUrls will be filled by GetProjectsAsync. Call GetProjectAsync to get all fields. </remarks>
-        public async Task<IEnumerable<Project>> GetProjectsAsync(CancellationToken cancellationToken = default)
-        {
-            IEnumerable<Project> res = await this.client.GetFromJsonAsync<IEnumerable<Project>>("rest/api/2/project", this.options, cancellationToken);
-            return res;
-        }
-
-        /// <summary>
-        /// Contains a full representation of a project in JSON format.
-        /// </summary>
-        /// <param name="projectKey">Key of the project.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<Project> GetProjectAsync(string projectKey, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(projectKey))
-            {
-                throw new ArgumentException("The projectKey is null or empty.");
-            }
-
-            Project res = await this.client.GetFromJsonAsync<Project>($"rest/api/2/project/{projectKey}", this.options, cancellationToken);
-            return res;
-        }
-
-        #endregion
-
-        #region Comment
-
-        /// <summary>
-        /// Returns all comments for an issue.
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IEnumerable<Comment>> GetCommentsAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(issueIdOrKey))
-            {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
-            }
-
-            CommentGetResult res = await this.client.GetFromJsonAsync<CommentGetResult>($"rest/api/2/issue/{issueIdOrKey}/comment", this.options, cancellationToken);
-            return res.Comments;
-        }
+        provider = new (this);
+    }
+
+    //this.host = host;
+    //this.provider = new JiraQueryProvider(this);
+
+    //// connect
+    //this.handler = new HttpClientHandler();
+    //this.handler.CookieContainer = new System.Net.CookieContainer();
+    //this.handler.UseCookies = true;
+    //this.client = new HttpClient(this.handler);
+    //this.client.BaseAddress = host;
+
+
+    //this.jsonMediaTypeFormatter = new JsonMediaTypeFormatter()
+    //{ 
+    //    SerializerSettings = new JsonSerializerSettings()
+    //    { 
+    //        Context = new StreamingContext(StreamingContextStates.All, this),
+    //        NullValueHandling = NullValueHandling.Ignore,
+    //        //DateTimeZoneHandling = DateTimeZoneHandling.RoundtripKind
+    //    }
+    //};
+    //this.jsonFormatters = new MediaTypeFormatter[] { this.jsonMediaTypeFormatter };
+
+    //if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
+    //{
+    //    this.LoginAsync(username, password).Wait();
+    //}
+
+    #region Login
+
+    /// <summary>
+    /// Creates a new session for a user in JIRA.
+    /// </summary>
+    /// <param name="username">Name of the user to login.</param>
+    /// <param name="password">Password of the user to login.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<Session?> LoginAsync(string username, string password, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(username, nameof(username));
+        ArgumentNullException.ThrowIfNullOrEmpty(password, nameof(password));
+
+        var req = new SessionPostRequest() { Username = username, Password = password };
+        SessionPostResult? res = await PostAsJsonAsync<SessionPostRequest, SessionPostResult>("rest/auth/1/session", req, cancellationToken);
+        return res?.Session;
+    }
+
+    /// <summary>
+    /// Logs the current user out of JIRA, destroying the existing session, if any.
+    /// </summary>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task LogoutAsync(CancellationToken cancellationToken = default)
+    {
+        await DeleteAsync("rest/auth/1/session", cancellationToken);
+    }
+
+    /// <summary>
+    /// Returns information about the currently authenticated user's session.
+    /// </summary>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<LoginInfo?> GetLoginInfoAsync(CancellationToken cancellationToken = default)
+    {
+        SessionGetResult? res = await GetFromJsonAsync<SessionGetResult>("rest/auth/1/session", cancellationToken);
+        return res?.LoginInfo;
+    }
+
+    #endregion
+
+    #region ServerInfo
+
+    /// <summary>
+    /// Returns general information about the current JIRA server.
+    /// </summary>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<ServerInfo?> GetServerInfoAsync(CancellationToken cancellationToken = default)
+    {
+        ServerInfo? res = await GetFromJsonAsync<ServerInfo>("rest/api/2/serverInfo", cancellationToken);
+        return res;
+    }
+
+    #endregion
+
+    #region IssueType
+
+    /// <summary>
+    /// Returns a list of all issue types visible to the user.
+    /// </summary>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<IEnumerable<IssueType>?> GetIssueTypesAsync(CancellationToken cancellationToken = default)
+    {
+        IEnumerable<IssueType>? res = await GetFromJsonAsync<IEnumerable<IssueType>>("rest/api/2/issuetype", cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Returns a full representation of the issue type that has the given id.
+    /// </summary>
+    /// <param name="issueTypeId">Id of the issue type.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<IssueType?> GetIssueTypeAsync(string issueTypeId, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueTypeId, nameof(issueTypeId));
         
-        /// <summary>
-        /// Adds a new comment to an issue.
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <param name="comment">Comment class to add.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<Comment> AddCommentAsync(string issueIdOrKey, Comment comment, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(issueIdOrKey))
-            {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
-            }
-            if (comment == null)
-            {
-                throw new ArgumentNullException("comment");
-            }
+        IssueType? res = await GetFromJsonAsync<IssueType>($"rest/api/2/issuetype/{issueTypeId}", cancellationToken);
+        return res;
+    }
 
-            Comment res = null;
-            JsonTrace.WriteRequest(this, comment);
-            using (HttpResponseMessage response = await this.client.PostAsJsonAsync<Comment>($"rest/api/2/issue/{issueIdOrKey}/comment", comment, this.options, cancellationToken))
-            {
-                response.EnsureSuccess();
-                res = await response.Content.ReadFromJsonAsync<Comment>();
-            }
-            return res;
-        }
+    #endregion
 
-        /// <summary>
-        /// Returns all comments for an issue.
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <param name="commentId">Id of the comment.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<Comment> GetCommentAsync(string issueIdOrKey, string commentId, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(issueIdOrKey))
-            {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
-            }
-            if (string.IsNullOrEmpty(commentId))
-            {
-                throw new ArgumentException("The commentId is null or empty.");
-            }
+    #region Priority
 
-            Comment res = await this.client.GetFromJsonAsync<Comment>($"rest/api/2/issue/{issueIdOrKey}/comment/{commentId}", this.options, cancellationToken);
-            return res;
-        }
+    /// <summary>
+    /// Returns a list of all issue priorities.
+    /// </summary>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<IEnumerable<Priority>?> GetPrioritiesAsync(CancellationToken cancellationToken = default)
+    {
+        IEnumerable<Priority>? res = await GetFromJsonAsync<IEnumerable<Priority>>("rest/api/2/priority", cancellationToken);
+        return res;
+    }
 
-        /// <summary>
-        /// Updates an existing comment.
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <param name="comment">Class of the comment to update.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        /// <remarks>Json bug in JIRA 5.0.4</remarks>
-        public async Task<Comment> UpdateCommentAsync(string issueIdOrKey, Comment comment, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(issueIdOrKey))
-            {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
-            }
-            if (comment == null)
-            {
-                throw new ArgumentNullException("comment");
-            }
-
-            // TODO find a way to suppress deserialize
-            DateTime? created = comment.Created;
-            DateTime? updated = comment.Updated;
-            comment.Created = null;
-            comment.Updated = null;
-            Comment res = null;
-            using (HttpResponseMessage response = await this.client.PutAsJsonAsync<Comment>($"rest/api/2/issue/{issueIdOrKey}/comment/{comment.Id}", comment, this.options, cancellationToken))
-            {
-                response.EnsureSuccess();
-                res = await response.Content.ReadFromJsonAsync<Comment>();
-            }
-            comment.Created = created;
-            comment.Updated = updated;
-            return res;
-        }
-
-        /// <summary>
-        /// Deletes an existing comment.
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <param name="commentId">Id of the comment.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task DeleteCommentAsync(string issueIdOrKey, string commentId, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(issueIdOrKey))
-            {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
-            }
-            if (string.IsNullOrEmpty(commentId))
-            {
-                throw new ArgumentException("The commentId is null or empty.");
-            }
-            
-            using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/issue/{issueIdOrKey}/comment/{commentId}", cancellationToken))
-            {
-                response.EnsureSuccess();
-            }
-        }
-
-        #endregion
-
-        #region Meta
-
-        /// <summary>
-        /// Returns the meta data for creating issues. This includes the available projects, issue types and fields, 
-        /// including field types and whether or not those fields are required. 
-        /// Projects will not be returned if the user does not have permission to create issues in that project. 
-        /// </summary>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<CreateMeta> GetCreateMetaAsync(/*string projectKey, string issueTypeId*/ CancellationToken cancellationToken = default)
-        {
-            CreateMeta res = await this.client.GetFromJsonAsync<CreateMeta>($"rest/api/2/issue/createmeta?expand=projects.issuetypes.fields"/*?projectKeys={0}&issuetypeIds={1}", projectKey, issueTypeId*/, this.options, cancellationToken);
-            return res;
-        }
-
-        /// <summary>
-        /// Returns the meta data for editing an issue. 
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<EditMeta> GetEditMetaAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(issueIdOrKey))
-            {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
-            }
-
-            EditMeta res = await this.client.GetFromJsonAsync<EditMeta>($"rest/api/2/issue/{issueIdOrKey}/editmeta", this.options, cancellationToken);
-            return res;
-        }
-
-        #endregion
+    /// <summary>
+    /// Returns an issue priority.
+    /// </summary>
+    /// <param name="priorityId">Id of the priority.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<Priority?> GetPriorityAsync(string priorityId, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(priorityId, nameof(priorityId));
         
-        #region Notify
+        Priority? res = await GetFromJsonAsync<Priority>($"rest/api/2/priority/{priorityId}", cancellationToken);
+        return res;
+    }
 
-        /// <summary>
-        /// Sends a notification (email) to the list or recipients defined in the request.
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <param name="notify">Class with the notify nformations.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        /// <remarks>Only for JIRA 5.2.1 or later.</remarks>
-        public async Task SendNotifyAsync(string issueIdOrKey, Notify notify, CancellationToken cancellationToken = default)
+    #endregion
+
+    #region Resolution
+
+    /// <summary>
+    /// Returns a list of all resolutions.
+    /// </summary>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<IEnumerable<Resolution>?> GetResolutionsAsync(CancellationToken cancellationToken = default)
+    {
+        IEnumerable<Resolution>? res = await GetFromJsonAsync<IEnumerable<Resolution>>("rest/api/2/resolution", cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Returns a resolution.
+    /// </summary>
+    /// <param name="resolutionId">Id of the resolution.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<Resolution?> GetResolutionAsync(string resolutionId, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(resolutionId, nameof(resolutionId));
+
+        Resolution? res = await GetFromJsonAsync<Resolution>($"rest/api/2/resolution/{resolutionId}", cancellationToken);
+        return res;
+    }
+
+    #endregion
+
+    #region Status
+
+    /// <summary>
+    /// Returns a list of all statuses.
+    /// </summary>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<IEnumerable<Status>?> GetStatusesAsync(CancellationToken cancellationToken = default)
+    {
+        IEnumerable<Status>? res = await GetFromJsonAsync<IEnumerable<Status>>("rest/api/2/status", cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Returns a full representation of the Status having the given id or name.
+    /// </summary>
+    /// <param name="statusIdOrName">Id or name of the status.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<Status?> GetStatusAsync(string statusIdOrName, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(statusIdOrName, nameof(statusIdOrName));
+
+        Status? res = await GetFromJsonAsync<Status>($"rest/api/2/status/{statusIdOrName}", cancellationToken);
+        return res;
+    }
+
+    #endregion
+
+    #region IssueLinkType
+
+    /// <summary>
+    /// Returns a list of available issue link types, if issue linking is enabled. Each issue link type has an id, a name and a label for the outward and inward link relationship.
+    /// </summary>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<IEnumerable<IssueLinkType>?> GetIssueLinkTypesAsync(CancellationToken cancellationToken = default)
+    {
+        IssueLinkTypesRespnse? res = await GetFromJsonAsync<IssueLinkTypesRespnse>("rest/api/2/issueLinkType", cancellationToken);
+        return res?.IssueLinkTypes;
+    }
+
+    /// <summary>
+    /// Returns for a given issue link type id all information about this issue link type.
+    /// </summary>
+    /// <param name="issueLinkTypeId">Id of the link type.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<IssueLinkType?> GetIssueLinkTypeAsync(string issueLinkTypeId, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueLinkTypeId, nameof(issueLinkTypeId));
+
+        IssueLinkType? res = await GetFromJsonAsync<IssueLinkType>($"rest/api/2/issueLinkType/{issueLinkTypeId}", cancellationToken);
+        return res;
+    }
+
+    #endregion
+
+    #region Field
+
+    /// <summary>
+    /// Returns a list of all fields, both System and Custom.
+    /// </summary>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<IEnumerable<Field>?> GetFieldsAsync(CancellationToken cancellationToken = default)
+    {
+        IEnumerable<Field>? res = await GetFromJsonAsync<IEnumerable<Field>>("rest/api/2/field", cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Returns a full representation of the Custom Field Option that has the given id.
+    /// </summary>
+    /// <param name="customFieldOptionId">Id of the custom field option.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<CustomFieldOption?> GetCustomFieldOptionAsync(string customFieldOptionId, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(customFieldOptionId, nameof(customFieldOptionId));
+
+        CustomFieldOption? res = await GetFromJsonAsync<CustomFieldOption>($"rest/api/2/customFieldOption/{customFieldOptionId}", cancellationToken);
+        return res;
+    }
+
+    #endregion
+
+    #region Group
+
+    /// <summary>
+    /// Get group with specified group name.
+    /// </summary>
+    /// <param name="groupName">Name of the group</param>
+    /// <param name="expandGroup">Expand group parameter.</param>
+    /// <returns>Jira group.</returns>
+    /// <remarks>Only supported with JIRA 6.0 or later</remarks>
+    public async Task<Group?> GetGroupAsync(string groupName, string? expandGroup = null, CancellationToken cancellationToken = default) 
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(groupName, nameof(groupName));
+
+        string expand = string.IsNullOrEmpty(expandGroup) ? "" : $"&expand={expandGroup}";
+        Group? res = await GetFromJsonAsync<Group>($"rest/api/2/group?groupname={groupName}{expand}", cancellationToken);
+        return res;
+    }
+
+    #endregion
+
+    #region User
+
+    /// <summary>
+    /// Returns a user.
+    /// </summary>
+    /// <param name="username">Name of the user.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    /// <remarks>This resource cannot be accessed anonymously.</remarks>
+    public async Task<User?> GetUserAsync(string username, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(username, nameof(username));
+
+        User? res = await GetFromJsonAsync<User>($"rest/api/2/user?username={username}", cancellationToken);
+        return res;
+    }
+
+    #endregion
+
+    #region Filter
+
+    /// <summary>
+    /// Creates a new filter, and returns newly created filter Currently sets permissions just using the users default sharing permissions.
+    /// </summary>
+    /// <param name="filter">Filter class to create.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    /// <remarks>Only for JIRA 5.2.1 or later.</remarks>
+    public async Task<Filter?> CreateFilterAsync(Filter filter, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(filter, nameof(filter));
+
+        Filter? res = await PostAsJsonAsync<Filter, Filter>("rest/api/2/filter", filter, cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Returns the favourite filters of the logged-in user.
+    /// </summary>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<IEnumerable<Filter>?> GetFilterFavouritesAsync(CancellationToken cancellationToken = default)
+    {
+        IEnumerable<Filter>? res = await GetFromJsonAsync<IEnumerable<Filter>>("rest/api/2/filter/favourite", cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Returns a filter given an id.
+    /// </summary>
+    /// <param name="filterId">Id of the filter.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<Filter?> GetFilterAsync(string filterId, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(filterId, nameof(filterId));
+
+        Filter? res = await GetFromJsonAsync<Filter>($"rest/api/2/filter/{filterId}", cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Updates an existing filter, and returns its new value.
+    /// </summary>
+    /// <param name="filter">Filter class to update.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    /// <remarks>Only for JIRA 5.2.1 or later.</remarks>
+    public async Task<Filter?> UpdateFilterAsync(Filter filter, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(filter, nameof(filter));
+
+        Filter? res = await PutAsJsonAsync<Filter, Filter>($"rest/api/2/filter/{filter.Id}", filter, cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Delete a filter.
+    /// </summary>
+    /// <param name="filterId">Id of the filter to delete.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    /// <remarks>Only for JIRA 5.2.1 or later.</remarks>
+    public async Task DeleteFilterAsync(string filterId, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(filterId, nameof(filterId));
+
+        await DeleteAsync($"rest/api/2/filter/{filterId}", cancellationToken);
+    }
+
+    #endregion
+
+    #region Component
+
+    /// <summary>
+    /// Contains a full representation of a the specified project's components.
+    /// </summary>
+    /// <param name="projectKey">Key of the project.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<IEnumerable<Component>?> GetComponentsAsync(string projectKey, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(projectKey, nameof(projectKey));
+
+        IEnumerable<Component>? res = await GetFromJsonAsync<IEnumerable<Component>>($"rest/api/2/project/{projectKey}/components", cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Create a component.
+    /// </summary>
+    /// <param name="component">Component class to create.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<Component?> CreateComponentAsync(Component component, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(component, nameof(component));
+
+        Component? res = await PostAsJsonAsync<Component, Component>("rest/api/2/component", component, cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Returns a project component.
+    /// </summary>
+    /// <param name="componentId">Id of the component to get.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<Component?> GetComponentAsync(string componentId, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(componentId, nameof(componentId));
+        
+        Component? res = await GetFromJsonAsync<Component>($"rest/api/2/component/{componentId}", cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Modify a component.
+    /// </summary>
+    /// <param name="component">Component class to update.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<Component?> UpdateComponentAsync(Component component, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(component, nameof(component));
+
+        Component? res = await PutAsJsonAsync<Component, Component>($"rest/api/2/component/{component.Id}", component, cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Delete a project component.
+    /// </summary>
+    /// <param name="componentId">Id of the component to delete.</param>
+    /// <param name="moveIssuesTo">The new component applied to issues whose 'id' component will be deleted. If this value is null, then the 'id' component is simply removed from the related isues.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task DeleteComponentAsync(string componentId, string? moveIssuesTo = null, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(componentId, nameof(componentId));
+
+        await DeleteAsync($"rest/api/2/component/{componentId}?{moveIssuesTo ?? string.Empty}", cancellationToken);
+    }
+
+    /// <summary>
+    /// Returns counts of issues related to this component.
+    /// </summary>
+    /// <param name="componentId">Id of the component.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<int> ComponentRelatedIssuesCountAsync(string componentId, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(componentId, nameof(componentId));
+
+        ComponentRelatedIssueCounts? res = await GetFromJsonAsync<ComponentRelatedIssueCounts>($"rest/api/2/component/{componentId}/relatedIssueCounts", cancellationToken);
+        return res?.IssueCount ?? 0;
+    }
+
+    #endregion
+
+    #region Version
+
+    /// <summary>
+    /// Contains a full representation of a the specified project's versions.
+    /// </summary>
+    /// <param name="projectKey">Key of the project.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<IEnumerable<IssueVersion>?> GetVersionsAsync(string projectKey, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(projectKey, nameof(projectKey));
+
+        IEnumerable<IssueVersion>? res = await GetFromJsonAsync<IEnumerable<IssueVersion>>("rest/api/2/project/{projectKey}/versions", cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Create a version.
+    /// </summary>
+    /// <param name="version">Class of the version to create.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<IssueVersion?> CreateVersionAsync(IssueVersion version, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(version, nameof(version));
+
+        IssueVersion? res = await PostAsJsonAsync<IssueVersion, IssueVersion>("rest/api/2/version", version, cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Returns a project version.
+    /// </summary>
+    /// <param name="versionId">Id of the version.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<IssueVersion?> GetVersionAsync(string versionId, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(versionId, nameof(versionId));
+
+        IssueVersion? res = await GetFromJsonAsync<IssueVersion>("rest/api/2/version/{versionId}", cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Modify a version.
+    /// </summary>
+    /// <param name="version">Class of the version to update.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<IssueVersion?> UpdateVersionAsync(IssueVersion version, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(version, nameof(version));
+
+        IssueVersion? res = await PutAsJsonAsync<IssueVersion, IssueVersion>($"rest/api/2/version/{version.Id}", version, cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Delete a project version.
+    /// </summary>
+    /// <param name="versionId">Id of the version to delete.</param>
+    /// <param name="moveFixIssuesTo">Id of the version to move fix issues to.</param>
+    /// <param name="moveAffectedIssuesTo">Id of the version to move affected issues to.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task DeleteVersionAsync(string versionId, string? moveFixIssuesTo = null, string? moveAffectedIssuesTo = null, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(versionId, nameof(versionId));
+
+        await DeleteAsync($"rest/api/2/version/{versionId}?{moveFixIssuesTo ?? string.Empty}{moveAffectedIssuesTo ?? string.Empty}", cancellationToken);
+    }
+
+    /// <summary>
+    /// Modify a version's sequence within a project. 
+    /// </summary>
+    /// <param name="versionId">Id of the version to move.</param>
+    /// <param name="versionIdAfter">Id of the version to move after.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<IssueVersion?> MoveVersionAsync(string versionId, string versionIdAfter, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(versionId, nameof(versionId));
+        ArgumentNullException.ThrowIfNullOrEmpty(versionIdAfter, nameof(versionIdAfter));            
+
+        var req = new VersionMoveAfterPostRequest() { After = versionIdAfter };
+        IssueVersion? res = await PostAsJsonAsync<VersionMoveAfterPostRequest, IssueVersion>($"rest/api/2/version/{versionId}/move", req, cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Modify a version's sequence within a project. 
+    /// </summary>
+    /// <param name="versionId">Id of the version to move.</param>
+    /// <param name="position">Position to move the version to.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<IssueVersion?> MoveVersionAsync(string versionId, Position position, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(versionId, nameof(versionId));
+
+        var req = new VersionMovePositionPostRequest() { Position = position };
+        IssueVersion? res = await PostAsJsonAsync<VersionMovePositionPostRequest, IssueVersion>($"rest/api/2/version/{versionId}/move", req, cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Returns a bean containing the number of fixed in and affected issues for the given version.
+    /// </summary>
+    /// <param name="versionId">Id of the version.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<int> VersionRelatedIssuesCountsAsync(string versionId, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(versionId, nameof(versionId));
+
+        VersionRelatedIssueCounts? res = await GetFromJsonAsync<VersionRelatedIssueCounts>($"rest/api/2/version/{versionId}/relatedIssueCounts", cancellationToken);
+        return res?.IssuesAffectedCount ?? 0;
+    }
+
+    /// <summary>
+    /// Returns the number of unresolved issues for the given version.
+    /// </summary>
+    /// <param name="versionId">Id of the version.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<int> VersionUnresolvedIssueCountAsync(string versionId, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(versionId, nameof(versionId));
+
+        VersionUnresolvedIssueCount? res = await GetFromJsonAsync<VersionUnresolvedIssueCount>($"rest/api/2/version/{versionId}/unresolvedIssueCount", cancellationToken);
+        return res?.IssuesUnresolvedCount ?? 0;
+    }
+
+    #endregion
+
+    #region Project
+
+    /// <summary>
+    /// Returns all projects which are visible for the currently logged in user. If no user is logged in, it returns the list of projects that are visible when using anonymous access.
+    /// </summary>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    /// <remarks>Only the fields Self, Id, Key, Name and AvatarUrls will be filled by GetProjectsAsync. Call GetProjectAsync to get all fields. </remarks>
+    public async Task<IEnumerable<Project>?> GetProjectsAsync(CancellationToken cancellationToken = default)
+    {
+        IEnumerable<Project>? res = await GetFromJsonAsync<IEnumerable<Project>>("rest/api/2/project", cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Contains a full representation of a project in JSON format.
+    /// </summary>
+    /// <param name="projectKey">Key of the project.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<Project?> GetProjectAsync(string projectKey, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(projectKey, nameof(projectKey));
+
+        Project? res = await GetFromJsonAsync<Project>($"rest/api/2/project/{projectKey}", cancellationToken);
+        return res;
+    }
+
+    #endregion
+
+    #region Comment
+
+    /// <summary>
+    /// Returns all comments for an issue.
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<IEnumerable<Comment>?> GetCommentsAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+
+        CommentGetResult? res = await GetFromJsonAsync<CommentGetResult>($"rest/api/2/issue/{issueIdOrKey}/comment", cancellationToken);
+        return res?.Comments;
+    }
+    
+    /// <summary>
+    /// Adds a new comment to an issue.
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="comment">Comment class to add.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<Comment?> AddCommentAsync(string issueIdOrKey, Comment comment, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+        ArgumentNullException.ThrowIfNull(comment, nameof(comment));
+
+        Comment? res = await PostAsJsonAsync<Comment, Comment>($"rest/api/2/issue/{issueIdOrKey}/comment", comment, cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Returns all comments for an issue.
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="commentId">Id of the comment.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<Comment?> GetCommentAsync(string issueIdOrKey, string commentId, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+        ArgumentNullException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
+
+        Comment? res = await GetFromJsonAsync<Comment>($"rest/api/2/issue/{issueIdOrKey}/comment/{commentId}", cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Updates an existing comment.
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="comment">Class of the comment to update.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    /// <remarks>Json bug in JIRA 5.0.4</remarks>
+    public async Task<Comment?> UpdateCommentAsync(string issueIdOrKey, Comment comment, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+        ArgumentNullException.ThrowIfNull(comment, nameof(comment));
+
+        // TODO find a way to suppress deserialize
+        DateTime? created = comment.Created;
+        DateTime? updated = comment.Updated;
+        comment.Created = null;
+        comment.Updated = null;
+        Comment? res = await PutAsJsonAsync<Comment, Comment>($"rest/api/2/issue/{issueIdOrKey}/comment/{comment.Id}", comment, cancellationToken);
+        comment.Created = created;
+        comment.Updated = updated;
+        return res;
+    }
+
+    /// <summary>
+    /// Deletes an existing comment.
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="commentId">Id of the comment.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task DeleteCommentAsync(string issueIdOrKey, string commentId, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+        ArgumentNullException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
+
+        await DeleteAsync($"rest/api/2/issue/{issueIdOrKey}/comment/{commentId}", cancellationToken);
+    }
+
+    #endregion
+
+    #region Meta
+
+    /// <summary>
+    /// Returns the meta data for creating issues. This includes the available projects, issue types and fields, 
+    /// including field types and whether or not those fields are required. 
+    /// Projects will not be returned if the user does not have permission to create issues in that project. 
+    /// </summary>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<CreateMeta?> GetCreateMetaAsync(/*string projectKey, string issueTypeId*/ CancellationToken cancellationToken = default)
+    {
+        CreateMeta? res = await GetFromJsonAsync<CreateMeta>($"rest/api/2/issue/createmeta?expand=projects.issuetypes.fields"/*?projectKeys={0}&issuetypeIds={1}", projectKey, issueTypeId*/, cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Returns the meta data for editing an issue. 
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<EditMeta?> GetEditMetaAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+
+        EditMeta? res = await GetFromJsonAsync<EditMeta>($"rest/api/2/issue/{issueIdOrKey}/editmeta", cancellationToken);
+        return res;
+    }
+
+    #endregion
+    
+    #region Notify
+
+    /// <summary>
+    /// Sends a notification (email) to the list or recipients defined in the request.
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="notify">Class with the notify nformations.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    /// <remarks>Only for JIRA 5.2.1 or later.</remarks>
+    public async Task<Notify?> SendNotifyAsync(string issueIdOrKey, Notify notify, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+        ArgumentNullException.ThrowIfNull(notify, nameof(notify));
+
+        Notify? res = await PostAsJsonAsync<Notify,Notify>($"rest/api/2/issue/{issueIdOrKey}/notify", notify, cancellationToken);
+        return res;
+       
+    }
+
+    #endregion
+
+    #region RemoteLink
+
+    /// <summary>
+    /// A representing the remote issue links on the issue.
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<IEnumerable<RemoteLink>?> GetIssueRemoteLinksAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+
+        IEnumerable<RemoteLink>? res = await GetFromJsonAsync<IEnumerable<RemoteLink>>($"rest/api/2/issue/{issueIdOrKey}/remotelink", cancellationToken);
+        return res;
+    }
+
+    //public async Task<RemoteLink> GetIssueRemoteLinkAsync(string issueIdOrKey, string globalId)
+    //{
+    //    IEnumerable<RemoteLink> res = await this.client.GetFromJsonAsync<IEnumerable<RemoteLink>>($"rest/api/2/issue/{issueIdOrKey}/remotelink?globalId={globalId}", this.options, cancellationToken);
+    //    return res.ElementAtOrDefault(0);
+    //}
+
+    /// <summary>
+    /// Creates or updates a remote issue link from a JSON representation.
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="remoteLink">Class of the remote link to create.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    /// <remarks>If a globalId is provided and a remote issue link exists with that globalId, the remote issue link is updated. Otherwise, the remote issue link is created.</remarks>
+    public async Task<RemoteLink?> CreateIssueRemoteLinkAsync(string issueIdOrKey, RemoteLink remoteLink, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+        ArgumentNullException.ThrowIfNull(remoteLink, nameof(remoteLink));
+
+        RemoteLink? res = await PostAsJsonAsync<RemoteLink, RemoteLink>($"rest/api/2/issue/{issueIdOrKey}/remotelink", remoteLink, cancellationToken);
+        return res;
+    }
+
+    //public async Task DeleteIssueRemoteLinkAsync(string issueIdOrKey, string globalId, CancellationToken cancellationToken = default)
+    //{
+    //    using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/issue/{issueIdOrKey}/remotelink?globalId={globalId}", cancellationToken))
+    //    {
+    //        response.EnsureSuccess();
+    //    }
+    //}
+
+    /// <summary>
+    /// Get the remote issue link with the given id on the issue.
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="remoteLinkId">Id of the remote link.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<RemoteLink?> GetIssueRemoteLinkAsync(string issueIdOrKey, string remoteLinkId, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+        ArgumentNullException.ThrowIfNullOrEmpty(remoteLinkId, nameof(remoteLinkId));
+
+        RemoteLink? res = await GetFromJsonAsync<RemoteLink>($"rest/api/2/issue/{issueIdOrKey}/remotelink/{remoteLinkId}", cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Updates a remote issue link.
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="remoteLink">Remote link to update.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<RemoteLink?> UpdateIssueRemoteLinkAsync(string issueIdOrKey, RemoteLink remoteLink, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+        ArgumentNullException.ThrowIfNull(remoteLink, nameof(remoteLink));
+
+        RemoteLink? res = await PutAsJsonAsync<RemoteLink, RemoteLink>($"rest/api/2/issue/{issueIdOrKey}/remotelink/{remoteLink.Id}", remoteLink, cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Delete the remote issue link with the given global id on the issue.
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="remoteLinkId">Id of the remote link.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task DeleteIssueRemoteLinkAsync(string issueIdOrKey, string remoteLinkId, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+        ArgumentNullException.ThrowIfNullOrEmpty(remoteLinkId, nameof(remoteLinkId));
+
+        await DeleteAsync($"rest/api/2/issue/{issueIdOrKey}/remotelink/{remoteLinkId}", cancellationToken);
+    }
+
+    #endregion
+
+    #region Transition
+
+    /// <summary>
+    /// Get a list of the transitions possible for this issue by the current user, along with fields that are required and their types. 
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<IEnumerable<Transition>?> GetTransitionsAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+
+        TransitionGetResult? res = await GetFromJsonAsync<TransitionGetResult>($"rest/api/2/issue/{issueIdOrKey}/transitions", cancellationToken);
+        return res?.Transitions;
+    }
+
+    /// <summary>
+    /// Get a list of the transitions possible for this issue by the current user, along with fields that are required and their types.
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="transitionId">Id of the transition.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<Transition?> GetTransitionAsync(string issueIdOrKey, string transitionId, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+        ArgumentNullException.ThrowIfNullOrEmpty(transitionId, nameof(transitionId));
+
+        TransitionGetResult? res = await GetFromJsonAsync<TransitionGetResult>($"rest/api/2/issue/{issueIdOrKey}/transitions?transitionId={transitionId}", cancellationToken);
+        return res?.Transitions.FirstOrDefault();
+    }
+
+    /// <summary>
+    /// Perform a transition on an issue. When performing the transition you can udate or set other issue fields. 
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="transition">Transition class.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<Transition?> TransitionAsync(string issueIdOrKey, Transition transition, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+        ArgumentNullException.ThrowIfNull(transition, nameof(transition));
+
+        var req = new TransitionPostReq() { Transition = transition };
+        Transition? res = await PostAsJsonAsync<TransitionPostReq, Transition>($"rest/api/2/issue/{issueIdOrKey}/transitions", req, cancellationToken);
+        return res;
+    }
+
+    #endregion
+
+    #region Votes
+
+    /// <summary>
+    /// A resource representing the voters on the issue.
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<Votes?> GetIssueVotesAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+
+        Votes? res = await GetFromJsonAsync<Votes>($"rest/api/2/issue/{issueIdOrKey}/votes", cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Cast your vote in favour of an issue.
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task AddIssueVoteAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+
+        await PostAsync($"rest/api/2/issue/{issueIdOrKey}/votes", cancellationToken);
+    }
+
+    /// <summary>
+    /// Remove your vote from an issue.
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task DeleteIssueVoteAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+
+        await DeleteAsync($"rest/api/2/issue/{issueIdOrKey}/votes", cancellationToken);
+    }
+
+    #endregion
+
+    #region Watchers
+
+    /// <summary>
+    /// Returns the list of watchers for the issue with the given key.
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<Watchers?> GetIssueWatchersAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+
+        Watchers? res = await GetFromJsonAsync<Watchers>($"rest/api/2/issue/{issueIdOrKey}/watchers", cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Adds a user to an issue's watcher list.
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="username">Username of the new watcher.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task AddIssueWatcherAsync(string issueIdOrKey, string username, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+        ArgumentNullException.ThrowIfNullOrEmpty(username, nameof(username));
+
+        await PostAsJsonAsync<string, string>($"rest/api/2/issue/{issueIdOrKey}/watchers", username, cancellationToken);
+    }
+
+    /// <summary>
+    /// Removes a user from an issue's watcher list.
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="username">Username of the watcher to delete.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task DeleteIssueWatcherAsync(string issueIdOrKey, string username, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+        ArgumentNullException.ThrowIfNullOrEmpty(username, nameof(username));
+
+        await DeleteAsync($"rest/api/2/issue/{issueIdOrKey}/watchers?username={username}", cancellationToken);
+    }
+
+    #endregion
+
+    #region Workog
+
+    /// <summary>
+    /// Returns all work logs for an issue.
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<IEnumerable<Worklog>?> GetIssueWorklogsAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+
+        WorklogGetResult? res = await GetFromJsonAsync<WorklogGetResult>($"rest/api/2/issue/{issueIdOrKey}/worklog", cancellationToken);
+        return res?.Worklogs;
+    }
+
+    /// <summary>
+    /// Adds a new worklog entry to an issue.
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="worklog">Worklog to add.</param>
+    /// <param name="adjustEstimate">Adjust estimate flags.</param>
+    /// <param name="value">Value for AdjustEstimate.New and AdjustEstimate.Manual.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task AddIssueWorklogAsync(string issueIdOrKey, Worklog worklog, AdjustEstimate adjustEstimate = AdjustEstimate.Auto, string? value = null, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+        ArgumentNullException.ThrowIfNull(worklog, nameof(worklog));
+
+        string uri = adjustEstimate switch
         {
-            if (string.IsNullOrEmpty(issueIdOrKey))
-            {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
-            }
-            if (notify == null)
-            {
-                throw new ArgumentNullException("notify");
-            }
+            AdjustEstimate.New => $"rest/api/2/issue/{issueIdOrKey}/worklog?adjustEstimate=new&newEstimate={value}",
+            AdjustEstimate.Leave => $"rest/api/2/issue/{issueIdOrKey}/worklog?adjustEstimate=leave",
+            AdjustEstimate.Manual => $"rest/api/2/issue/{issueIdOrKey}/worklog?adjustEstimate=manual&reduceBy={value}",
+            _ => $"rest/api/2/issue/{issueIdOrKey}/worklog?adjustEstimate=auto"
+        };
 
-            JsonTrace.WriteRequest(this, notify);
-            using (HttpResponseMessage response = await this.client.PostAsJsonAsync<Notify>($"rest/api/2/issue/{issueIdOrKey}/notify", notify, this.options, cancellationToken))
-            {
-                response.EnsureSuccess();
-            }
-        }
+        await PostAsJsonAsync<Worklog, Worklog>(uri, worklog, cancellationToken);
+    }
 
-        #endregion
+    /// <summary>
+    /// Returns a specific worklog.
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="worklogId">Id of the worklog.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<Worklog?> GetIssueWorklogAsync(string issueIdOrKey, string worklogId, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+        ArgumentNullException.ThrowIfNullOrEmpty(worklogId, nameof(worklogId));
 
-        #region RemoteLink
+        Worklog? res = await GetFromJsonAsync<Worklog>($"rest/api/2/issue/{issueIdOrKey}/worklog/{worklogId}", cancellationToken);
+        return res;
+    }
 
-        /// <summary>
-        /// A representing the remote issue links on the issue.
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IEnumerable<RemoteLink>> GetIssueRemoteLinksAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
+    /// <summary>
+    /// Updates an existing worklog entry.
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="worklog">Worklog class to update.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<Worklog?> UpdateIssueWorklogAsync(string issueIdOrKey, Worklog worklog, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+        ArgumentNullException.ThrowIfNull(worklog, nameof(worklog));
+        
+        // must be set to 0; so sav
+        int timeSpentSeconds = worklog.TimeSpentSeconds;
+        worklog.TimeSpentSeconds = 0;
+
+        Worklog? res = await PutAsJsonAsync<Worklog, Worklog>($"rest/api/2/issue/{issueIdOrKey}/worklog/{worklog.Id}", worklog, cancellationToken);
+        worklog.TimeSpentSeconds = timeSpentSeconds;
+        return res;
+    }
+
+    /// <summary>
+    /// Deletes an existing worklog entry.
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="worklogId">Id of the worklog to delete.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task DeleteIssueWorklogAsync(string issueIdOrKey, string worklogId, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+        ArgumentNullException.ThrowIfNullOrEmpty(worklogId, nameof(worklogId));
+
+        await DeleteAsync($"rest/api/2/issue/{issueIdOrKey}/worklog/{worklogId}", cancellationToken);
+    }
+
+    #endregion
+
+    #region Attachments
+
+    /// <summary>
+    /// Returns the meta informations for an attachments, specifically if they are enabled and the maximum upload size allowed.
+    /// </summary>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<AttachmentMeta?> GetAttachmentMetaAsync(CancellationToken cancellationToken = default)
+    {
+        AttachmentMeta? res = await GetFromJsonAsync<AttachmentMeta>("rest/api/2/attachment/meta", cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Returns the meta-data for an attachment, including the URI of the actual attached file.
+    /// </summary>
+    /// <param name="attachmentId">The id of the attachment to get.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<Attachment?> GetAttachmentAsync(string attachmentId, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(attachmentId, nameof(attachmentId));
+
+        Attachment? res = await GetFromJsonAsync<Attachment>($"rest/api/2/attachment/{attachmentId}", cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Remove an attachment from an issue.
+    /// </summary>
+    /// <param name="attachmentId">The id of the attachment to delete.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task DeleteAttachmentAsync(string attachmentId, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(attachmentId, nameof(attachmentId));
+
+        await DeleteAsync($"rest/api/2/attachment/{attachmentId}", cancellationToken);
+    }
+
+    /// <summary>
+    /// Add one or more attachments to an issue.
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="files">List with attachments to add.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<IEnumerable<Attachment>?> AddAttachmentsAsync(string issueIdOrKey, IEnumerable<KeyValuePair<string, Stream>> files, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+        ArgumentNullException.ThrowIfNull(files, nameof(files));
+
+        IEnumerable<Attachment>? res = await PostFilesFromJsonAsync<IEnumerable<Attachment>>($"rest/api/2/issue/{issueIdOrKey}/attachments", files, cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Get the date stream of an attachment.
+    /// </summary>
+    /// <param name="attachmentUrl">Url of the attachment.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<Stream> GetAttachmentStreamAsync(Uri attachmentUrl, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(attachmentUrl, nameof(attachmentUrl));
+
+        return await GetFromStreamAsync(attachmentUrl.ToString(), cancellationToken);  
+    }
+
+    #endregion
+
+    #region Link
+
+    /// <summary>
+    /// Creates or updates a remote issue link. If a globalId is provided and a remote issue link exists with that globalId, the remote issue link is updated. Otherwise, the remote issue link is created.
+    /// </summary>
+    /// <param name="issueLink">IssueLink class to create.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task CreateIssueLinkAsync(IssueLink issueLink, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(issueLink, nameof(issueLink));
+
+        await PostAsJsonAsync<IssueLink, IssueLink>("rest/api/2/issueLink", issueLink, cancellationToken);
+    }
+
+    /// <summary>
+    /// Get the remote issue link with the given id on the issue.
+    /// </summary>
+    /// <param name="issueLinkId">Id of the link.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<IssueLink?> GetIssueLinkAsync(string issueLinkId, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueLinkId, nameof(issueLinkId));
+
+        IssueLink? res = await GetFromJsonAsync<IssueLink>($"rest/api/2/issueLink/{issueLinkId}", cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Delete the remote issue link with the given global id on the issue.
+    /// </summary>
+    /// <param name="linkId">Id of the link to delete.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task DeleteIssueLinkAsync(string linkId, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(linkId, nameof(linkId));
+
+        await DeleteAsync($"rest/api/2/issueLink/{linkId}", cancellationToken);
+    }
+
+    #endregion
+
+    #region Issues
+
+    /// <summary>
+    /// Creates an issue or a sub-task.
+    /// </summary>
+    /// <param name="issue">Issue class to create.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<Issue?> CreateIssueAsync(Issue issue, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(issue, nameof(issue));
+
+        Issue? res = await PostAsJsonAsync<Issue, Issue>("rest/api/2/issue", issue, cancellationToken);
+        issue.ResetAllChanged();
+        res?.UpdateCustomFields(await GetCachedFieldsAsync());
+        return res;
+    }
+
+    /// <summary>
+    /// Returns a full representation of the issue for the given issue key. 
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="fields">Fields which should be filled.</param>
+    /// <param name="expand">Objects which should be expanded.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<Issue?> GetIssueAsync(string issueIdOrKey, string? fields = null, string? expand = null, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+
+
+        string fieldsPar = string.IsNullOrEmpty(fields) ? "" : $"?fields={fields}";
+        string expandPar = string.IsNullOrEmpty(expand) ? "" : (string.IsNullOrEmpty(fields) ? "?expand=" : "&expand=") + expand;
+        try
         {
-            if (string.IsNullOrEmpty(issueIdOrKey))
-            {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
-            }
-
-            IEnumerable<RemoteLink> res = await this.client.GetFromJsonAsync<IEnumerable<RemoteLink>>($"rest/api/2/issue/{issueIdOrKey}/remotelink", this.options, cancellationToken);
+            Issue? res = await GetFromJsonAsync<Issue>($"rest/api/2/issue/{issueIdOrKey}{fieldsPar}{expandPar}", cancellationToken);
+            res?.UpdateCustomFields(await GetCachedFieldsAsync());
             return res;
         }
-
-        //public async Task<RemoteLink> GetIssueRemoteLinkAsync(string issueIdOrKey, string globalId)
-        //{
-        //    IEnumerable<RemoteLink> res = await this.client.GetFromJsonAsync<IEnumerable<RemoteLink>>($"rest/api/2/issue/{issueIdOrKey}/remotelink?globalId={globalId}", this.options, cancellationToken);
-        //    return res.ElementAtOrDefault(0);
-        //}
-
-        /// <summary>
-        /// Creates or updates a remote issue link from a JSON representation.
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <param name="remoteLink">Class of the remote link to create.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        /// <remarks>If a globalId is provided and a remote issue link exists with that globalId, the remote issue link is updated. Otherwise, the remote issue link is created.</remarks>
-        public async Task<RemoteLink> CreateIssueRemoteLinkAsync(string issueIdOrKey, RemoteLink remoteLink, CancellationToken cancellationToken = default)
+        catch (WebServiceException ex)
         {
-            if (string.IsNullOrEmpty(issueIdOrKey))
+            if (ex.StatusCode == HttpStatusCode.NotFound)
             {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
+                return null;
             }
-            if (remoteLink == null)
-            {
-                throw new ArgumentNullException("remoteLink");
-            }
-
-            RemoteLink res = null;
-            JsonTrace.WriteRequest(this, remoteLink);
-            using (HttpResponseMessage response = await this.client.PostAsJsonAsync<RemoteLink>($"rest/api/2/issue/{issueIdOrKey}/remotelink", remoteLink, this.options, cancellationToken))
-            {
-                response.EnsureSuccess();
-                res = await response.Content.ReadFromJsonAsync<RemoteLink>();
-            }
-            return res;
+            throw;
         }
+    }
 
-        //public async Task DeleteIssueRemoteLinkAsync(string issueIdOrKey, string globalId, CancellationToken cancellationToken = default)
-        //{
-        //    using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/issue/{issueIdOrKey}/remotelink?globalId={globalId}", cancellationToken))
-        //    {
-        //        response.EnsureSuccess();
-        //    }
-        //}
+    /// <summary>
+    /// Edits an issue.
+    /// </summary>
+    /// <param name="issue">Issue class to update.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task UpdateIssueAsync(Issue issue, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(issue, nameof(issue));
+        
+        issue.UpdateCustomFields(await GetCachedFieldsAsync());
+        //issue.SerializeMode = SerializeMode.Update; // set for trace
+        //JsonTrace.WriteRequest(this, issue);
+        issue.SerializeMode = SerializeMode.Update; // set for update
+        await PutAsJsonAsync<Issue, Issue>($"rest/api/2/issue/{issue.Key}", issue, cancellationToken);
+        issue.ResetAllChanged();
+    }
 
-        /// <summary>
-        /// Get the remote issue link with the given id on the issue.
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <param name="remoteLinkId">Id of the remote link.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<RemoteLink> GetIssueRemoteLinkAsync(string issueIdOrKey, string remoteLinkId, CancellationToken cancellationToken = default)
+    /// <summary>
+    /// Delete an issue. If the issue has subtasks you must set the parameter deleteSubtasks=true to delete the issue. You cannot delete an issue without its subtasks also being deleted.
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="deleteSubtasks">A String of true or false indicating that any subtasks should also be deleted. If the issue has no subtasks this parameter is ignored. If the issue has subtasks and this parameter is missing or false, then the issue will not be deleted and an error will be returned.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task DeleteIssueAsync(string issueIdOrKey, bool deleteSubtasks = false, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+
+        string delPar = deleteSubtasks ? "true" : "false";
+        await DeleteAsync($"rest/api/2/issue/{issueIdOrKey}?deleteSubtasks={delPar}", cancellationToken);
+    }
+
+    /// <summary>
+    /// Assigns an issue to a user. 
+    /// You can use this resource to assign issues when the user submitting the request has the assign permission but not the edit issue permission. 
+    /// If the user is <see cref="User.AutomaticAssignee">User.AutomaticAssignee</see> automatic assignee is used. <see cref="User.EmptyAssignee">User.EmptyAssignee</see> will remove the assignee.
+    /// </summary>
+    /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="userName">User name to assign issue to.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task AssignIssueAsync(string issueIdOrKey, string userName, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+        ArgumentNullException.ThrowIfNullOrEmpty(userName, nameof(userName));
+
+        var req = new AssignPutRequest() { Name = userName };
+        await PutAsJsonAsync<AssignPutRequest, AssignPutRequest>($"rest/api/2/issue/{issueIdOrKey}/assignee", req, cancellationToken);
+    }
+
+    #endregion
+
+    #region Search
+
+    /// <summary>
+    /// Performs a issue search using JQL.
+    /// </summary>
+    /// <param name="jql">JQL statement to search.</param>
+    /// <param name="startAt">Start index.</param>
+    /// <param name="maxResults">Maximum number of results.</param>
+    /// <param name="fields">Fields to fill.</param>
+    /// <param name="expand">Objects to expand.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<IEnumerable<Issue>?> GetIssuesFromJqlAsync(string jql, int startAt = 0, int maxResults = 500, string? fields = null, string? expand = null, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(jql, nameof(jql));
+
+        var req = new SearchRequest() { Jql = jql, StartAt = startAt, MaxResults = maxResults, Fields = fields, Expand = expand };
+        try
         {
-            if (string.IsNullOrEmpty(issueIdOrKey))
-            {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
-            }
-            if (string.IsNullOrEmpty(remoteLinkId))
-            {
-                throw new ArgumentException("The remoteLinkId is null or empty.");
-            }
-
-            RemoteLink res = await this.client.GetFromJsonAsync<RemoteLink>($"rest/api/2/issue/{issueIdOrKey}/remotelink/{remoteLinkId}", this.options, cancellationToken);
-            return res;
-        }
-
-        /// <summary>
-        /// Updates a remote issue link.
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <param name="remoteLink">Remote link to update.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task UpdateIssueRemoteLinkAsync(string issueIdOrKey, RemoteLink remoteLink, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(issueIdOrKey))
-            {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
-            }
-            if (remoteLink == null)
-            {
-                throw new ArgumentNullException("remoteLink");
-            }
-
-            using (HttpResponseMessage response = await this.client.PutAsJsonAsync<RemoteLink>($"rest/api/2/issue/{issueIdOrKey}/remotelink/{remoteLink.Id}", remoteLink, this.options, cancellationToken))
-            {
-                response.EnsureSuccess();
-            }
-        }
-
-        /// <summary>
-        /// Delete the remote issue link with the given global id on the issue.
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <param name="remoteLinkId">Id of the remote link.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task DeleteIssueRemoteLinkAsync(string issueIdOrKey, string remoteLinkId, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(issueIdOrKey))
-            {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
-            }
-            if (string.IsNullOrEmpty(remoteLinkId))
-            {
-                throw new ArgumentException("The remoteLinkId is null or empty.");
-            }
-
-            using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/issue/{issueIdOrKey}/remotelink/{remoteLinkId}", cancellationToken))
-            {
-                response.EnsureSuccess();
-            }
-        }
-
-        #endregion
-
-        #region Transition
-
-        /// <summary>
-        /// Get a list of the transitions possible for this issue by the current user, along with fields that are required and their types. 
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IEnumerable<Transition>> GetTransitionsAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(issueIdOrKey))
-            {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
-            }
-
-            TransitionGetResult res = await this.client.GetFromJsonAsync<TransitionGetResult>($"rest/api/2/issue/{issueIdOrKey}/transitions", this.options, cancellationToken);
-            return res.Transitions;
-        }
-
-        /// <summary>
-        /// Get a list of the transitions possible for this issue by the current user, along with fields that are required and their types.
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <param name="transitionId">Id of the transition.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<Transition> GetTransitionAsync(string issueIdOrKey, string transitionId, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(issueIdOrKey))
-            {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
-            }
-            if (string.IsNullOrEmpty(transitionId))
-            {
-                throw new ArgumentException("The transitionId is null or empty.");
-            }
-
-            TransitionGetResult res = await this.client.GetFromJsonAsync<TransitionGetResult>($"rest/api/2/issue/{issueIdOrKey}/transitions?transitionId={transitionId}", this.options, cancellationToken);
-            return res.Transitions.FirstOrDefault();
-        }
-
-        /// <summary>
-        /// Perform a transition on an issue. When performing the transition you can udate or set other issue fields. 
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <param name="transition">Transition class.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task TransitionAsync(string issueIdOrKey, Transition transition, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(issueIdOrKey))
-            {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
-            }
-            if (transition == null)
-            {
-                throw new ArgumentNullException("transition");
-            }
-
-            TransitionPostReq req = new TransitionPostReq() { Transition = transition };
-            JsonTrace.WriteRequest(this, req);
-            using (HttpResponseMessage response = await this.client.PostAsJsonAsync<TransitionPostReq>($"rest/api/2/issue/{issueIdOrKey}/transitions", req, this.options, cancellationToken))
-            {
-                response.EnsureSuccess();
-            }
-        }
-
-        #endregion
-
-        #region Votes
-
-        /// <summary>
-        /// A resource representing the voters on the issue.
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<Votes> GetIssueVotesAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(issueIdOrKey))
-            {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
-            }
-
-            Votes res = await this.client.GetFromJsonAsync<Votes>($"rest/api/2/issue/{issueIdOrKey}/votes", this.options, cancellationToken);
-            return res;
-        }
-
-        /// <summary>
-        /// Cast your vote in favour of an issue.
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task AddIssueVoteAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(issueIdOrKey))
-            {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
-            }
-
-            using (HttpResponseMessage response = await this.client.PostAsJsonAsync($"rest/api/2/issue/{issueIdOrKey}/votes", this.options, cancellationToken))
-            {
-                response.EnsureSuccess();
-            }
-        }
-
-        /// <summary>
-        /// Remove your vote from an issue.
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task DeleteIssueVoteAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(issueIdOrKey))
-            {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
-            }
-
-            using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/issue/{issueIdOrKey}/votes", cancellationToken))
-            {
-                response.EnsureSuccess();
-            }
-        }
-
-        #endregion
-
-        #region Watchers
-
-        /// <summary>
-        /// Returns the list of watchers for the issue with the given key.
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<Watchers> GetIssueWatchersAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(issueIdOrKey))
-            {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
-            }
-
-            Watchers res = await this.client.GetFromJsonAsync<Watchers>($"rest/api/2/issue/{issueIdOrKey}/watchers", this.options, cancellationToken);
-            return res;
-        }
-
-        /// <summary>
-        /// Adds a user to an issue's watcher list.
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <param name="username">Username of the new watcher.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task AddIssueWatcherAsync(string issueIdOrKey, string username, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(issueIdOrKey))
-            {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
-            }
-            if (string.IsNullOrEmpty(username))
-            {
-                throw new ArgumentException("The username is null or empty.");
-            }
-
-            JsonTrace.WriteRequest(this, username);
-            using (HttpResponseMessage response = await this.client.PostAsJsonAsync<string>($"rest/api/2/issue/{issueIdOrKey}/watchers", username, this.options, cancellationToken))
-            {
-                response.EnsureSuccess();
-            }
-        }
-
-        /// <summary>
-        /// Removes a user from an issue's watcher list.
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <param name="username">Username of the watcher to delete.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task DeleteIssueWatcherAsync(string issueIdOrKey, string username, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(issueIdOrKey))
-            {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
-            }
-            if (string.IsNullOrEmpty(username))
-            {
-                throw new ArgumentException("The username is null or empty.");
-            }
-
-            using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/issue/{issueIdOrKey}/watchers?username={username}", cancellationToken))
-            {
-                response.EnsureSuccess();
-            }
-        }
-
-        #endregion
-
-        #region Workog
-
-        /// <summary>
-        /// Returns all work logs for an issue.
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IEnumerable<Worklog>> GetIssueWorklogsAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(issueIdOrKey))
-            {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
-            }
-
-            WorklogGetResult res = await this.client.GetFromJsonAsync<WorklogGetResult>($"rest/api/2/issue/{issueIdOrKey}/worklog", this.options, cancellationToken);
-            return res.Worklogs;
-        }
-
-        /// <summary>
-        /// Adds a new worklog entry to an issue.
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <param name="worklog">Worklog to add.</param>
-        /// <param name="adjustEstimate">Adjust estimate flags.</param>
-        /// <param name="value">Value for AdjustEstimate.New and AdjustEstimate.Manual.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task AddIssueWorklogAsync(string issueIdOrKey, Worklog worklog, AdjustEstimate adjustEstimate = AdjustEstimate.Auto, string value = null, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(issueIdOrKey))
-            {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
-            }
-            if (worklog == null)
-            {
-                throw new ArgumentNullException("worklog");
-            }
-
-            string uri = null;
-            switch (adjustEstimate)
-            {
-            case AdjustEstimate.New:
-                uri = $"rest/api/2/issue/{issueIdOrKey}/worklog?adjustEstimate=new&newEstimate={value}";
-                break;
-            case AdjustEstimate.Leave:
-                uri = $"rest/api/2/issue/{issueIdOrKey}/worklog?adjustEstimate=leave";
-                break;
-            case AdjustEstimate.Manual:
-                uri = $"rest/api/2/issue/{issueIdOrKey}/worklog?adjustEstimate=manual&reduceBy={value}";
-                break;
-            case AdjustEstimate.Auto:
-                uri = $"rest/api/2/issue/{issueIdOrKey}/worklog?adjustEstimate=auto";
-                break;
-            }
-
-            JsonTrace.WriteRequest(this, worklog);
-            using (HttpResponseMessage response = await this.client.PostAsJsonAsync<Worklog>(uri, worklog, this.options, cancellationToken))
-            {
-                response.EnsureSuccess();
-            }
-        }
-
-        /// <summary>
-        /// Returns a specific worklog.
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <param name="worklogId">Id of the worklog.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<Worklog> GetIssueWorklogAsync(string issueIdOrKey, string worklogId, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(issueIdOrKey))
-            {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
-            }
-            if (string.IsNullOrEmpty(worklogId))
-            {
-                throw new ArgumentException("The worklogId is null or empty.");
-            }
-
-            Worklog res = await this.client.GetFromJsonAsync<Worklog>($"rest/api/2/issue/{issueIdOrKey}/worklog/{worklogId}", this.options, cancellationToken);
-            return res;
-        }
-
-        /// <summary>
-        /// Updates an existing worklog entry.
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <param name="worklog">Worklog class to update.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<Worklog> UpdateIssueWorklogAsync(string issueIdOrKey, Worklog worklog, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(issueIdOrKey))
-            {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
-            }
-            if (worklog == null)
-            {
-                throw new ArgumentNullException("worklog");
-            }
-
-            // must be set to 0; so sav
-            int timeSpentSeconds = worklog.TimeSpentSeconds;
-            worklog.TimeSpentSeconds = 0;
-
-            Worklog res = null;
-            JsonTrace.WriteRequest(this, worklog);
-            using (HttpResponseMessage response = await this.client.PutAsJsonAsync<Worklog>($"rest/api/2/issue/{issueIdOrKey}/worklog/{worklog.Id}", worklog, this.options, cancellationToken))
-            {
-                worklog.TimeSpentSeconds = timeSpentSeconds;
-                response.EnsureSuccess();
-                res = await response.Content.ReadFromJsonAsync<Worklog>();
-            }
-            return res;
-        }
-
-        /// <summary>
-        /// Deletes an existing worklog entry.
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <param name="worklogId">Id of the worklog to delete.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task DeleteIssueWorklogAsync(string issueIdOrKey, string worklogId, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(issueIdOrKey))
-            {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
-            }
-            if (string.IsNullOrEmpty(worklogId))
-            {
-                throw new ArgumentException("The worklogId is null or empty.");
-            }
-
-            using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/issue/{issueIdOrKey}/worklog/{worklogId}", cancellationToken))
-            {
-                response.EnsureSuccess();
-            }
-        }
-
-        #endregion
-
-        #region Attachments
-
-        /// <summary>
-        /// Returns the meta informations for an attachments, specifically if they are enabled and the maximum upload size allowed.
-        /// </summary>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<AttachmentMeta> GetAttachmentMetaAsync(CancellationToken cancellationToken = default)
-        {
-            AttachmentMeta res = await this.client.GetFromJsonAsync<AttachmentMeta>("rest/api/2/attachment/meta", this.options, cancellationToken);
-            return res;
-        }
-
-        /// <summary>
-        /// Returns the meta-data for an attachment, including the URI of the actual attached file.
-        /// </summary>
-        /// <param name="attachmentId">The id of the attachment to get.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<Attachment> GetAttachmentAsync(string attachmentId, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(attachmentId))
-            {
-                throw new ArgumentException("The attachmentId is null or empty.");
-            }
-
-            Attachment res = await this.client.GetFromJsonAsync<Attachment>($"rest/api/2/attachment/{attachmentId}", this.options, cancellationToken);
-            return res;
-        }
-
-        /// <summary>
-        /// Remove an attachment from an issue.
-        /// </summary>
-        /// <param name="attachmentId">The id of the attachment to delete.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task DeleteAttachmentAsync(string attachmentId, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(attachmentId))
-            {
-                throw new ArgumentException("The attachmentId is null or empty.");
-            }
-
-            using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/attachment/{attachmentId}", cancellationToken))
-            {
-                response.EnsureSuccess();
-            }
-        }
-
-        /// <summary>
-        /// Add one or more attachments to an issue.
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <param name="files">List with attachments to add.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IEnumerable<Attachment>> AddAttachmentsAsync(string issueIdOrKey, IEnumerable<KeyValuePair<string, Stream>> files, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(issueIdOrKey))
-            {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
-            }
-            if (files == null)
-            {
-                throw new ArgumentNullException("files");
-            }
-
-            MultipartFormDataContent req = new MultipartFormDataContent();
-            req.Headers.Add("X-Atlassian-Token", "nocheck");
-            foreach (KeyValuePair<string, Stream> file in files)
-            {
-                req.Add(new StreamContent(file.Value), "file", file.Key);
-            }
-            IEnumerable<Attachment> res = null;
-            using (HttpResponseMessage response = await this.client.PostAsJsonAsync($"rest/api/2/issue/{issueIdOrKey}/attachments", req, this.options, cancellationToken))
-            {
-                response.EnsureSuccess();
-                res = await response.Content.ReadFromJsonAsync<IEnumerable<Attachment>>(this.options, cancellationToken);
-            }
-            return res;
-        }
-
-        /// <summary>
-        /// Get the date stream of an attachment.
-        /// </summary>
-        /// <param name="attachmentUrl">Url of the attachment.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<Stream> GetAttachmentStreamAsync(Uri attachmentUrl, CancellationToken cancellationToken = default)
-        {
-            if (attachmentUrl == null)
-            {
-                throw new ArgumentNullException("attachmentUrl");
-            }
-
-            return await this.client.GetStreamAsync(attachmentUrl);  // TODO , cancellationToken
-        }
-
-        #endregion
-
-        #region Link
-
-        /// <summary>
-        /// Creates or updates a remote issue link. If a globalId is provided and a remote issue link exists with that globalId, the remote issue link is updated. Otherwise, the remote issue link is created.
-        /// </summary>
-        /// <param name="issueLink">IssueLink class to create.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task CreateIssueLinkAsync(IssueLink issueLink, CancellationToken cancellationToken = default)
-        {
-            if (issueLink == null)
-            {
-                throw new ArgumentNullException("issueLink");
-            }
-
-            JsonTrace.WriteRequest(this, issueLink);
-            using (HttpResponseMessage response = await this.client.PostAsJsonAsync<IssueLink>("rest/api/2/issueLink", issueLink, this.options, cancellationToken))
-            {
-                response.EnsureSuccess();
-            }
-        }
-
-        /// <summary>
-        /// Get the remote issue link with the given id on the issue.
-        /// </summary>
-        /// <param name="issueLinkId">Id of the link.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IssueLink> GetIssueLinkAsync(string issueLinkId, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(issueLinkId))
-            {
-                throw new ArgumentException("The issueLinkId is null or empty.");
-            }
-
-            IssueLink res = await this.client.GetFromJsonAsync<IssueLink>($"rest/api/2/issueLink/{issueLinkId}", this.options, cancellationToken);
-            return res;
-        }
-
-        /// <summary>
-        /// Delete the remote issue link with the given global id on the issue.
-        /// </summary>
-        /// <param name="linkId">Id of the link to delete.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task DeleteIssueLinkAsync(string linkId, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(linkId))
-            {
-                throw new ArgumentException("The linkId is null or empty.");
-            }
-
-            using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/issueLink/{linkId}", cancellationToken))
-            {
-                response.EnsureSuccess();
-            }
-        }
-
-        #endregion
-
-        #region Issues
-
-        /// <summary>
-        /// Creates an issue or a sub-task.
-        /// </summary>
-        /// <param name="issue">Issue class to create.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<Issue> CreateIssueAsync(Issue issue, CancellationToken cancellationToken = default)
-        {
-            if (issue == null)
-            {
-                throw new ArgumentNullException("issue");
-            }
-
-            Issue res = null;
-            //issue.SerializeMode = SerializeMode.Create; // set for trace
-            //JsonTrace.WriteRequest(this, issue);
-            issue.SerializeMode = SerializeMode.Create; // set for create
-            using (HttpResponseMessage response = await this.client.PostAsJsonAsync<Issue>("rest/api/2/issue", issue, this.options, cancellationToken))
-            {
-                response.EnsureSuccess();
-                res = await response.Content.ReadFromJsonAsync<Issue>(this.options, cancellationToken);
-            }
-            issue.ResetAllChanged();
-            res.UpdateCustomFields(await GetCachedFieldsAsync());
-            return res;
-        }
-
-        /// <summary>
-        /// Returns a full representation of the issue for the given issue key. 
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <param name="fields">Fields which should be filled.</param>
-        /// <param name="expand">Objects which should be expanded.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<Issue> GetIssueAsync(string issueIdOrKey, string fields = null, string expand = null, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(issueIdOrKey))
-            {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
-            }
-
-            string fieldsPar = string.IsNullOrEmpty(fields) ? "" : $"?fields={fields}";
-            string expandPar = string.IsNullOrEmpty(expand) ? "" : (string.IsNullOrEmpty(fields) ? "?expand=" : "&expand=") + expand;
-            Issue res = null;
-            using (HttpResponseMessage response = await this.client.GetAsync($"rest/api/2/issue/{issueIdOrKey}{fieldsPar}{expandPar}", cancellationToken))
-            {
-                // return null if issue is not found
-                if (response.StatusCode == HttpStatusCode.NotFound)
-                {
-                    return null;
-                }
-                response.EnsureSuccess();
-                res = await response.Content.ReadFromJsonAsync<Issue>(this.options, cancellationToken);
-            }
-            res.UpdateCustomFields(await GetCachedFieldsAsync());
-            return res;
-        }
-
-        /// <summary>
-        /// Edits an issue.
-        /// </summary>
-        /// <param name="issue">Issue class to update.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task UpdateIssueAsync(Issue issue, CancellationToken cancellationToken = default)
-        {
-            if (issue == null)
-            {
-                throw new ArgumentNullException("issue");
-            }
-            issue.UpdateCustomFields(await GetCachedFieldsAsync());
-            //issue.SerializeMode = SerializeMode.Update; // set for trace
-            //JsonTrace.WriteRequest(this, issue);
-            issue.SerializeMode = SerializeMode.Update; // set for update
-            using (HttpResponseMessage response = await this.client.PutAsJsonAsync($"rest/api/2/issue/{issue.Key}", issue, this.options, cancellationToken))
-            {
-                response.EnsureSuccess();
-            }
-            issue.ResetAllChanged();
-        }
-
-        /// <summary>
-        /// Delete an issue. If the issue has subtasks you must set the parameter deleteSubtasks=true to delete the issue. You cannot delete an issue without its subtasks also being deleted.
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <param name="deleteSubtasks">A String of true or false indicating that any subtasks should also be deleted. If the issue has no subtasks this parameter is ignored. If the issue has subtasks and this parameter is missing or false, then the issue will not be deleted and an error will be returned.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task DeleteIssueAsync(string issueIdOrKey, bool deleteSubtasks = false, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(issueIdOrKey))
-            {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
-            }
-            string delPar = deleteSubtasks ? "true" : "false";
-
-            using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/issue/{issueIdOrKey}?deleteSubtasks={delPar}", cancellationToken))
-            {
-                response.EnsureSuccess();
-            }
-        }
-
-        /// <summary>
-        /// Assigns an issue to a user. 
-        /// You can use this resource to assign issues when the user submitting the request has the assign permission but not the edit issue permission. 
-        /// If the user is <see cref="User.AutomaticAssignee">User.AutomaticAssignee</see> automatic assignee is used. <see cref="User.EmptyAssignee">User.EmptyAssignee</see> will remove the assignee.
-        /// </summary>
-        /// <param name="issueIdOrKey">Id or key of the issue.</param>
-        /// <param name="userName">User name to assign issue to.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task AssignIssueAsync(string issueIdOrKey, string userName, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(issueIdOrKey))
-            {
-                throw new ArgumentException("The issueIdOrKey is null or empty.");
-            }
-            if (string.IsNullOrEmpty(userName))
-            {
-                throw new ArgumentException("The userName is null or empty.");
-            }
-
-            AssignPutRequest req = new AssignPutRequest() { Name = userName };
-            using (HttpResponseMessage response = await this.client.PutAsJsonAsync($"rest/api/2/issue/{issueIdOrKey}/assignee", req, this.options, cancellationToken))
-            {
-                response.EnsureSuccess();
-            }
-        }
-
-        #endregion
-
-        #region Search
-
-        /// <summary>
-        /// Performs a issue search using JQL.
-        /// </summary>
-        /// <param name="jql">JQL statement to search.</param>
-        /// <param name="startAt">Start index.</param>
-        /// <param name="maxResults">Maximum number of results.</param>
-        /// <param name="fields">Fields to fill.</param>
-        /// <param name="expand">Objects to expand.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        public async Task<IEnumerable<Issue>> GetIssuesFromJqlAsync(string jql, int startAt = 0, int maxResults = 500, string fields = null, string expand = null, CancellationToken cancellationToken = default)
-        {
-            if (string.IsNullOrEmpty(jql))
-            {
-                throw new ArgumentException("The jql is null or empty.");
-            }
-
-            SearchRequest req = new SearchRequest() { Jql = jql, StartAt = startAt, MaxResults = maxResults, Fields = fields, Expand = expand };
-            SearchResult res = null;
-            JsonTrace.WriteRequest(this, req);
-            using (HttpResponseMessage response = await this.client.PostAsJsonAsync("rest/api/2/search", req, this.options, cancellationToken))
-            {
-                // return null if no issue found
-                if (response.StatusCode == HttpStatusCode.NotFound)
-                {
-                    return null;
-                }
-                //var x = response.StatusCode;
-                if (!response.IsSuccessStatusCode)
-                {
-                    Trace.TraceError($"GetIssuesFromJqlAsync({jql}) returns {response.StatusCode.ToString()}");
-                    return null;
-                }
-                res = await response.Content.ReadFromJsonAsync<SearchResult>(this.options, cancellationToken);
-            }
-            IEnumerable<Field> fieldInfo = await GetCachedFieldsAsync();
-            foreach (Issue issue in res.Issues)
-            {
-                issue.UpdateCustomFields(fieldInfo);
+            SearchResult? res = await PostAsJsonAsync<SearchRequest, SearchResult>("rest/api/2/search", req, cancellationToken);
+            
+            IEnumerable<Field?>? fieldInfo = await GetCachedFieldsAsync();
+            foreach (Issue issue in res!.Issues)
+            {
+                issue.UpdateCustomFields(fieldInfo!);
             }
             return res.Issues;
         }
-
-        #endregion
-
-        #region Linq
-
-        private IEnumerable<Field> fields;
-        internal async Task<IEnumerable<Field>> GetCachedFieldsAsync()
+        catch (WebServiceException ex)
         {
-            if (this.fields == null)
+            if (ex.StatusCode == HttpStatusCode.NotFound)
             {
-                this.fields = await GetFieldsAsync();
+                return null;
             }
-            return this.fields;
+            throw;
         }
+}
 
+    #endregion
 
-        internal bool   jqlTest = false;
-        internal string jqlQuery = "";
-        internal int?   jqlStartAt = null;
-        internal int?   jqlMaxResults = null;
-        internal IEnumerable<Issue> GetIssuesFromJql(string jql, int? startAt, int? maxResults)
+    #region Linq
+
+    private IEnumerable<Field?>? fields;
+    internal async Task<IEnumerable<Field?>?> GetCachedFieldsAsync()
+    {
+        if (this.fields == null)
         {
-            if (string.IsNullOrEmpty(jql))
-            {
-                throw new ArgumentException("The jql is null or empty.");
-            } 
-
-            // for testing only
-            if (this.jqlTest)
-            {
-                this.jqlQuery = jql;
-                this.jqlStartAt = startAt;
-                this.jqlMaxResults = maxResults;
-                return new List<Issue>();
-            }
-
-            return GetIssuesFromJqlAsync(jql, startAt.GetValueOrDefault(0), maxResults.GetValueOrDefault(500)).Result;
+            this.fields = await GetFieldsAsync();
         }
-
-        /// <summary>
-        /// Performs a issue search using LINQ
-        /// </summary>
-        /// <remarks>
-        /// Methods: OrderBy, OrderByDescending, ThenBy, ThenByDescending, Skip, Take
-        /// 
-        /// </remarks>
-        /// <example>
-        /// var issues = (from issue in jira.Issues where issue.Priority == "Major" || issue.Priority == "Minor" select issue OrderBy issue.Version).Skip(5).Take(19);
-        /// </example>
-        public IOrderedQueryable<Issue> Issues
-        {
-            get { return new JiraQueryable<Issue>(this.provider); }
-        }
-
-        #endregion
+        return this.fields;
     }
+
+
+    internal bool   jqlTest = false;
+    internal string jqlQuery = "";
+    internal int?   jqlStartAt = null;
+    internal int?   jqlMaxResults = null;
+    internal IEnumerable<Issue>? GetIssuesFromJql(string jql, int? startAt, int? maxResults)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(jql, nameof(jql));
+
+        // for testing only
+        if (this.jqlTest)
+        {
+            this.jqlQuery = jql;
+            this.jqlStartAt = startAt;
+            this.jqlMaxResults = maxResults;
+            return new List<Issue>();
+        }
+
+        return GetIssuesFromJqlAsync(jql, startAt.GetValueOrDefault(0), maxResults.GetValueOrDefault(500)).Result;
+    }
+
+    /// <summary>
+    /// Performs a issue search using LINQ
+    /// </summary>
+    /// <remarks>
+    /// Methods: OrderBy, OrderByDescending, ThenBy, ThenByDescending, Skip, Take
+    /// 
+    /// </remarks>
+    /// <example>
+    /// var issues = (from issue in jira.Issues where issue.Priority == "Major" || issue.Priority == "Minor" select issue OrderBy issue.Version).Skip(5).Take(19);
+    /// </example>
+    public IOrderedQueryable<Issue> Issues
+    {
+        get { return new JiraQueryable<Issue>(this.provider); }
+    }
+
+    #endregion
 }

@@ -12,10 +12,10 @@ namespace JiraWebApi.Linq
         /// <summary>
         /// Initializes a new instance of the JiraQueryable class with specific provider and expression.
         /// </summary>
-        internal JiraQueryable(JiraQueryProvider provider, Expression expression = null)
+        internal JiraQueryable(JiraQueryProvider provider, Expression? expression = null)
         {
             this.Provider = provider;
-            this.Expression = expression != null ? expression : Expression.Constant(this);
+            this.Expression = expression ?? Expression.Constant(this);
         }
         
         public Expression Expression { get; private set; }

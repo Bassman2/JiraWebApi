@@ -22,25 +22,25 @@ namespace JiraWebApi
         /// Type of the JIRA schema.
         /// </summary>
         [JsonPropertyName("type")]
-        public string Type { get; set; }
+        public string? Type { get; set; }
 
         /// <summary>
         /// Items of the JIRA schema.
         /// </summary>
         [JsonPropertyName("items")]
-        public string Items { get; set; }
+        public string? Items { get; set; }
 
         /// <summary>
         /// System of the JIRA schema.
         /// </summary>
         [JsonPropertyName("system")]
-        public string System { get; set; }
+        public string? System { get; set; }
 
         /// <summary>
         /// Value type of the custom field.
         /// </summary>
         [JsonPropertyName("custom")]
-        public string Custom { get; set; }
+        public string? Custom { get; set; }
 
         /// <summary>
         /// Custom field type Id.

@@ -44,6 +44,6 @@ namespace JiraWebApi
         /// Writeonly: Not for getting the comment.
         /// </remarks>
         [JsonPropertyName("comment")]
-        public Comment Comment { private get; set; }
+        public Comment? Comment { private get; set; }
     }
 }

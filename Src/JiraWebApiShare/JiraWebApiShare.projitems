@@ -58,6 +58,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)IssueType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IssueVersion.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Jira.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Internal\Autenticator\JiraAutenticator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JiraError.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JiraException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JsonTrace.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Transition.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)User.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Users.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Usings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Visibility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Votes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Watchers.cs" />
@@ -99,5 +101,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)JiraWebApiLicense.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Internal\Autenticator\" />
   </ItemGroup>
 </Project>
