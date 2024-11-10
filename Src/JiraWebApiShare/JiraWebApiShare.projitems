@@ -38,6 +38,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Internal\ComponentRelatedIssueCounts.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Internal\ExceptionMessages.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Internal\IssueLinkTypesResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Internal\JiraService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Internal\MessageEnsure.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Internal\SearchRequest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Internal\SearchResult.cs" />
@@ -104,5 +105,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Internal\Autenticator\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Internal\Model\" />
   </ItemGroup>
 </Project>
