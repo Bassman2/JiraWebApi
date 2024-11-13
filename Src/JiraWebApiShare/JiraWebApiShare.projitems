@@ -33,42 +33,42 @@
     <Compile Include="$(MSBuildThisFileDirectory)Gojira.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Group.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Icon.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\AssignPutRequest.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\CommentGetResult.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\ComponentRelatedIssueCounts.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\ExceptionMessages.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\IssueLinkTypesResponse.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\JiraService.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\MessageEnsure.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\SearchRequest.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\SearchResult.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\SerializeMode.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\SessionGetResult.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\SessionPostRequest.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\SessionPostResult.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\TransitionGetResult.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\TransitionPostReq.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\VersionMoveAfterPostRequest.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\VersionMovePositionPostRequest.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\VersionRelatedIssueCounts.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\VersionUnresolvedIssueCount.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\WorklogGetResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\AssignPutRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\CommentGetResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\ComponentRelatedIssueCounts.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\ExceptionMessages.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\IssueLinkTypesResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\JiraService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\MessageEnsure.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\SearchRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\SearchResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\SerializeMode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\SessionGetResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\SessionPostRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\SessionPostResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\TransitionGetResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\TransitionPostReq.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\VersionMoveAfterPostRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\VersionMovePositionPostRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\VersionRelatedIssueCounts.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\VersionUnresolvedIssueCount.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\WorklogGetResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Issue.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IssueLink.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IssueLinkType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IssueType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IssueVersion.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Jira.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Internal\Autenticator\JiraAutenticator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Autenticator\JiraAutenticator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JiraError.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JiraException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JsonTrace.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Linq\JiraQueryable.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Linq\JiraQueryProvider.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Linq\JqlExpressionVisitor.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Linq\JqlFieldAttribute.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Linq\JqlFieldCompare.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Linq\JqlFunctionAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Linq\JiraQueryable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Linq\JiraQueryProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Linq\JqlExpressionVisitor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Linq\JqlFieldAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Linq\JqlFieldCompare.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Linq\JqlFunctionAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LoginInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Notify.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NotifyTo.cs" />
@@ -101,10 +101,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Worklog.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)JiraWebApiLicense.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Internal\Autenticator\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Internal\Model\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Service\Model\" />
   </ItemGroup>
 </Project>
