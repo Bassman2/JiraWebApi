@@ -1321,9 +1321,7 @@ internal class JiraService : JsonService
     {
         ArgumentNullException.ThrowIfNullOrEmpty(jql, nameof(jql));
 
-        // for testing only
-        if (this.jqlTest)
-        {
+{
             this.jqlQuery = jql;
             this.jqlStartAt = startAt;
             this.jqlMaxResults = maxResults;
