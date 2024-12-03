@@ -1,14 +1,11 @@
-﻿using System.Text.Json.Serialization;
+﻿namespace JiraWebApi.Service.Model;
 
-namespace JiraWebApi.Internal
+internal class VersionMovePositionPostRequest
 {
-    internal class VersionMovePositionPostRequest
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <remarks>Only First, Last, Earlier or Later allowed.</remarks>
-        [JsonPropertyName("position")]
-        public Position Position { get; set; }
-    }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <remarks>Only First, Last, Earlier or Later allowed.</remarks>
+    [JsonPropertyName("position")]
+    public Position Position { get; set; }
 }

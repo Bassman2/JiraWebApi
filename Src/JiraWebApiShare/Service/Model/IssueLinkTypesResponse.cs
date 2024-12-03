@@ -1,11 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Text.Json.Serialization;
+﻿namespace JiraWebApi.Service.Model;
 
-namespace JiraWebApi.Internal
+internal class IssueLinkTypesRespnse
 {
-    internal class IssueLinkTypesRespnse
-    {
-        [JsonPropertyName("issueLinkTypes")]
-        public IEnumerable<IssueLinkType> IssueLinkTypes { get; set; }
-    }
+    [JsonPropertyName("issueLinkTypes")]
+    public IEnumerable<IssueLinkType> IssueLinkTypes { get; set; }
 }

@@ -1,20 +1,16 @@
-﻿using System;
-using System.Text.Json.Serialization;
+﻿namespace JiraWebApi.Service.Model;
 
-namespace JiraWebApi.Internal
+internal class SessionGetResult
 {
-    internal class SessionGetResult
-    {
-        /// <summary>
-        /// Url of the JIRA REST item.
-        /// </summary>
-        [JsonPropertyName("self")]
-        public Uri Self { get; set; }
+    /// <summary>
+    /// Url of the JIRA REST item.
+    /// </summary>
+    [JsonPropertyName("self")]
+    public Uri Self { get; set; }
 
-        [JsonPropertyName("name")]
-        public string Name { get; set; }
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
 
-        [JsonPropertyName("loginInfo")]
-        public LoginInfo LoginInfo { get; set; }
-    }
+    [JsonPropertyName("loginInfo")]
+    public LoginInfo LoginInfo { get; set; }
 }

@@ -8,35 +8,35 @@ namespace JiraWebApi
     /// </summary>
     public sealed class Worklog : ElementModel
     {
-        /// <summary>
-        /// Initializes a new instance of the Worklog class.
-        /// </summary>
-        public Worklog()
-        { }
+        ///// <summary>
+        ///// Initializes a new instance of the Worklog class.
+        ///// </summary>
+        //public Worklog()
+        //{ }
 
         /// <summary>
         /// Author of the JIRA issue worklog.
         /// </summary>
         [JsonPropertyName("author")]
-        public User Author { get; set; }
+        public User? Author { get; set; }
 
         /// <summary>
         /// Update author of the JIRA issue worklog.
         /// </summary>
         [JsonPropertyName("updateAuthor")]
-        public User UpdateAuthor { get; set; }
+        public User? UpdateAuthor { get; set; }
 
         /// <summary>
         /// Comment of the JIRA issue worklog.
         /// </summary>
         [JsonPropertyName("comment")]
-        public string Comment { get; set; }
+        public string? Comment { get; set; }
 
         /// <summary>
         /// Visibility of the JIRA issue worklog.
         /// </summary>
         [JsonPropertyName("visibility")]
-        public Visibility Visibility { get; set; }
+        public Visibility? Visibility { get; set; }
 
         /// <summary>
         /// Start date of the JIRA issue worklog.
@@ -48,7 +48,7 @@ namespace JiraWebApi
         /// Time spend of the JIRA issue worklog.
         /// </summary>
         [JsonPropertyName("timeSpent")]
-        public string TimeSpent { get; set; }
+        public string? TimeSpent { get; set; }
 
         /// <summary>
         /// Time spend in seconds of the JIRA issue worklog.

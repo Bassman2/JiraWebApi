@@ -1,10 +1,7 @@
-﻿using System.Text.Json.Serialization;
+﻿namespace JiraWebApi.Service.Model;
 
-namespace JiraWebApi.Internal
+internal class AssignPutRequest
 {
-    internal class AssignPutRequest
-    {
-        [JsonPropertyName("name")]
-        public string Name { get; set; }
-    }
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
 }

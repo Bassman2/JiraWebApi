@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace JiraWebApi.Service.Model;
 
-namespace JiraWebApi.Internal
+internal enum SerializeMode
 {
-    internal enum SerializeMode
-    {
-        Link,
-        Create,
-        Update
-    }
+    Link,
+    Create,
+    Update
 }

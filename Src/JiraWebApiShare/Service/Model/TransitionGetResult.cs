@@ -1,17 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Text.Json.Serialization;
+﻿namespace JiraWebApi.Service.Model;
 
-namespace JiraWebApi.Internal
+internal class TransitionGetResult
 {
-    internal class TransitionGetResult
-    {
-        /// <summary>
-        /// Name of the classes which should be expanded.
-        /// </summary>
-        [JsonPropertyName("expand")]
-        public string Expand { get; set; }
+    /// <summary>
+    /// Name of the classes which should be expanded.
+    /// </summary>
+    [JsonPropertyName("expand")]
+    public string? Expand { get; set; }
 
-        [JsonPropertyName("transitions")]
-        public IEnumerable<Transition> Transitions { get; set; }
-    }
+    [JsonPropertyName("transitions")]
+    public IEnumerable<Transition>? Transitions { get; set; }
 }

@@ -6,14 +6,25 @@ public class JiraTicketUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodGetIssueTypesAsync()
     {
-        using var github = new Jira(host, login, password);
+        using var jira = new Jira(host, login, password);
 
-        var res = await github.GetIssueTypesAsync();
+        var res = await jira.GetIssueTypesAsync();
 
         var issueTypes = res?.ToList();
 
         Assert.IsNotNull(issueTypes);
-       // Assert.AreEqual(mainBranch, branch.Name, nameof(branch.Name));
+    }
+
+    [TestMethod]
+    public async Task TestMethodGetProjectsAsync()
+    {
+        using var jira = new Jira(host, login, password);
+
+        var res = await jira.GetProjectsAsync();
+
+        var issueTypes = res?.ToList();
+
+        Assert.IsNotNull(issueTypes);
     }
 
     //[TestMethod]

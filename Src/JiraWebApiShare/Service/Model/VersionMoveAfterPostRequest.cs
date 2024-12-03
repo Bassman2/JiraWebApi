@@ -1,14 +1,11 @@
-﻿using System.Text.Json.Serialization;
+﻿namespace JiraWebApi.Service.Model;
 
-namespace JiraWebApi.Internal
+internal class VersionMoveAfterPostRequest
 {
-    internal class VersionMoveAfterPostRequest
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        [JsonPropertyName("after")]
-        public string After { get; set; }
+    /// <summary>
+    /// 
+    /// </summary>
+    [JsonPropertyName("after")]
+    public string After { get; set; }
 
-    }
 }

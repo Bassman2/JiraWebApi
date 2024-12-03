@@ -1,4 +1,4 @@
-﻿namespace JiraWebApi.Linq;
+﻿namespace JiraWebApi.Service.Linq;
 
 internal class JiraQueryProvider: IQueryProvider
 {

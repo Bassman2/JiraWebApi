@@ -1,4 +1,5 @@
 ﻿global using System;
+global using System.Collections;
 global using System.Collections.Generic;
 global using System.Diagnostics;
 global using System.IO;
@@ -16,9 +17,10 @@ global using System.Threading.Tasks;
 global using WebServiceClient;
 global using WebServiceClient.Authenticator;
 
+
+
 global using JiraWebApi.Service;
+global using JiraWebApi.Service.Autenticator;
+global using JiraWebApi.Service.Linq;
 global using JiraWebApi.Service.Model;
 
-global using JiraWebApi.Internal;
-global using JiraWebApi.Service.Autenticator;
-global using JiraWebApi.Linq;

@@ -1,16 +1,13 @@
-﻿using System.Text.Json.Serialization;
+﻿namespace JiraWebApi.Service.Model;
 
-namespace JiraWebApi.Internal
+internal class TransitionPostReq
 {
-    internal class TransitionPostReq
-    {
-        [JsonPropertyName("update")]
-        public object Update { get; set; }
+    [JsonPropertyName("update")]
+    public object Update { get; set; }
 
-        [JsonPropertyName("fields")]
-        public Fields Fields { get; set; }
+    [JsonPropertyName("fields")]
+    public Fields Fields { get; set; }
 
-        [JsonPropertyName("transition")]
-        public Transition Transition { get; set; }
-    }
+    [JsonPropertyName("transition")]
+    public Transition Transition { get; set; }
 }

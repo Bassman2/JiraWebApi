@@ -1,5 +1,4 @@
-﻿
-namespace JiraWebApi.Service.Model;
+﻿namespace JiraWebApi.Service.Model;
 
 /// <summary>
 /// Representation of an JIRA issue.

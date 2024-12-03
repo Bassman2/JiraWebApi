@@ -1,4 +1,4 @@
-﻿namespace JiraWebApi.Internal;
+﻿namespace JiraWebApi.Service.Model;
 
 internal class SearchRequest
 {

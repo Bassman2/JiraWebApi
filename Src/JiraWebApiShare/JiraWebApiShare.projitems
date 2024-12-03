@@ -15,6 +15,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)AttachmentMeta.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AvatarUrls.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Comment.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\JiraQueryable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Linq\JiraQueryable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Linq\JiraQueryProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Linq\JqlExpressionVisitor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Linq\JqlFieldAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Linq\JqlFieldCompare.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Linq\JqlFunctionAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\ComparableElementModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ComparableList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Component.cs" />
@@ -68,12 +75,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)JiraError.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JiraException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JsonTrace.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Linq\JiraQueryable.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Linq\JiraQueryProvider.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Linq\JqlExpressionVisitor.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Linq\JqlFieldAttribute.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Linq\JqlFieldCompare.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Linq\JqlFunctionAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LoginInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Notify.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NotifyTo.cs" />

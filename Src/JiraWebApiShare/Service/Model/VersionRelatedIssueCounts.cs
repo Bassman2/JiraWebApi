@@ -1,19 +1,16 @@
-﻿using System.Text.Json.Serialization;
+﻿namespace JiraWebApi.Service.Model;
 
-namespace JiraWebApi.Internal
+internal class VersionRelatedIssueCounts
 {
-    internal class VersionRelatedIssueCounts
-    {
-        /// <summary>
-        /// Url of the JIRA REST item.
-        /// </summary>
-        [JsonPropertyName("self")]
-        public string Self { get; set; }
+    /// <summary>
+    /// Url of the JIRA REST item.
+    /// </summary>
+    [JsonPropertyName("self")]
+    public string? Self { get; set; }
 
-        [JsonPropertyName("issuesFixedCount")]
-        public int IssuesFixedCount { get; set; }
+    [JsonPropertyName("issuesFixedCount")]
+    public int IssuesFixedCount { get; set; }
 
-        [JsonPropertyName("issuesAffectedCount")]
-        public int IssuesAffectedCount { get; set; }
-    }
+    [JsonPropertyName("issuesAffectedCount")]
+    public int IssuesAffectedCount { get; set; }
 }

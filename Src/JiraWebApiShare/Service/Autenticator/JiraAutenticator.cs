@@ -21,8 +21,8 @@ internal class JiraAutenticator : IAuthenticator
 
         if (service is JsonService jsonService)
         {
-            var req = new SessionPostRequest() { Username = username, Password = password };
-            SessionPostResult? _ = jsonService.PostAsJson<SessionPostRequest, SessionPostResult>("rest/auth/1/session", req);
+            var req = new SessionPostRequestModel() { Username = username, Password = password };
+            var _ = jsonService.PostAsJsonAsync<SessionPostRequestModel, SessionPostResultModel>("rest/auth/1/session", req, default).Result;
 
             //SessionPostRequest req = new SessionPostRequest() { Username = username, Password = password };
             //using (HttpResponseMessage response = client.PostAsJsonAsync("rest/auth/1/session", req).Result)
