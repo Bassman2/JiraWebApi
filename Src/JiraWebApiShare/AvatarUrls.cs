@@ -1,29 +1,27 @@
-﻿using System;
-using System.Text.Json.Serialization;
+﻿namespace JiraWebApi;
 
-namespace JiraWebApi
+/// <summary>
+/// Urls to the JIRA avatar icons.
+/// </summary>
+public class AvatarUrls
 {
     /// <summary>
-    /// Urls to the JIRA avatar icons.
+    /// Url of the small avatar with 16x16 pixel.
     /// </summary>
-    public sealed class AvatarUrls
-    {
-        /// <summary>
-        /// Initializes a new instance of the AvatarUrls class.
-        /// </summary>
-        private AvatarUrls()
-        { }
+    public Uri? AvatarUrl16 { get; internal init; }
 
-        /// <summary>
-        /// Url of the small avatar with 16x16 pixel.
-        /// </summary>
-        [JsonPropertyName("16x16")]
-        public Uri Small { get; private set; }
+    /// <summary>
+    /// Url of the small avatar with 24x24 pixel.
+    /// </summary>
+    public Uri? AvatarUrl24 { get; internal init; }
 
-        /// <summary>
-        /// Url of the large avatar with 48x48 pixel.
-        /// </summary>
-        [JsonPropertyName("48x48")]
-        public Uri Large { get; private set; }
-    }
+    /// <summary>
+    /// Url of the large avatar with 32x32 pixel.
+    /// </summary>
+    public Uri? AvatarUrl32 { get; internal init; }
+
+    /// <summary>
+    /// Url of the large avatar with 48x48 pixel.
+    /// </summary>
+    public Uri? AvatarUrl48 { get; internal init; }
 }

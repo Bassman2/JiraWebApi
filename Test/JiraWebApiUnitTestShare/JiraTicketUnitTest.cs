@@ -22,9 +22,9 @@ public class JiraTicketUnitTest : JiraBaseUnitTest
 
         var res = await jira.GetProjectsAsync();
 
-        var issueTypes = res?.ToList();
+        var projects = res?.ToList();
 
-        Assert.IsNotNull(issueTypes);
+        Assert.IsNotNull(projects);
     }
 
     //[TestMethod]
