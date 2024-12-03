@@ -13,9 +13,12 @@ global using System.Text.Json.Serialization;
 global using System.Threading;
 global using System.Threading.Tasks;
 
-global using JiraWebApi.Internal;
-global using JiraWebApi.Internal.Autenticator;
-global using JiraWebApi.Linq;
-
 global using WebServiceClient;
 global using WebServiceClient.Authenticator;
+
+global using JiraWebApi.Service;
+global using JiraWebApi.Service.Model;
+
+global using JiraWebApi.Internal;
+global using JiraWebApi.Service.Autenticator;
+global using JiraWebApi.Linq;

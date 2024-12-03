@@ -8,7 +8,7 @@ namespace JiraWebApi
     /// <summary>
     /// Representation of a JIRA component. 
     /// </summary>
-    public sealed class Component : ComparableElement
+    public sealed class Component : ComparableElementModel
     {
         /// <summary>
         /// Initializes a new instance of the Component class.

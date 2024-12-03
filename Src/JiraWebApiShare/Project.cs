@@ -9,7 +9,7 @@ namespace JiraWebApi
     /// <summary>
     /// Rrepresentation of a JIRA project. 
     /// </summary>
-    public sealed class Project : ComparableElement
+    public sealed class Project : ComparableElementModel
     {
         /// <summary>
         /// Initializes a new instance of the Project class.

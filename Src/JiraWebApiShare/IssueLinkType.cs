@@ -3,7 +3,7 @@
     /// <summary>
     /// Representation of a JIRA issue link type.
     /// </summary>
-    public sealed class IssueLinkType : ComparableElement
+    public sealed class IssueLinkType : ComparableElementModel
     {
         /// <summary>
         /// Initializes a new instance of the IssueLinkType class.

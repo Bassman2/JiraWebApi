@@ -6,7 +6,7 @@ namespace JiraWebApi
     /// <summary>
     /// Representation of a JIRA issue worklog. 
     /// </summary>
-    public sealed class Worklog : Element
+    public sealed class Worklog : ElementModel
     {
         /// <summary>
         /// Initializes a new instance of the Worklog class.

@@ -46,7 +46,7 @@ public class SortableString
     /// </summary>
     /// <param name="values">Values for the in JQL function</param>
     /// <returns>Not used.</returns>
-    public bool In(params Element[] values)
+    public bool In(params ElementModel[] values)
     {
         throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
     }
@@ -76,7 +76,7 @@ public class SortableString
     /// </summary>
     /// <param name="values">Values for the 'not in' JQL function.</param>
     /// <returns>Not used.</returns>
-    public bool NotIn(params Element[] values)
+    public bool NotIn(params ElementModel[] values)
     {
         throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
     }

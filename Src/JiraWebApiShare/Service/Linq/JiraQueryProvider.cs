@@ -2,12 +2,12 @@
 
 internal class JiraQueryProvider: IQueryProvider
 {
-    private readonly Jira jira;
+    private readonly JiraService jira;
 
     /// <summary>
     /// Initializes a new instance of the JiraQueryProvider class with a specific jira.
     /// </summary>
-    internal JiraQueryProvider(Jira jira)
+    internal JiraQueryProvider(JiraService jira)
     {
         this.jira = jira;
     }

@@ -1,9 +1,10 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
 
 /// <summary>
 /// Base class for for compareable Jira items.
 /// </summary>
-public abstract class ComparableElement : Element
+[DebuggerDisplay("{Id} {Name}")]
+public abstract class ComparableElementModel : ElementModel
 {
     /// <summary>
     /// Name of the JIRA item.
@@ -11,84 +12,84 @@ public abstract class ComparableElement : Element
     [JsonPropertyName("name")]
     public string? Name { get; set; }
 
-    /// <summary>
-    /// Determines whether the specified object is equal to the current object.
-    /// </summary>
-    /// <param name="obj">The object to compare with the current object.</param>
-    /// <returns>true if the specified object is equal to the current object; otherwise, false.</returns>
-    public override bool Equals(object? obj)
-    {
-        if (obj == null)
-        {
-            return false;
-        }
-        if (obj is not Element element)
-        {
-            return false;
-        }
-        return this.Id == element.Id;
-    }
+    ///// <summary>
+    ///// Determines whether the specified object is equal to the current object.
+    ///// </summary>
+    ///// <param name="obj">The object to compare with the current object.</param>
+    ///// <returns>true if the specified object is equal to the current object; otherwise, false.</returns>
+    //public override bool Equals(object? obj)
+    //{
+    //    if (obj == null)
+    //    {
+    //        return false;
+    //    }
+    //    if (obj is not ElementModel element)
+    //    {
+    //        return false;
+    //    }
+    //    return this.Id == element.Id;
+    //}
 
-    /// <summary>
-    /// Serves as a hash function for a particular type.
-    /// </summary>
-    /// <returns>A hash code for the current Object.</returns>
-    public override int GetHashCode()
-    {
-        return base.GetHashCode();
-    }
+    ///// <summary>
+    ///// Serves as a hash function for a particular type.
+    ///// </summary>
+    ///// <returns>A hash code for the current Object.</returns>
+    //public override int GetHashCode()
+    //{
+    //    return base.GetHashCode();
+    //}
 
-    /// <summary>
-    /// Compare equal operator.
-    /// </summary>
-    /// <param name="element1">The first element to compare, or null.</param>
-    /// <param name="element2">The second element to compare, or null.</param>
-    /// <returns>true if the id of a is the same as the id of b; otherwise, false.</returns>
-    public static bool operator ==(ComparableElement element1, ComparableElement element2)
-    {
-        if (ReferenceEquals(element1, element2))
-        {
-            return true;
-        }
-        if (((object)element1 == null) || ((object)element2 == null))
-        {
-            return false;
-        }
-        return element1.Equals(element2);
-    }
+    ///// <summary>
+    ///// Compare equal operator.
+    ///// </summary>
+    ///// <param name="element1">The first element to compare, or null.</param>
+    ///// <param name="element2">The second element to compare, or null.</param>
+    ///// <returns>true if the id of a is the same as the id of b; otherwise, false.</returns>
+    //public static bool operator ==(ComparableElementModel? element1, ComparableElementModel? element2)
+    //{
+    //    if (ReferenceEquals(element1, element2))
+    //    {
+    //        return true;
+    //    }
+    //    if (((object?)element1 == null) || ((object?)element2 == null))
+    //    {
+    //        return false;
+    //    }
+    //    return element1.Equals(element2);
+    //}
 
-    /// <summary>
-    /// Compare not equal operator.
-    /// </summary>
-    /// <param name="element1">The first element to compare, or null.</param>
-    /// <param name="element2">The second element to compare, or null.</param>
-    /// <returns>true if the id of a is different from the id of b; otherwise, false.</returns>
-    public static bool operator !=(ComparableElement element1, ComparableElement element2)
-    {
-        return !(element1 == element2);
-    }
+    ///// <summary>
+    ///// Compare not equal operator.
+    ///// </summary>
+    ///// <param name="element1">The first element to compare, or null.</param>
+    ///// <param name="element2">The second element to compare, or null.</param>
+    ///// <returns>true if the id of a is different from the id of b; otherwise, false.</returns>
+    //public static bool operator !=(ComparableElementModel element1, ComparableElementModel element2)
+    //{
+    //    return !(element1 == element2);
+    //}
 
-    /// <summary>
-    /// Compare equal operator to allow LINQ compare.
-    /// </summary>
-    /// <param name="element">The element to compare, or null.</param>
-    /// <param name="name">The name to compare, or null.</param>
-    /// <returns>true if the name of element is the same name; otherwise, false.</returns>
-    public static bool operator ==(ComparableElement element, string name)
-    {
-        return element.Name == name;
-    }
+    ///// <summary>
+    ///// Compare equal operator to allow LINQ compare.
+    ///// </summary>
+    ///// <param name="element">The element to compare, or null.</param>
+    ///// <param name="name">The name to compare, or null.</param>
+    ///// <returns>true if the name of element is the same name; otherwise, false.</returns>
+    //public static bool operator ==(ComparableElementModel element, string name)
+    //{
+    //    return element.Name == name;
+    //}
 
-    /// <summary>
-    /// Compare not equal operator to allow LINQ compare.
-    /// </summary>
-    /// <param name="element">The element to compare, or null.</param>
-    /// <param name="name">The name to compare, or null</param>
-    /// <returns>true if the name of element is different from the name; otherwise, false.</returns>
-    public static bool operator !=(ComparableElement element, string name)
-    {
-        return element.Name != name;
-    }
+    ///// <summary>
+    ///// Compare not equal operator to allow LINQ compare.
+    ///// </summary>
+    ///// <param name="element">The element to compare, or null.</param>
+    ///// <param name="name">The name to compare, or null</param>
+    ///// <returns>true if the name of element is different from the name; otherwise, false.</returns>
+    //public static bool operator !=(ComparableElementModel element, string name)
+    //{
+    //    return element.Name != name;
+    //}
 
     /// <summary>
     /// Support of the JQL 'is null' operator in LINQ.
@@ -141,7 +142,7 @@ public abstract class ComparableElement : Element
     /// </summary>
     /// <param name="values">List to compare with.</param>
     /// <returns>Not used.</returns>
-    public bool In(params ComparableElement[] values)
+    public bool In(params ComparableElementModel[] values)
     {
         throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
     }
@@ -161,7 +162,7 @@ public abstract class ComparableElement : Element
     /// </summary>
     /// <param name="values">List to compare with.</param>
     /// <returns>Not used.</returns>
-    public bool NotIn(params ComparableElement[] values)
+    public bool NotIn(params ComparableElementModel[] values)
     {
         throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
     }
@@ -191,7 +192,7 @@ public abstract class ComparableElement : Element
     /// </summary>
     /// <param name="value">Value to compare with.</param>
     /// <returns>Not used.</returns>
-    public bool Was(ComparableElement value)
+    public bool Was(ComparableElementModel value)
     {
         throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
     }
@@ -201,7 +202,7 @@ public abstract class ComparableElement : Element
     /// </summary>
     /// <param name="value">Value to compare with.</param>
     /// <returns>Not used.</returns>
-    public bool WasNot(ComparableElement value)
+    public bool WasNot(ComparableElementModel value)
     {
         throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
     }
@@ -221,7 +222,7 @@ public abstract class ComparableElement : Element
     /// </summary>
     /// <param name="values">Value to compare with.</param>
     /// <returns>Not used.</returns>
-    public bool WasIn(params ComparableElement[] values)
+    public bool WasIn(params ComparableElementModel[] values)
     {
         throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
     }
@@ -241,7 +242,7 @@ public abstract class ComparableElement : Element
     /// </summary>
     /// <param name="values">Values to compare with.</param>
     /// <returns>Not used.</returns>
-    public bool WasNotIn(params ComparableElement[] values)
+    public bool WasNotIn(params ComparableElementModel[] values)
     {
         throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
     }
@@ -255,13 +256,13 @@ public abstract class ComparableElement : Element
         throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
     }
 
-    /// <summary>
-    /// Returns a string that represents the element.
-    /// </summary>
-    /// <returns>A string that represents the element.</returns>
-    /// <remarks>Do not overwrite! Needed for Linq.</remarks>
-    public override string ToString()
-    {
-        return this.Name;
-    }
+    ///// <summary>
+    ///// Returns a string that represents the element.
+    ///// </summary>
+    ///// <returns>A string that represents the element.</returns>
+    ///// <remarks>Do not overwrite! Needed for Linq.</remarks>
+    //public override string ToString()
+    //{
+    //    return this.Name ?? "";
+    //}
 }

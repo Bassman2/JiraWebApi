@@ -7,19 +7,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{070A86E4-8CA
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "JiraWebApiShare", "Src\JiraWebApiShare\JiraWebApiShare.shproj", "{397A6178-2F13-45DC-BC26-825988993A7A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JiraWenApi60", "Src\JiraWenApi60\JiraWenApi60.csproj", "{D739506A-FC11-490C-AEC0-B8D4BC6FAA9C}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JiraWenApi70", "Src\JiraWenApi70\JiraWenApi70.csproj", "{47DCE4D0-B2E4-40DC-8BBB-F3E673B011C8}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{A60222DF-8DE8-458A-BCCB-E7B59B04C377}"
 EndProject
 Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "JiraWebApiDoc", "Doc\JiraWebApiDoc\JiraWebApiDoc.shfbproj", "{1383FAF4-AF5A-4016-ACC8-902FC6C31AD7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JiraWenApi80", "Src\JiraWenApi80\JiraWenApi80.csproj", "{93ADF06A-AD78-4602-B441-4601C60E54EC}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JiraWenApi90", "Src\JiraWenApi90\JiraWenApi90.csproj", "{7374E982-9A34-4CFF-A349-E5B807291CDB}"
-EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "WebServiceClientShare", "..\WebServiceClient\Src\WebServiceClientShare\WebServiceClientShare.shproj", "{8CAACB04-9656-4B7C-A692-422FCA51474B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JiraWebApi80", "Src\JiraWebApi80\JiraWebApi80.csproj", "{3B67AB44-EF78-42FD-A869-0A653894022E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JiraWebApi90", "Src\JiraWebApi90\JiraWebApi90.csproj", "{65FEEEA7-C653-471D-9A4F-0E58F96B94A4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{8181ADD7-E55D-49EE-92C3-69458B07A8F6}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "JiraWebApiUnitTestShare", "Test\JiraWebApiUnitTestShare\JiraWebApiUnitTestShare.shproj", "{0BB69278-1BFE-4E01-B64B-3CBE0ED12285}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JiraWebApiUnitTest90", "Test\JiraWebApiUnitTest90\JiraWebApiUnitTest90.csproj", "{E72936DE-9400-4E21-B0E8-81E5179B4631}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JiraWebApiUnitTest80", "Test\JiraWebApiUnitTest80\JiraWebApiUnitTest80.csproj", "{4E4D967B-22DB-488E-A84E-A7498DAD2A6A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,51 +31,51 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D739506A-FC11-490C-AEC0-B8D4BC6FAA9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D739506A-FC11-490C-AEC0-B8D4BC6FAA9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D739506A-FC11-490C-AEC0-B8D4BC6FAA9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D739506A-FC11-490C-AEC0-B8D4BC6FAA9C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{47DCE4D0-B2E4-40DC-8BBB-F3E673B011C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{47DCE4D0-B2E4-40DC-8BBB-F3E673B011C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{47DCE4D0-B2E4-40DC-8BBB-F3E673B011C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{47DCE4D0-B2E4-40DC-8BBB-F3E673B011C8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1383FAF4-AF5A-4016-ACC8-902FC6C31AD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1383FAF4-AF5A-4016-ACC8-902FC6C31AD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1383FAF4-AF5A-4016-ACC8-902FC6C31AD7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{93ADF06A-AD78-4602-B441-4601C60E54EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{93ADF06A-AD78-4602-B441-4601C60E54EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{93ADF06A-AD78-4602-B441-4601C60E54EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{93ADF06A-AD78-4602-B441-4601C60E54EC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7374E982-9A34-4CFF-A349-E5B807291CDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7374E982-9A34-4CFF-A349-E5B807291CDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7374E982-9A34-4CFF-A349-E5B807291CDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7374E982-9A34-4CFF-A349-E5B807291CDB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B67AB44-EF78-42FD-A869-0A653894022E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B67AB44-EF78-42FD-A869-0A653894022E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B67AB44-EF78-42FD-A869-0A653894022E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B67AB44-EF78-42FD-A869-0A653894022E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65FEEEA7-C653-471D-9A4F-0E58F96B94A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65FEEEA7-C653-471D-9A4F-0E58F96B94A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65FEEEA7-C653-471D-9A4F-0E58F96B94A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65FEEEA7-C653-471D-9A4F-0E58F96B94A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E72936DE-9400-4E21-B0E8-81E5179B4631}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E72936DE-9400-4E21-B0E8-81E5179B4631}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E72936DE-9400-4E21-B0E8-81E5179B4631}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E72936DE-9400-4E21-B0E8-81E5179B4631}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E4D967B-22DB-488E-A84E-A7498DAD2A6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E4D967B-22DB-488E-A84E-A7498DAD2A6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E4D967B-22DB-488E-A84E-A7498DAD2A6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E4D967B-22DB-488E-A84E-A7498DAD2A6A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{397A6178-2F13-45DC-BC26-825988993A7A} = {070A86E4-8CA1-49CD-A15F-24E7657923EB}
-		{D739506A-FC11-490C-AEC0-B8D4BC6FAA9C} = {070A86E4-8CA1-49CD-A15F-24E7657923EB}
-		{47DCE4D0-B2E4-40DC-8BBB-F3E673B011C8} = {070A86E4-8CA1-49CD-A15F-24E7657923EB}
 		{1383FAF4-AF5A-4016-ACC8-902FC6C31AD7} = {A60222DF-8DE8-458A-BCCB-E7B59B04C377}
-		{93ADF06A-AD78-4602-B441-4601C60E54EC} = {070A86E4-8CA1-49CD-A15F-24E7657923EB}
-		{7374E982-9A34-4CFF-A349-E5B807291CDB} = {070A86E4-8CA1-49CD-A15F-24E7657923EB}
 		{8CAACB04-9656-4B7C-A692-422FCA51474B} = {070A86E4-8CA1-49CD-A15F-24E7657923EB}
+		{3B67AB44-EF78-42FD-A869-0A653894022E} = {070A86E4-8CA1-49CD-A15F-24E7657923EB}
+		{65FEEEA7-C653-471D-9A4F-0E58F96B94A4} = {070A86E4-8CA1-49CD-A15F-24E7657923EB}
+		{0BB69278-1BFE-4E01-B64B-3CBE0ED12285} = {8181ADD7-E55D-49EE-92C3-69458B07A8F6}
+		{E72936DE-9400-4E21-B0E8-81E5179B4631} = {8181ADD7-E55D-49EE-92C3-69458B07A8F6}
+		{4E4D967B-22DB-488E-A84E-A7498DAD2A6A} = {8181ADD7-E55D-49EE-92C3-69458B07A8F6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8C9C0772-979B-4989-9575-832E8CBE63F6}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Test\JiraWebApiUnitTestShare\JiraWebApiUnitTestShare.projitems*{0bb69278-1bfe-4e01-b64b-3cbe0ed12285}*SharedItemsImports = 13
 		Src\JiraWebApiShare\JiraWebApiShare.projitems*{397a6178-2f13-45dc-bc26-825988993a7a}*SharedItemsImports = 13
-		Src\JiraWebApiShare\JiraWebApiShare.projitems*{47dce4d0-b2e4-40dc-8bbb-f3e673b011c8}*SharedItemsImports = 5
-		..\WebServiceClient\Src\WebServiceClientShare\WebServiceClientShare.projitems*{47dce4d0-b2e4-40dc-8bbb-f3e673b011c8}*SharedItemsImports = 5
-		Src\JiraWebApiShare\JiraWebApiShare.projitems*{7374e982-9a34-4cff-a349-e5b807291cdb}*SharedItemsImports = 5
-		..\WebServiceClient\Src\WebServiceClientShare\WebServiceClientShare.projitems*{7374e982-9a34-4cff-a349-e5b807291cdb}*SharedItemsImports = 5
+		Src\JiraWebApiShare\JiraWebApiShare.projitems*{3b67ab44-ef78-42fd-a869-0a653894022e}*SharedItemsImports = 5
+		..\WebServiceClient\Src\WebServiceClientShare\WebServiceClientShare.projitems*{3b67ab44-ef78-42fd-a869-0a653894022e}*SharedItemsImports = 5
+		Test\JiraWebApiUnitTestShare\JiraWebApiUnitTestShare.projitems*{4e4d967b-22db-488e-a84e-a7498dad2a6a}*SharedItemsImports = 5
+		Src\JiraWebApiShare\JiraWebApiShare.projitems*{65feeea7-c653-471d-9a4f-0e58f96b94a4}*SharedItemsImports = 5
+		..\WebServiceClient\Src\WebServiceClientShare\WebServiceClientShare.projitems*{65feeea7-c653-471d-9a4f-0e58f96b94a4}*SharedItemsImports = 5
 		..\WebServiceClient\Src\WebServiceClientShare\WebServiceClientShare.projitems*{8caacb04-9656-4b7c-a692-422fca51474b}*SharedItemsImports = 13
-		Src\JiraWebApiShare\JiraWebApiShare.projitems*{93adf06a-ad78-4602-b441-4601c60e54ec}*SharedItemsImports = 5
-		..\WebServiceClient\Src\WebServiceClientShare\WebServiceClientShare.projitems*{93adf06a-ad78-4602-b441-4601c60e54ec}*SharedItemsImports = 5
-		Src\JiraWebApiShare\JiraWebApiShare.projitems*{d739506a-fc11-490c-aec0-b8d4bc6faa9c}*SharedItemsImports = 5
-		..\WebServiceClient\Src\WebServiceClientShare\WebServiceClientShare.projitems*{d739506a-fc11-490c-aec0-b8d4bc6faa9c}*SharedItemsImports = 5
+		Test\JiraWebApiUnitTestShare\JiraWebApiUnitTestShare.projitems*{e72936de-9400-4e21-b0e8-81e5179b4631}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

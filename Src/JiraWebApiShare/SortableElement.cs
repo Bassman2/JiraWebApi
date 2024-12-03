@@ -12,7 +12,7 @@ namespace JiraWebApi
     /// <remarks>
     /// Operatores not useable in code. Only for Linq syntax.
     /// </remarks>
-    public abstract class SortableElement : ComparableElement
+    public abstract class SortableElement : ComparableElementModel
     {
         /// <summary>
         /// Compare less than operator to allow LINQ compare.

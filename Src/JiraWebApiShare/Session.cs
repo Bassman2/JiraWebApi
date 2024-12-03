@@ -1,14 +1,9 @@
-﻿using System.Text.Json.Serialization;
+﻿namespace JiraWebApi;
 
-namespace JiraWebApi
+public class Session
 {
-    public class Session
-    {
 
-        [JsonPropertyName("name")]
-        public string Name { get; set; }
+    public string? Name { get; set; }
 
-        [JsonPropertyName("value")]
-        public string Value { get; set; }
-    }
+    public string? Value { get; set; }
 }

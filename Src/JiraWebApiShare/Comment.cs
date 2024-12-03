@@ -6,7 +6,7 @@ namespace JiraWebApi
     /// <summary>
     /// Representation of a JIRA issue comment. 
     /// </summary>
-    public sealed class Comment : Element
+    public sealed class Comment : ElementModel
     {
         /// <summary>
         /// Initializes a new instance of the Comment class.

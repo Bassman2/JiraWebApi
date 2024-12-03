@@ -32,7 +32,7 @@ namespace JiraWebApi
         /// <summary>
         /// Support of the JQL In operator in LINQ.
         /// </summary>
-        /// <param name="source">Element to compare with.</param>
+        /// <param name="source">ElementModel to compare with.</param>
         /// <param name="values">List to compare with.</param>
         /// <returns>Not used.</returns>
         public static bool In(this string source, params object[] values)
@@ -43,7 +43,7 @@ namespace JiraWebApi
         /// <summary>
         /// Support of the JQL 'in' operator in LINQ.
         /// </summary>
-        /// <param name="source">Element to compare with.</param>
+        /// <param name="source">ElementModel to compare with.</param>
         /// <param name="values">List to compare with.</param>
         /// <returns>Not used.</returns>
         public static bool In(this DateTime? source, params DateTime[] values)
@@ -54,7 +54,7 @@ namespace JiraWebApi
         /// <summary>
         /// Support of the JQL 'in' operator in LINQ.
         /// </summary>
-        /// <param name="source">Element to compare with.</param>
+        /// <param name="source">ElementModel to compare with.</param>
         /// <param name="values">List to compare with.</param>
         /// <returns>Not used.</returns>
         public static bool In(this int source, params int[] values)
@@ -65,7 +65,7 @@ namespace JiraWebApi
         /// <summary>
         /// Support of the JQL Not In operator in LINQ.
         /// </summary>
-        /// <param name="source">Element to compare with.</param>
+        /// <param name="source">ElementModel to compare with.</param>
         /// <param name="values">List to compare with.</param>
         /// <returns>Not used.</returns>
         
@@ -77,7 +77,7 @@ namespace JiraWebApi
         /// <summary>
         /// Support of the JQL 'not in' operator in LINQ.
         /// </summary>
-        /// <param name="source">Element to compare with.</param>
+        /// <param name="source">ElementModel to compare with.</param>
         /// <param name="values">List to compare with.</param>
         /// <returns>Not used.</returns>
         public static bool NotIn(this DateTime? source, params DateTime[] values)
@@ -88,7 +88,7 @@ namespace JiraWebApi
         /// <summary>
         /// Support of the JQL 'not in' operator in LINQ.
         /// </summary>
-        /// <param name="source">Element to compare with.</param>
+        /// <param name="source">ElementModel to compare with.</param>
         /// <param name="values">List to compare with.</param>
         /// <returns>Not used.</returns>
         public static bool NotIn(this int source, params int[] values)
@@ -99,7 +99,7 @@ namespace JiraWebApi
         /// <summary>
         /// Support of the JQL 'was in' operator in LINQ.
         /// </summary>
-        /// <param name="source">Element to compare with.</param>
+        /// <param name="source">ElementModel to compare with.</param>
         /// <param name="values">List to compare with.</param>
         /// <returns>Not used.</returns>
         public static bool WasIn(this string source, params object[] values)
@@ -110,7 +110,7 @@ namespace JiraWebApi
         /// <summary>
         /// Support of the JQL 'was in' operator in LINQ.
         /// </summary>
-        /// <param name="source">Element to compare with.</param>
+        /// <param name="source">ElementModel to compare with.</param>
         /// <param name="values">List to compare with.</param>
         /// <returns>Not used.</returns>
         public static bool WasIn(this DateTime? source, params DateTime[] values)
@@ -121,7 +121,7 @@ namespace JiraWebApi
         /// <summary>
         /// Support of the JQL 'was not in' operator in LINQ.
         /// </summary>
-        /// <param name="source">Element to compare with.</param>
+        /// <param name="source">ElementModel to compare with.</param>
         /// <param name="values">List to compare with.</param>
         /// <returns>Not used.</returns>
         public static bool WasNotIn(this string source, params object[] values)
@@ -132,7 +132,7 @@ namespace JiraWebApi
         /// <summary>
         /// Support of the JQL 'was not in' operator in LINQ.
         /// </summary>
-        /// <param name="source">Element to compare with.</param>
+        /// <param name="source">ElementModel to compare with.</param>
         /// <param name="values">List to compare with.</param>
         /// <returns>Not used.</returns>
         public static bool WasNotIn(this DateTime? source, params DateTime[] values)
@@ -143,7 +143,7 @@ namespace JiraWebApi
         /// <summary>
         /// Support of the JQL 'after' operator in LINQ.
         /// </summary>
-        /// <param name="source">Element to compare with.</param>
+        /// <param name="source">ElementModel to compare with.</param>
         /// <param name="date">List to compare with.</param>
         /// <returns>Not used.</returns>
         /// <example><codeReference>Linq#after</codeReference></example> 
@@ -161,7 +161,7 @@ namespace JiraWebApi
         /// <summary>
         /// Support of the JQL 'before' operator in LINQ.
         /// </summary>
-        /// <param name="source">Element to compare with.</param>
+        /// <param name="source">ElementModel to compare with.</param>
         /// <param name="date">List to compare with.</param>
         /// <returns>Not used.</returns>
         /// <example><code>
@@ -175,7 +175,7 @@ namespace JiraWebApi
         /// <summary>
         /// Support of the JQL 'by' operator in LINQ.
         /// </summary>
-        /// <param name="source">Element to compare with.</param>
+        /// <param name="source">ElementModel to compare with.</param>
         /// <param name="user">List to compare with.</param>
         /// <returns>Not used.</returns>
         /// <example><code>
@@ -189,7 +189,7 @@ namespace JiraWebApi
         /// <summary>
         /// Support of the JQL 'by' operator in LINQ.
         /// </summary>
-        /// <param name="source">Element to compare with.</param>
+        /// <param name="source">ElementModel to compare with.</param>
         /// <param name="userName">List to compare with.</param>
         /// <returns>Not used.</returns>
         public static bool By(this bool source, string userName)
@@ -200,7 +200,7 @@ namespace JiraWebApi
         /// <summary>
         /// Support of the JQL 'during' operator in LINQ.
         /// </summary>
-        /// <param name="source">Element to compare with.</param>
+        /// <param name="source">ElementModel to compare with.</param>
         /// <param name="dateFrom">Date from to compare with.</param>
         /// <param name="dateTo">Date to to compare with.</param>
         /// <returns>Not used.</returns>
@@ -215,7 +215,7 @@ namespace JiraWebApi
         /// <summary>
         /// Support of the JQL 'on' operator in LINQ.
         /// </summary>
-        /// <param name="source">Element to compare with.</param>
+        /// <param name="source">ElementModel to compare with.</param>
         /// <param name="date">Date to compare with.</param>
         /// <returns>Not used.</returns>
         /// <example><code>
@@ -229,7 +229,7 @@ namespace JiraWebApi
         /// <summary>
         /// Support of the JQL 'from' operator in LINQ.
         /// </summary>
-        /// <param name="source">Element to compare with.</param>
+        /// <param name="source">ElementModel to compare with.</param>
         /// <param name="oldValue">Value to compare with.</param>
         /// <returns>Not used.</returns>
         /// <example><code>
@@ -243,7 +243,7 @@ namespace JiraWebApi
         /// <summary>
         /// Support of the JQL 'to' operator in LINQ.
         /// </summary>
-        /// <param name="source">Element to compare with.</param>
+        /// <param name="source">ElementModel to compare with.</param>
         /// <param name="newValue">New value to compare with.</param>
         /// <returns>Not used.</returns>
         /// <example><code>

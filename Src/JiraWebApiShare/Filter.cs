@@ -7,7 +7,7 @@ namespace JiraWebApi
     /// <summary>
     /// Representation of a JIRA filter.
     /// </summary>
-    public sealed class Filter : ComparableElement
+    public sealed class Filter : ComparableElementModel
     {
         /// <summary>
         /// Initializes a new instance of the Filter class.

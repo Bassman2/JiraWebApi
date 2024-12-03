@@ -10,7 +10,7 @@ namespace JiraWebApi
     /// <summary>
     /// Representation of a JIRA issue status. 
     /// </summary>
-    public sealed class Status : ComparableElement
+    public sealed class Status : ComparableElementModel
     {
         /// <summary>
         /// Initializes a new instance of the Status class.

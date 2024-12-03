@@ -10,7 +10,7 @@ namespace JiraWebApi
     /// <summary>
     /// Representation of a JIRA issue attachment. 
     /// </summary>
-    public sealed class Attachment : Element
+    public sealed class Attachment : ElementModel
     {
         /// <summary>
         /// Initializes a new instance of the Attachment class.

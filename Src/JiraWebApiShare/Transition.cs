@@ -10,7 +10,7 @@ namespace JiraWebApi
     /// <summary>
     /// Representation of a JIRA issue transition.
     /// </summary>
-    public sealed class Transition : Element
+    public sealed class Transition : ElementModel
     {
         /// <summary>
         /// Initializes a new instance of the Transition class.

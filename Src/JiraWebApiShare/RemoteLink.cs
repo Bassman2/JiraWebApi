@@ -5,7 +5,7 @@ namespace JiraWebApi
     /// <summary>
     /// Rrepresentation of a JIRA issue remote link. 
     /// </summary>
-    public sealed class RemoteLink : Element
+    public sealed class RemoteLink : ElementModel
     {
         /// <summary>
         /// Initializes a new instance of the RemoteLink class.
