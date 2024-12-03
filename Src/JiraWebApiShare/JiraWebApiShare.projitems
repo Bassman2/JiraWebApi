@@ -15,7 +15,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)AttachmentMeta.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AvatarUrls.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Comment.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\JiraQueryable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Linq\JiraQueryable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Linq\JiraQueryProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Linq\JqlExpressionVisitor.cs" />
@@ -38,7 +37,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)FieldMeta.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Fields.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Filter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Gojira.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JiraExtentions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Group.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Icon.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Jira.cs" />
@@ -74,9 +73,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)IssueType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IssueVersion.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\JiraService.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Autenticator\JiraAutenticator.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)JiraError.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)JiraException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\JiraError.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JsonTrace.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LoginInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Notify.cs" />

@@ -1,5 +1,8 @@
 ﻿namespace JiraWebApi.Service;
 
+
+// https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-projects/#api-group-projects
+
 /// <summary>
 /// JIRA Wep Api main class.
 /// </summary>
@@ -11,18 +14,14 @@ internal class JiraService : JsonService
     /// Initializes a new instance of the Jira class.
     /// </summary>
     /// <param name="host">Host URL of the JIRA server.</param>
-    /// <param name="username">Name of the user to login.</param>
-    /// <param name="password">Password of the user to login.</param>
+    /// <param name="apikey">API key.</param>
     /// <example>
     /// <code>
-    /// using (Jira jira = new Jira(new Uri("https://jira.atlassian.com")))
-    /// {
-    ///     LoginInfo loginInfo = jira.GetLoginInfoAsync().Result;
-    /// }
+    /// using var jira = new Jira(new Uri("https://jira.atlassian.com"), "pokjfnlkfdskgkljgipooksdlksgölgklösg");
     /// </code>
     /// </example>
-    public JiraService(Uri host, string username, string password)
-    : base(host, SourceGenerationContext.Default, new JiraAutenticator(username, password))
+    public JiraService(Uri host, string apikey)
+    : base(host, SourceGenerationContext.Default, new BearerAuthenticator(apikey))
     {
         provider = new(this);
     }

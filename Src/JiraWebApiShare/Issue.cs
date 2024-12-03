@@ -7,6 +7,7 @@
 /// In the Issue class some properties are for LINQ use only and are not read or writeable. 
 /// See the documentation of the property to get detailed information.
 /// </remarks>
+[DebuggerDisplay("{Id}, {Name}")]
 public sealed class Issue 
 {
 
@@ -88,45 +89,45 @@ public sealed class Issue
     //}
 
 
-    /// <summary>
-    /// Support of the JQL 'issueHistory()' function in LINQ.
-    /// </summary>
-    /// <returns>Not used.</returns>
-    [JqlFunction("issueHistory")]
-    public static Issue[] IssueHistory()
-    {
-        throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
-    }
+    ///// <summary>
+    ///// Support of the JQL 'issueHistory()' function in LINQ.
+    ///// </summary>
+    ///// <returns>Not used.</returns>
+    //[JqlFunction("issueHistory")]
+    //public static Issue[] IssueHistory()
+    //{
+    //    throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
+    //}
 
-    /// <summary>
-    /// Support of the JQL 'linkedIssues()' function in LINQ.
-    /// </summary>
-    /// <returns>Not used.</returns>
-    [JqlFunction("linkedIssues")]
-    public static Issue[] LinkedIssues()
-    {
-        throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
-    }
+    ///// <summary>
+    ///// Support of the JQL 'linkedIssues()' function in LINQ.
+    ///// </summary>
+    ///// <returns>Not used.</returns>
+    //[JqlFunction("linkedIssues")]
+    //public static Issue[] LinkedIssues()
+    //{
+    //    throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
+    //}
 
-    /// <summary>
-    /// Support of the JQL 'votedIssues()' function in LINQ.
-    /// </summary>
-    /// <returns>Not used.</returns>
-    [JqlFunction("votedIssues")]
-    public static Issue[] VotedIssues()
-    {
-        throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
-    }
+    ///// <summary>
+    ///// Support of the JQL 'votedIssues()' function in LINQ.
+    ///// </summary>
+    ///// <returns>Not used.</returns>
+    //[JqlFunction("votedIssues")]
+    //public static Issue[] VotedIssues()
+    //{
+    //    throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
+    //}
 
-    /// <summary>
-    /// Support of the JQL 'watchedIssues()' function in LINQ.
-    /// </summary>
-    /// <returns>Not used.</returns>
-    [JqlFunction("watchedIssues")]
-    public static Issue[] WatchedIssues()
-    {
-        throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
-    }
+    ///// <summary>
+    ///// Support of the JQL 'watchedIssues()' function in LINQ.
+    ///// </summary>
+    ///// <returns>Not used.</returns>
+    //[JqlFunction("watchedIssues")]
+    //public static Issue[] WatchedIssues()
+    //{
+    //    throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
+    //}
 
     #region fields
 
@@ -140,19 +141,17 @@ public sealed class Issue
     /// Url of the JIRA REST item.
     /// </summary>
     /// <remarks>Not useable by LINQ.</remarks>
-    public Uri? Self { get; private set; }
+    public Uri? Self { get; internal set; }
 
     /// <summary>
     /// Id of the JIRA issue.
     /// </summary>
-    [JqlFieldAttribute("id", JqlFieldCompare.Comparable | JqlFieldCompare.Sortable)]
-    public string? Id { get; private set; }
+    public string? Id { get; internal  set; }
 
     /// <summary>
     /// Summary of the JIRA issue.
     /// </summary>
-    [JqlFieldAttribute("key", JqlFieldCompare.Comparable | JqlFieldCompare.Sortable | JqlFieldCompare.Include)]
-    public SortableString? Key { get; private set; }
+    public string? Key { get; internal set; }
 
     /// <summary>
     /// Σ Progress

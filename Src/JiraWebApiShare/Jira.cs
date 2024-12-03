@@ -3,10 +3,10 @@
 public sealed class Jira : IDisposable
 {
     private JiraService? service;
-
-    public Jira(Uri host, string login, string password)
+        
+    public Jira(Uri host, string apikey)
     {
-        service = new JiraService(host, login, password);
+        service = new JiraService(host, apikey);
     }
 
     public void Dispose()
@@ -29,18 +29,18 @@ public sealed class Jira : IDisposable
 
     #region Issues
 
-    ///// <summary>
-    ///// Creates an issue or a sub-task.
-    ///// </summary>
-    ///// <param name="issue">Issue class to create.</param>
-    ///// <returns>The task object representing the asynchronous operation.</returns>
-    //public async Task<Issue?> CreateIssueAsync(Issue issue, CancellationToken cancellationToken = default)
-    //{
-    //    WebServiceException.ThrowIfNullOrNotConnected(this.service);
+    /// <summary>
+    /// Creates an issue or a sub-task.
+    /// </summary>
+    /// <param name="issue">Issue class to create.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<Issue?> CreateIssueAsync(Issue issue, CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
 
-    //    var res = await service.CreateIssueAsync(issue, cancellationToken);
-    //    return res;
-    //}
+        var res = await service.CreateIssueAsync(issue, cancellationToken);
+        return res;
+    }
 
     #endregion
 

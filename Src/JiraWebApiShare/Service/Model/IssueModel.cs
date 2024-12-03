@@ -1754,6 +1754,30 @@ public sealed class IssueModel // : ISerializable
     {
         throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
     }
+
+    public static implicit operator Issue?(IssueModel? model)
+    {
+        return model is null ? null : new Issue()
+        {
+            Self = model.Self,
+            Id = model.Id,
+            Key = model.Key,
+            Description = model.Description,
+            IssueType = model.IssueType,
+        };
+    }
+
+    public static implicit operator IssueModel?(Issue? item)
+    {
+        return item is null ? null : new IssueModel()
+        {
+            Self = item.Self,
+            Id = item.Id,
+            Key = item.Key,
+            Description = item.Description,
+            IssueType = item.IssueType
+        };
+    }
 }
 
 
