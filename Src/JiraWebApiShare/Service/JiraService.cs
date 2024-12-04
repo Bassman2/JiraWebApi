@@ -8,7 +8,7 @@
 /// </summary>
 internal class JiraService : JsonService
 {
-    private readonly JiraQueryProvider provider;
+    //private readonly JiraQueryProvider provider;
 
     /// <summary>
     /// Initializes a new instance of the Jira class.
@@ -23,7 +23,7 @@ internal class JiraService : JsonService
     public JiraService(Uri host, string apikey)
     : base(host, SourceGenerationContext.Default, new BearerAuthenticator(apikey))
     {
-        provider = new(this);
+        //provider = new(this);
     }
 
     //this.host = host;
@@ -863,7 +863,7 @@ internal class JiraService : JsonService
         ArgumentNullException.ThrowIfNullOrEmpty(transitionId, nameof(transitionId));
 
         TransitionGetResult? res = await GetFromJsonAsync<TransitionGetResult>($"rest/api/2/issue/{issueIdOrKey}/transitions?transitionId={transitionId}", cancellationToken);
-        return res?.Transitions.FirstOrDefault();
+        return res?.Transitions?.FirstOrDefault();
     }
 
     /// <summary>
@@ -1289,7 +1289,7 @@ internal class JiraService : JsonService
             //{
             //    issue.UpdateCustomFields(fieldInfo!);
             //}
-            return res.Issues;
+            return res?.Issues;
         }
         catch (WebServiceException ex)
         {
@@ -1316,16 +1316,16 @@ internal class JiraService : JsonService
     internal string jqlQuery = "";
     internal int?   jqlStartAt = null;
     internal int?   jqlMaxResults = null;
-    internal IEnumerable<Issue>? GetIssuesFromJql(string jql, int? startAt, int? maxResults)
+    internal IEnumerable<Issue>? GetIssuesFromJql(string? jql, int? startAt, int? maxResults)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(jql, nameof(jql));
 
-{
-            this.jqlQuery = jql;
-            this.jqlStartAt = startAt;
-            this.jqlMaxResults = maxResults;
-            return new List<Issue>();
-        }
+        //{
+        //    this.jqlQuery = jql;
+        //    this.jqlStartAt = startAt;
+        //    this.jqlMaxResults = maxResults;
+        //    return new List<Issue>();
+        //}
 
         return GetIssuesFromJqlAsync(jql, startAt.GetValueOrDefault(0), maxResults.GetValueOrDefault(500)).Result;
     }
@@ -1340,10 +1340,10 @@ internal class JiraService : JsonService
     /// <example>
     /// var issues = (from issue in jira.Issues where issue.Priority == "Major" || issue.Priority == "Minor" select issue OrderBy issue.Version).Skip(5).Take(19);
     /// </example>
-    public IOrderedQueryable<Issue> Issues
-    {
-        get { return new JiraQueryable<Issue>(this.provider); }
-    }
+    //public IOrderedQueryable<Issue> Issues
+    //{
+    //    get { return new JiraQueryable<Issue>(this.provider); }
+    //}
 
     #endregion
 }

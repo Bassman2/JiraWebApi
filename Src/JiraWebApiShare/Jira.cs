@@ -38,7 +38,7 @@ public sealed class Jira : IDisposable
     {
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
 
-        var res = await service.CreateIssueAsync(issue, cancellationToken);
+        var res = await service.CreateIssueAsync((IssueModel)issue!, cancellationToken);
         return res;
     }
 

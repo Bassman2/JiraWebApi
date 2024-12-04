@@ -1,33 +1,25 @@
-﻿using System.Text.Json.Serialization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace JiraWebApi;
 
-namespace JiraWebApi
+/// <summary>
+/// Users who has subscribed to an issue.
+/// </summary>
+public sealed class Subscriptions
 {
     /// <summary>
-    /// Users who has subscribed to an issue.
+    /// Initializes a new instance of the Subscriptions class.
     /// </summary>
-    public sealed class Subscriptions
-    {
-        /// <summary>
-        /// Initializes a new instance of the Subscriptions class.
-        /// </summary>
-        private Subscriptions()
-        { }
+    private Subscriptions()
+    { }
 
-        /// <summary>
-        /// Number of the subscriptions.
-        /// </summary>
-        [JsonPropertyName("size")]
-        public int Size { get; private set; }
+    /// <summary>
+    /// Number of the subscriptions.
+    /// </summary>
+    [JsonPropertyName("size")]
+    public int Size { get; set; }
 
-        /// <summary>
-        /// Users who has subscribed.
-        /// </summary>
-        [JsonPropertyName("items")]
-        public IEnumerable<User> Items { get; private set; }
-    }
+    /// <summary>
+    /// Users who has subscribed.
+    /// </summary>
+    [JsonPropertyName("items")]
+    public IEnumerable<User>? Items { get; set; }
 }

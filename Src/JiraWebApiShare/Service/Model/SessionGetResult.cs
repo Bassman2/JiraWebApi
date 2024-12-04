@@ -6,11 +6,11 @@ internal class SessionGetResult
     /// Url of the JIRA REST item.
     /// </summary>
     [JsonPropertyName("self")]
-    public Uri Self { get; set; }
+    public Uri? Self { get; set; }
 
     [JsonPropertyName("name")]
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     [JsonPropertyName("loginInfo")]
-    public LoginInfo LoginInfo { get; set; }
+    public LoginInfo? LoginInfo { get; set; }
 }

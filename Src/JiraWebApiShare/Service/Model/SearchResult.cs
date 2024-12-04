@@ -18,5 +18,5 @@ internal class SearchResult
     public int Total { get; private set; }
 
     [JsonPropertyName("issues")]
-    public IEnumerable<Issue> Issues { get; private set; }
+    public IEnumerable<Issue>? Issues { get; private set; }
 }

@@ -1,5 +1,8 @@
 ﻿#pragma warning disable IDE0052
-#pragma warning disable IDE0414
+#pragma warning disable CS0414
+#pragma warning disable CS0169
+#pragma warning disable CS0649
+
 
 
 namespace JiraWebApi;

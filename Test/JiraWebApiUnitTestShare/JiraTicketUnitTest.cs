@@ -48,7 +48,8 @@ public class JiraTicketUnitTest : JiraBaseUnitTest
 
         Assert.IsNotNull(issue);
         StringAssert.StartsWith("NAVSUITE-", issue.Key, nameof(issue.Key));
-        Assert.AreEqual(null, issue.IssueType.Name,  nameof(issue.IssueType.Name));
+
+        Assert.AreEqual(null, issue.IssueType?.Name,  nameof(issue.IssueType.Name));
         Assert.AreEqual(null, issue.Summary, nameof(issue.Summary));
         Assert.AreEqual(null, issue.Description, nameof(issue.Description));
     }
@@ -62,7 +63,7 @@ public class JiraTicketUnitTest : JiraBaseUnitTest
 
         Assert.IsNotNull(issue);
         StringAssert.StartsWith("NAVSUITE-", issue.Key, nameof(issue.Key));
-        Assert.AreEqual(null, issue.IssueType.Name, nameof(issue.IssueType.Name));
+        Assert.AreEqual(null, issue.IssueType?.Name, nameof(issue.IssueType.Name));
         Assert.AreEqual(null, issue.Summary, nameof(issue.Summary));
         Assert.AreEqual(null, issue.Description, nameof(issue.Description));
     }
