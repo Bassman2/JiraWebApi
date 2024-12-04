@@ -44,7 +44,7 @@ public class JiraTicketUnitTest : JiraBaseUnitTest
     {
         using var jira = new Jira(host, apikey);
         
-        var issue = await jira.CreateIssueAsync("bug", testProject, "Test Ticket 1", "Description of the issue");
+        var issue = await jira.CreateIssueAsync("Bug", testProject, "Test Ticket 1", "Description of the issue");
 
         Assert.IsNotNull(issue);
         StringAssert.StartsWith("NAVSUITE-", issue.Key, nameof(issue.Key));

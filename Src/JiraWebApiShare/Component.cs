@@ -3,6 +3,7 @@
 /// <summary>
 /// Representation of a JIRA component. 
 /// </summary>
+[DebuggerDisplay("{Name}")]
 public sealed class Component : ComparableElementModel
 {
     /// <summary>
@@ -26,20 +27,11 @@ public sealed class Component : ComparableElementModel
     /// Name of the JIRA project description.
     /// </summary>
     [JsonPropertyName("description")]
-    public string Description { get; set; } 
+    public string? Description { get; set; } 
 
     /// <summary>
     /// Project to which the version belongs.
     /// </summary>
     [JsonPropertyName("project")]
-    public string ProjectKey { private get; set; }
-
-    /// <summary>
-    /// Returns a string that represents the component.
-    /// </summary>
-    /// <returns>A string that represents the component.</returns>
-    public override string ToString()
-    {
-        return this.Name;
-    }
+    public string? ProjectKey { private get; set; }
 }

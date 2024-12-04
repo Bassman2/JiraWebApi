@@ -6,6 +6,6 @@ internal class VersionMoveAfterPostRequest
     /// 
     /// </summary>
     [JsonPropertyName("after")]
-    public string After { get; set; }
+    public string? After { get; set; }
 
 }

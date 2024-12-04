@@ -3,7 +3,7 @@
 /// <summary>
 /// Provides a set of static (Shared in Visual Basic) methods for easier JIRA access. 
 /// </summary>
-public static class Gojira
+public static class JiraExtentions
 {
     /// <summary>
     /// Create a JIRA issue.
@@ -17,11 +17,17 @@ public static class Gojira
     public static async Task<Issue?> CreateIssueAsync(this Jira jira, string type, string project, string summary, string? description = null)
     {
         IEnumerable<IssueType>? issueTypes = await jira.GetIssueTypesAsync();
+        IssueType? issuetype = issueTypes!.SingleOrDefault(t => t.Name == type);
         IEnumerable<Project>? projects = await jira.GetProjectsAsync();
+        Project? proj = projects!.SingleOrDefault(p => p.Name == project || p.Key == project);
+        
+        ArgumentNullException.ThrowIfNull(issuetype, nameof(type));
+        ArgumentNullException.ThrowIfNull(proj, nameof(project));
+
         var issue = new Issue
         {
-            IssueType = issueTypes!.Single(t => t.Name == type),
-            Project = projects!.Single(p => p.Name == project),
+            IssueType = issuetype,
+            Project = proj,
             Summary = summary,
             Description = description
         };
@@ -86,16 +92,16 @@ public static class Gojira
     /// <param name="outwardIssueKey">Issue key of the outward issue.</param>
     /// <param name="comment">A comment created with the link.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public static async Task CreateIssueLinkAsync(this Jira jira, IssueLinkType issueLinkType, string inwardIssueKey, string outwardIssueKey, string? comment = null)
-    {
-        //IssueLink link = new IssueLink();
-        //link.Type = issueLinkType;
-        //link.Comment = string.IsNullOrEmpty(comment) ? null : new Comment() { Body = "comment" };
-        //link.InwardIssue = new Issue(inwardIssueKey);
-        //link.OutwardIssue = new Issue(outwardIssueKey);
-        //await jira.CreateIssueLinkAsync(link);
-        await jira.CreateIssueLinkAsync(issueLinkType, new Issue(inwardIssueKey), new Issue(outwardIssueKey), comment);
-    }
+    //public static async Task CreateIssueLinkAsync(this Jira jira, IssueLinkType issueLinkType, string inwardIssueKey, string outwardIssueKey, string? comment = null)
+    //{
+    //    //IssueLink link = new IssueLink();
+    //    //link.Type = issueLinkType;
+    //    //link.Comment = string.IsNullOrEmpty(comment) ? null : new Comment() { Body = "comment" };
+    //    //link.InwardIssue = new Issue(inwardIssueKey);
+    //    //link.OutwardIssue = new Issue(outwardIssueKey);
+    //    //await jira.CreateIssueLinkAsync(link);
+    //    await jira.CreateIssueLinkAsync(issueLinkType, new Issue(inwardIssueKey), new Issue(outwardIssueKey), comment);
+    //}
 
     ///// <summary>
     ///// Create an issue link

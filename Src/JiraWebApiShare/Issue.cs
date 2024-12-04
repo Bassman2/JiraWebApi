@@ -1,4 +1,8 @@
-﻿namespace JiraWebApi;
+﻿#pragma warning disable IDE0052
+#pragma warning disable IDE0414
+
+
+namespace JiraWebApi;
 
 /// <summary>
 /// Representation of an JIRA issue.
@@ -185,16 +189,16 @@ public sealed class Issue
     /// <summary>
     /// Project version(s) for which the issue is (or was) manifesting.
     /// </summary>
-    [JqlFieldAttribute("affectedVersion", JqlFieldCompare.Comparable | JqlFieldCompare.Sortable | JqlFieldCompare.Include)]
-    public ComparableList<IssueVersion> AffectedVersions
-    {
-        get => this.affectedversions;
-        set => SetValue(ref this.affectedversions, value, ref this.affectedversionsChanged);
-    }
+    //[JqlFieldAttribute("affectedVersion", JqlFieldCompare.Comparable | JqlFieldCompare.Sortable | JqlFieldCompare.Include)]
+    //public List<IssueVersion>? AffectedVersions
+    //{
+    //    get => this.affectedversions;
+    //    set => SetValue(ref this.affectedversions, value, ref this.affectedversionsChanged);
+    //}
 
-    private bool affectedversionsChanged;
-    private ComparableList<IssueVersion> affectedversionsOrginal;
-    private ComparableList<IssueVersion> affectedversions;
+    //private bool affectedversionsChanged;
+    //private List<IssueVersion> affectedversionsOrginal;
+    //private List<IssueVersion> affectedversions;
 
     /// <summary>
     /// The person to whom the issue is currently assigned.
@@ -211,29 +215,29 @@ public sealed class Issue
     /// <summary>
     /// Attachments of the JIRA issue.
     /// </summary>
-    public IEnumerable<Attachment> Attachments { get; private set; }
+    public List<Attachment>? Attachments { get;  set; }
 
     /// <summary>
     /// Category of the JIRA issue.
     /// </summary>
     /// <remarks>For LINQ use only.</remarks>
-    [JqlFieldAttribute("category", JqlFieldCompare.Comparable | JqlFieldCompare.Include)]
-    public string Category
-    {
-        get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); }
-    }
+    //[JqlFieldAttribute("category", JqlFieldCompare.Comparable | JqlFieldCompare.Include)]
+    //public string Category
+    //{
+    //    get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); }
+    //}
 
     /// <summary>
     /// Comments of the JIRA issue.
     /// </summary>
     [JqlFieldAttribute("comment", JqlFieldCompare.Contains)]
-    public ComparableList<Comment> Comments { get; private set; }
+    public List<Comment>? Comments { get;  set; }
 
     /// <summary>
     /// Project component(s) to which this issue relates.
     /// </summary>
     [JqlFieldAttribute("component", JqlFieldCompare.Comparable | JqlFieldCompare.Include)]
-    public ComparableList<Component> Components
+    public List<Component>? Components
     {
         get
         {
@@ -249,8 +253,8 @@ public sealed class Issue
         }
     }
     private bool componentsChanged;
-    private ComparableList<Component> componentsOrginal;
-    private ComparableList<Component> components;
+    private List<Component>? componentsOrginal;
+    private List<Component>? components;
 
     /// <summary>
     /// The time and date on which this issue was entered into JIRA.
@@ -306,7 +310,7 @@ public sealed class Issue
     /// The hardware or software environment to which the issue relates.
     /// </summary>
     [JqlFieldAttribute("environment", JqlFieldCompare.Contains)]
-    public string Environment
+    public string? Environment
     {
         get
         {
@@ -322,31 +326,31 @@ public sealed class Issue
         }
     }
     private bool environmentChanged = false;
-    private string environment;
+    private string? environment;
 
     /// <summary>
     /// Search for issues that belong to a particular epic in GreenHopper. 
     /// </summary>
     /// <remarks>For LINQ use only.</remarks>
     /// <remarks>Only available with GreenHopper 6.1.2 or later.</remarks>
-    [JqlFieldAttribute("\"epic link\"", JqlFieldCompare.Comparable | JqlFieldCompare.Include)]
-    public string EpicLink { get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); } }
+    //[JqlFieldAttribute("\"epic link\"", JqlFieldCompare.Comparable | JqlFieldCompare.Include)]
+    //public string EpicLink { get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); } }
 
     /// <summary>
     /// Filter to use by LINQ.
     /// </summary>
     /// <remarks>For LINQ use only.</remarks>
-    [JqlFieldAttribute("filter", JqlFieldCompare.Comparable | JqlFieldCompare.Include)]
-    public Filter Filter
-    {
-        get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); }
-    }
+    //[JqlFieldAttribute("filter", JqlFieldCompare.Comparable | JqlFieldCompare.Include)]
+    //public Filter Filter
+    //{
+    //    get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); }
+    //}
 
     /// <summary>
     /// Project version(s) in which the issue was (or will be) fixed.
     /// </summary>
     [JqlFieldAttribute("fixVersion", JqlFieldCompare.Comparable | JqlFieldCompare.Sortable | JqlFieldCompare.Include)]
-    public ComparableList<IssueVersion> FixVersions
+    public List<IssueVersion>? FixVersions
     {
         get
         {
@@ -362,14 +366,14 @@ public sealed class Issue
         }
     }
     private bool fixVersionsChanged;
-    private ComparableList<IssueVersion> fixVersionsOrginal;
-    private ComparableList<IssueVersion> fixVersions;
+    private List<IssueVersion>? fixVersionsOrginal;
+    private List<IssueVersion>? fixVersions;
 
     /// <summary>
     /// JIRA can be used to track many different types of issues. 
     /// </summary>
     [JqlFieldAttribute("issuetype", JqlFieldCompare.Comparable | JqlFieldCompare.Include)]
-    public IssueType IssueType
+    public IssueType? IssueType
     {
         get
         {
@@ -385,12 +389,12 @@ public sealed class Issue
         }
     }
     private bool issueTypeChanged;
-    private IssueType issueType;
+    private IssueType? issueType;
 
     /// <summary>
     /// Labels to which this issue relates.
     /// </summary>
-    public IEnumerable<string> Labels
+    public List<string>? Labels
     {
         get
         {
@@ -406,52 +410,52 @@ public sealed class Issue
         }
     }
     private bool labelsChanged;
-    private IEnumerable<string> labelsOrginal;
-    private IEnumerable<string> labels;
+    private List<string>? labelsOrginal;
+    private List<string>? labels;
 
     /// <summary>
     /// Date at which the issue was last viewed.
     /// </summary>
     [JqlFieldAttribute("lastViewed", JqlFieldCompare.Comparable | JqlFieldCompare.Sortable | JqlFieldCompare.Include)]
-    public DateTime? LastViewed { get; private set; }
+    public DateTime? LastViewed { get; set; }
 
     /// <summary>
     /// Issue level for LINQ filtering.
     /// </summary>
     /// <remarks>For LINQ use only.</remarks>
-    [JqlFieldAttribute("level", JqlFieldCompare.Comparable | JqlFieldCompare.Include)]
-    public string Level
-    {
-        get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); }
-    }
+    //[JqlFieldAttribute("level", JqlFieldCompare.Comparable | JqlFieldCompare.Include)]
+    //public string Level
+    //{
+    //    get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); }
+    //}
 
     /// <summary>
     ///  A list of links to related issues.
     /// </summary>
-    public IEnumerable<IssueLink> Links { get; private set; }
+    public IEnumerable<IssueLink>? Links { get;  set; }
 
     /// <summary>
     /// The Original Estimate of the total amount of time required to resolve the issue, as estimated when the issue was created.
     /// </summary>
-    [JqlFieldAttribute("originalEstimate", JqlFieldCompare.Comparable | JqlFieldCompare.Sortable | JqlFieldCompare.Include)]
-    public SortableString OriginalEstimate { get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); } }
+    //[JqlFieldAttribute("originalEstimate", JqlFieldCompare.Comparable | JqlFieldCompare.Sortable | JqlFieldCompare.Include)]
+    //public string? OriginalEstimate { get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); } }
 
     /// <summary>
     /// Original estimate in seconds,
     /// </summary>
-    public long? OriginalEstimateSeconds { get; private set; }
+    public long? OriginalEstimateSeconds { get;  set; }
 
     /// <summary>
     /// Parent issue of a sub task issue.
     /// </summary>
     [JqlFieldAttribute("parent", JqlFieldCompare.Comparable | JqlFieldCompare.Include)]
-    public Issue Parent { get; set; }
+    public Issue? Parent { get; set; }
 
     /// <summary>
     /// The importance of the issue in relation to other issues.
     /// </summary>
     [JqlFieldAttribute("priority", JqlFieldCompare.Comparable | JqlFieldCompare.Sortable | JqlFieldCompare.Include | JqlFieldCompare.Was | JqlFieldCompare.WasInclude | JqlFieldCompare.Changed)]
-    public Priority Priority
+    public Priority? Priority
     {
         get
         {
@@ -467,18 +471,18 @@ public sealed class Issue
         }
     }
     private bool priorityChanged;
-    private Priority priority;
+    private Priority? priority;
 
     /// <summary>
     /// Progress of the issue.
     /// </summary>
-    public Progress Progress { get; private set; }
+    public Progress? Progress { get; set; }
 
     /// <summary>
     /// The 'parent' project to which the issue belongs.
     /// </summary>
     [JqlFieldAttribute("project", JqlFieldCompare.Comparable | JqlFieldCompare.Include)]
-    public Project Project
+    public Project? Project
     {
         get
         {
@@ -494,14 +498,14 @@ public sealed class Issue
         }
     }
     private bool projectChanged = false;
-    private Project project;
+    private Project? project;
 
     /// <summary>
     /// Remaining estimate as string ('4w', '2d', '5h').
     /// </summary>
     /// <remarks>For LINQ use only.</remarks>
-    [JqlFieldAttribute("remainingEstimate", JqlFieldCompare.Comparable | JqlFieldCompare.Sortable | JqlFieldCompare.Include)]
-    public SortableString RemainingEstimate { get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); } }
+    //[JqlFieldAttribute("remainingEstimate", JqlFieldCompare.Comparable | JqlFieldCompare.Sortable | JqlFieldCompare.Include)]
+    //public SortableString RemainingEstimate { get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); } }
 
     /// <summary>
     /// Remaining estimate in seconds.
@@ -512,7 +516,7 @@ public sealed class Issue
     /// Reporter of the JIRA issue.
     /// </summary>
     [JqlFieldAttribute("reporter", JqlFieldCompare.Comparable | JqlFieldCompare.Include | JqlFieldCompare.Was | JqlFieldCompare.WasInclude | JqlFieldCompare.Changed)]
-    public User Reporter
+    public User? Reporter
     {
         get
         {
@@ -528,13 +532,13 @@ public sealed class Issue
         }
     }
     private bool reporterChanged;
-    private User reporter;
+    private User? reporter;
 
     /// <summary>
     /// A record of the issue's resolution, if the issue has been resolved or closed.
     /// </summary>
     [JqlFieldAttribute("resolution", JqlFieldCompare.Comparable | JqlFieldCompare.Sortable | JqlFieldCompare.Include | JqlFieldCompare.Was | JqlFieldCompare.WasInclude | JqlFieldCompare.Changed)]
-    public Resolution Resolution
+    public Resolution? Resolution
     {
         get
         {
@@ -550,7 +554,7 @@ public sealed class Issue
         }
     }
     private bool resolutionChanged;
-    private Resolution resolution;
+    private Resolution? resolution;
 
     /// <summary>
     /// The time and date on which this issue was resolved.
@@ -563,24 +567,24 @@ public sealed class Issue
     /// The security level of the issue.
     /// </summary>
     /// <remarks>For LINQ use only.</remarks>
-    public string SecurityLevel { get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); } }
+    //public string SecurityLevel { get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); } }
     
 
     /// <summary>
     /// Sprint to wich the ticket belongs.
     /// </summary>
     /// <remarks>For LINQ use only and only with Greenhopper.</remarks>
-    [JqlFieldAttribute("sprint", JqlFieldCompare.Comparable | JqlFieldCompare.Include)]
-    public string Sprint
-    {
-        get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); }
-    }
+    //[JqlFieldAttribute("sprint", JqlFieldCompare.Comparable | JqlFieldCompare.Include)]
+    //public string Sprint
+    //{
+    //    get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); }
+    //}
 
     /// <summary>
     /// The stage the issue is currently at in its lifecycle ('workflow'). 
     /// </summary>
     [JqlFieldAttribute("status", JqlFieldCompare.Comparable | JqlFieldCompare.Include | JqlFieldCompare.Was | JqlFieldCompare.WasInclude | JqlFieldCompare.Changed)]
-    public Status Status
+    public Status? Status
     {
         get
         {
@@ -596,18 +600,18 @@ public sealed class Issue
         }
     }
     private bool statusChanged;
-    private Status status;
+    private Status? status;
 
     /// <summary>
     /// Subtask issues of this issue.
     /// </summary>
-    public IEnumerable<Issue> Subtasks { get; private set; }
+    public IEnumerable<Issue>? Subtasks { get; set; }
 
     /// <summary>
     /// A brief one-line summary of the issue
     /// </summary>
     [JqlFieldAttribute("summary", JqlFieldCompare.Contains)]
-    public string Summary
+    public string? Summary
     {
         get
         {
@@ -623,29 +627,29 @@ public sealed class Issue
         }
     }
     private bool summaryChanged = false;
-    private string summary;
+    private string? summary;
 
     /// <summary>
     /// Text field for LINQ text search in all text fields.
     /// </summary>
     /// <remarks>For LINQ use only.</remarks>
-    [JqlFieldAttribute("text", JqlFieldCompare.Contains)]
-    public string Text
-    {
-        get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); }
-    }
+    //[JqlFieldAttribute("text", JqlFieldCompare.Contains)]
+    //public string Text
+    //{
+    //    get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); }
+    //}
 
     /// <summary>
     /// Thumbnails of the issue.
     /// </summary>
     /// <remarks>For LINQ use only.</remarks>
-    public IEnumerable<string> Thumbnails { get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); } }
+    public IEnumerable<string>? Thumbnails { get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); } }
     
     /// <summary>
     /// The sum of the Time Spent from each of the individual work logs for this issue.
     /// </summary>
-    [JqlFieldAttribute("timeSpent", JqlFieldCompare.Comparable | JqlFieldCompare.Sortable | JqlFieldCompare.Include)]
-    public SortableString TimeSpent { get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); } }
+    //[JqlFieldAttribute("timeSpent", JqlFieldCompare.Comparable | JqlFieldCompare.Sortable | JqlFieldCompare.Include)]
+    //public SortableString? TimeSpent { get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); } }
 
     /// <summary>
     /// The sum of the Time Spent from each of the individual work logs for this issue in seconds.
@@ -655,7 +659,7 @@ public sealed class Issue
     /// <summary>
     /// Time tracking of the issue.
     /// </summary>
-    public TimeTracking TimeTracking
+    public TimeTracking? TimeTracking
     {
         get
         {
@@ -668,15 +672,15 @@ public sealed class Issue
         }
     }
     private bool timeTrackingChanged = false;
-    private TimeTracking timeTracking;
+    private TimeTracking? timeTracking;
 
     /// <summary>
     /// The time and date on which this issue was last edited.
     /// </summary>
     [JqlFieldAttribute("updated", JqlFieldCompare.Comparable | JqlFieldCompare.Sortable | JqlFieldCompare.Include)]
-    public DateTime? UpdatedDate { get; private set; }
+    public DateTime? UpdatedDate { get; set; }
 
-    private Votes votes;
+    private Votes? votes;
     /// <summary>
     /// Voters of the issue.
     /// </summary>
@@ -686,15 +690,15 @@ public sealed class Issue
     /// <summary>
     /// The number indicates how many votes this issue has.
     /// </summary>
-    public IEnumerable<User> Voters { get { return this.votes != null ? this.votes.Voters : null; } }
+    //public IEnumerable<User> Voters { get { return this.votes != null ? this.votes.Voters : null; } }
 
     /// <summary>
     /// Voter of the issue.
     /// </summary>
     [JqlFieldAttribute("voter", JqlFieldCompare.Comparable | JqlFieldCompare.Sortable | JqlFieldCompare.Include)]
-    public User Voter { get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); } }
+    public User? Voter { get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); } }
 
-    private Watchers watchers;
+    private Watchers? watchers;
 
     /// <summary>
     /// The number indicates how many people who are watching this issue.
@@ -708,18 +712,18 @@ public sealed class Issue
     /// <summary>
     /// The people who are watching this issue.
     /// </summary>
-    public IEnumerable<User> Watchers
-    {
-        get { return this.watchers != null ? this.watchers.Users : null; }
-    }
+    //public IEnumerable<User> Watchers
+    //{
+    //    get { return this.watchers != null ? this.watchers.Users : null; }
+    //}
 
     /// <summary>
     /// The people who are watching this issue.
-    /// </summary>
-    [JqlFieldAttribute("watcher", JqlFieldCompare.Comparable | JqlFieldCompare.Include)]
-    public User Watcher { get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); } }
+    ///// </summary>
+    //[JqlFieldAttribute("watcher", JqlFieldCompare.Comparable | JqlFieldCompare.Include)]
+    //public User? Watcher { get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); } }
 
-    private WorklogGetResult worklogs;
+    private WorklogGetResult? worklogs;
     /// <summary>
     /// Worklogs of the issue.
     /// </summary>
@@ -729,7 +733,7 @@ public sealed class Issue
     /// Workratio of the issue.
     /// </summary>
     [JqlFieldAttribute("workRatio", JqlFieldCompare.Comparable | JqlFieldCompare.Sortable | JqlFieldCompare.Include)]
-    public int Workratio { get; private set; }
+    public int Workratio { get; set; }
 
     /// <summary>
     /// Custom fields of the issue.
@@ -740,14 +744,14 @@ public sealed class Issue
     {
         get
         {
-            return this.customFields.Where(c => c.Name.Trim() == name.Trim()).Select(c => c.Value).FirstOrDefault();
+            return this.customFields?.Where(c => c.Name!.Trim() == name.Trim()).Select(c => c.Value).FirstOrDefault();
         }
         set
         {
-            CustomField? customField = this.customFields.Where(c => c.Name.Trim() == name.Trim()).FirstOrDefault();
+            CustomField? customField = this.customFields?.Where(c => c.Name!.Trim() == name.Trim()).FirstOrDefault();
             if (customField == null)
             {
-                this.customFields.Add(new CustomField() { Name = name, Value = value, Changed = true });
+                this.customFields?.Add(new CustomField() { Name = name, Value = value, Changed = true });
             }
             else
             {
@@ -756,19 +760,11 @@ public sealed class Issue
             }
         }
     }
-    private List<CustomField> customFields;
+    private List<CustomField>? customFields;
 
     #endregion
-
-    /// <summary>
-    /// Returns the issue key as represent the issue as string.
-    /// </summary>
-    /// <returns>A string element.</returns>
-    public override string ToString()
-    {
-        return this.Key;
-    }
-
+        
+    /*
     /// <summary>
     /// Determines whether the specified object is equal to the current object.
     /// </summary>
@@ -830,7 +826,7 @@ public sealed class Issue
     /// <returns>true if the id of the first element is equal to the id of the second element; otherwise, false.</returns>
     public static bool operator ==(string key, Issue issue)
     {
-        return /*issue != null &&*/ key == issue.Key;
+        return key == issue.Key;
     }
 
     /// <summary>
@@ -841,7 +837,7 @@ public sealed class Issue
     /// <returns>true if the id of the first element is different from the id of the second element; otherwise, false.</returns>
     public static bool operator !=(string key, Issue issue)
     {
-        return /*issue == null ||*/ key != issue.Key;
+        return key != issue.Key;
     }
 
     /// <summary>
@@ -937,6 +933,7 @@ public sealed class Issue
     {
         throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
     }
+    */
 }
 
 

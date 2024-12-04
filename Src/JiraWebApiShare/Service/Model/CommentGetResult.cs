@@ -12,5 +12,5 @@ internal class CommentGetResult
     public int Total { get; set; }
 
     [JsonPropertyName("comments")]
-    public IEnumerable<Comment> Comments { get; set; }
+    public IEnumerable<Comment>? Comments { get; set; }
 }

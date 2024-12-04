@@ -3,5 +3,5 @@
 internal class IssueLinkTypesRespnse
 {
     [JsonPropertyName("issueLinkTypes")]
-    public IEnumerable<IssueLinkType> IssueLinkTypes { get; set; }
+    public List<IssueLinkType>? IssueLinkTypes { get; set; }
 }

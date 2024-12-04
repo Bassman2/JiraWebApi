@@ -32,7 +32,7 @@ internal class JqlExpressionVisitor: ExpressionVisitor
         Visit(expression);
     }
 
-    public static object ModifyExpression(Expression expression, IQueryable<Issue> issues, bool isEnumerable)
+    public static object? ModifyExpression(Expression expression, IQueryable<Issue> issues, bool isEnumerable)
     {
         if (isEnumerable)
         {
