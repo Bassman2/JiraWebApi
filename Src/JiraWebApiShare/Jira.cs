@@ -90,4 +90,36 @@ public sealed class Jira : IDisposable
     }
 
     #endregion
+
+    #region Meta
+
+    public async Task<CreateMeta?> GetCreateMetaAsync(string projectKey, string issueTypeId, CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        var res = await service.GetCreateMetaAsync(projectKey, issueTypeId, cancellationToken);
+        return res;
+    }
+
+    #endregion
+
+    #region User
+
+    public async Task<User?> GetUserAsync(string username, CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        var res = await service.GetUserAsync(username, cancellationToken);
+        return res;
+    }
+
+    public async Task<User?> GetCurrentUserAsync(CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        var res = await service.GetCurrentUserAsync(cancellationToken);
+        return res;
+    }
+
+    #endregion
 }

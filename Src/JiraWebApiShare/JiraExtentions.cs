@@ -17,16 +17,25 @@ public static class JiraExtentions
     public static async Task<Issue?> CreateIssueAsync(this Jira jira, string type, string project, string summary, string? description = null)
     {
         IEnumerable<IssueType>? issueTypes = await jira.GetIssueTypesAsync();
-        IssueType? issuetype = issueTypes!.SingleOrDefault(t => t.Name == type);
+        IssueType? issueType = issueTypes!.SingleOrDefault(t => t.Name == type);
         IEnumerable<Project>? projects = await jira.GetProjectsAsync();
         Project? proj = projects!.SingleOrDefault(p => p.Name == project || p.Key == project);
         
-        ArgumentNullException.ThrowIfNull(issuetype, nameof(type));
+        ArgumentNullException.ThrowIfNull(issueType, nameof(type));
         ArgumentNullException.ThrowIfNull(proj, nameof(project));
+
+        var meta = await jira.GetCreateMetaAsync(proj.Key!, issueType.Id!);
+
+        //Reporter
+        //Summary
+        //Project
+        //    issuetype
+
+
 
         var issue = new Issue
         {
-            IssueType = issuetype,
+            IssueType = issueType,
             Project = proj,
             Summary = summary,
             Description = description

@@ -118,4 +118,7 @@ public sealed class Project
     /// Avatar URLs of the JIRY project.
     /// </summary>
     public AvatarUrls? AvatarUrls { get; set; }
+
+
+
 }

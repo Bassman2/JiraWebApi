@@ -8,18 +8,16 @@ public sealed class CreateMeta
     /// <summary>
     /// Initializes a new instance of the CreateMeta class.
     /// </summary>
-    private CreateMeta()
+    internal CreateMeta()
     { }
 
     /// <summary>
     /// Name of the classes which should be expanded.
     /// </summary>
-    [JsonPropertyName("expand")]
-    public string? Expand { get; private set; }
+    public string? Expand { get; init; }
 
     /// <summary>
     /// Projects for which tickets can be created by the user.
     /// </summary>
-    [JsonPropertyName("projects")]
-    public IEnumerable<Project>? Projects { get; private set; }
+    public IEnumerable<Project>? Projects { get; init; }
 }

@@ -272,13 +272,20 @@ internal class JiraService : JsonService
     /// <param name="username">Name of the user.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     /// <remarks>This resource cannot be accessed anonymously.</remarks>
-    public async Task<User?> GetUserAsync(string username, CancellationToken cancellationToken = default)
+    public async Task<UserModel?> GetUserAsync(string username, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(username, nameof(username));
 
-        User? res = await GetFromJsonAsync<User>($"rest/api/2/user?username={username}", cancellationToken);
+        var res = await GetFromJsonAsync<UserModel>($"rest/api/2/user?username={username}", cancellationToken);
         return res;
     }
+
+    public async Task<UserModel?> GetCurrentUserAsync(CancellationToken cancellationToken)
+    {
+        var res = await GetFromJsonAsync<UserModel>("rest/api/2/myself", cancellationToken);
+        return res;
+    }
+
 
     #endregion
 
@@ -679,9 +686,9 @@ internal class JiraService : JsonService
     /// Projects will not be returned if the user does not have permission to create issues in that project. 
     /// </summary>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<CreateMeta?> GetCreateMetaAsync(/*string projectKey, string issueTypeId*/ CancellationToken cancellationToken = default)
+    public async Task<CreateMetaModel?> GetCreateMetaAsync(string project, string issueType,  CancellationToken cancellationToken = default)
     {
-        CreateMeta? res = await GetFromJsonAsync<CreateMeta>($"rest/api/2/issue/createmeta?expand=projects.issuetypes.fields"/*?projectKeys={0}&issuetypeIds={1}", projectKey, issueTypeId*/, cancellationToken);
+        var res = await GetFromJsonAsync<CreateMetaModel>($"rest/api/2/issue/createmeta/{project}/issuetypes/{issueType}", cancellationToken);
         return res;
     }
 
@@ -1237,6 +1244,28 @@ internal class JiraService : JsonService
         var req = new AssignPutRequest() { Name = userName };
         await PutAsJsonAsync<AssignPutRequest, AssignPutRequest>($"rest/api/2/issue/{issueIdOrKey}/assignee", req, cancellationToken);
     }
+
+
+    /*
+     * 
+     * https://gist.github.com/peteristhegreat/fbc1adae62ac1047761fc3aea496f9fd
+    /rest/internal/2/issue/issue-key/clone
+
+Post? 
+
+-Body "{"summary":"CLONE - test","optionalFields":{},"includeAttachments":true}"
+
+Not found in API documentation? catch with developer console.
+    
+    Scriptrunner script:
+def issueResult = post('/rest/internal/2/issue/[issue key]/clone')
+.header('Authorization', 'Basic [your base64 endcoded user:token ]')
+.header("Content-Type", "application/json")
+.body([summary : "CLONE - test"]).asString()
+return issueResult
+      
+      
+    */
 
     #endregion
 

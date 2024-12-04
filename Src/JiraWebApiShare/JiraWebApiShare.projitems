@@ -9,6 +9,7 @@
     <Import_RootNamespace>JiraWebApi</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)CreateMeta.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Old\AdjustEstimate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Old\Application.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Old\Attachment.cs" />
@@ -25,7 +26,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\ComparableElementModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Old\ComparableList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Old\Component.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Old\CreateMeta.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\CreateMetaModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Old\CustomFieldOption.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Old\CustomFieldType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Old\CustomFieldValue.cs" />
@@ -89,7 +90,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Old\Roles.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Old\Schema.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ServerInfo.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Old\Session.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Old\SortableElement.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Old\SortableString.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Old\Sprint.cs" />
@@ -97,6 +97,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Old\Subscriptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Old\TimeTracking.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Old\Transition.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Session.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)User.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Old\Users.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Usings.cs" />
