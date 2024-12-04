@@ -15,7 +15,7 @@ public class JiraProjectUnitTest : JiraBaseUnitTest
 
         var project = projects.FirstOrDefault(p => p.Key == testProject);
         Assert.IsNotNull(project);
-        Assert.AreEqual("https://jira.elektrobit.com/rest/api/2/project/25411", project.Self, nameof(project.Self));
+        Assert.AreEqual($"{hostPath}rest/api/2/project/25411", project.Self, nameof(project.Self));
         Assert.AreEqual("25411", project.Id, nameof(project.Id));
         Assert.AreEqual("Navigation Suite", project.Name, nameof(project.Name));
         Assert.AreEqual("NAVSUITE", project.Key, nameof(project.Key));
