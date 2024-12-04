@@ -50,13 +50,4 @@ public sealed class IssueType
     /// </summary>
     /// <remarks>Only filled by <see cref="Jira.GetCreateMetaAsync">GetCreateMetaAsync</see> and <see cref="Jira.GetEditMetaAsync">GetEditMetaAsync</see>.</remarks>
     public Fields? Fields { get; internal init; }
-            
-    /// <summary>
-    /// Returns a string that represents the issue type.
-    /// </summary>
-    /// <returns>A string that represents the issue type.</returns>
-    //public override string ToString()
-    //{
-    //    return this.Name;
-    //}
 }
