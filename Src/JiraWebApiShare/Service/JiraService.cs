@@ -1,7 +1,9 @@
 ﻿namespace JiraWebApi.Service;
 
-
+// https://developer.atlassian.com/server/jira/platform/rest/v10002/api-group-serverinfo/#api-group-serverinfo
 // https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-projects/#api-group-projects
+
+// https://docs.atlassian.com/software/jira/docs/api/REST/9.12.0/
 
 /// <summary>
 /// JIRA Wep Api main class.
@@ -20,10 +22,23 @@ internal class JiraService : JsonService
     /// using var jira = new Jira(new Uri("https://jira.atlassian.com"), "pokjfnlkfdskgkljgipooksdlksgölgklösg");
     /// </code>
     /// </example>
+    /// <exception cref="System.Security.Authentication.AuthenticationException">Thrown if authentication failed.</exception> 
     public JiraService(Uri host, string apikey)
     : base(host, SourceGenerationContext.Default, new BearerAuthenticator(apikey))
     {
         //provider = new(this);
+    }
+
+    protected override void TestAutentication()
+    {
+        try
+        {
+            var _ = GetStringAsync("/rest/api/2/serverInfo", default).Result;
+        }
+        catch (Exception ex)
+        {
+            throw new AuthenticationException(ex.Message, ex);
+        }
     }
 
     //this.host = host;
@@ -52,55 +67,16 @@ internal class JiraService : JsonService
     //{
     //    this.LoginAsync(username, password).Wait();
     //}
-
-    #region Login
-
-    /// <summary>
-    /// Creates a new session for a user in JIRA.
-    /// </summary>
-    /// <param name="username">Name of the user to login.</param>
-    /// <param name="password">Password of the user to login.</param>
-    /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<Session?> LoginAsync(string username, string password, CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNullOrEmpty(username, nameof(username));
-        ArgumentNullException.ThrowIfNullOrEmpty(password, nameof(password));
-
-        var req = new SessionPostRequestModel() { Username = username, Password = password };
-        var res = await PostAsJsonAsync<SessionPostRequestModel, SessionPostResultModel>("rest/auth/1/session", req, cancellationToken);
-        return res?.Session;
-    }
-
-    /// <summary>
-    /// Logs the current user out of JIRA, destroying the existing session, if any.
-    /// </summary>
-    /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task LogoutAsync(CancellationToken cancellationToken = default)
-    {
-        await DeleteAsync("rest/auth/1/session", cancellationToken);
-    }
-
-    /// <summary>
-    /// Returns information about the currently authenticated user's session.
-    /// </summary>
-    /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<LoginInfo?> GetLoginInfoAsync(CancellationToken cancellationToken = default)
-    {
-        SessionGetResult? res = await GetFromJsonAsync<SessionGetResult>("rest/auth/1/session", cancellationToken);
-        return res?.LoginInfo;
-    }
-
-    #endregion
-
+    
     #region ServerInfo
 
     /// <summary>
     /// Returns general information about the current JIRA server.
     /// </summary>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<ServerInfo?> GetServerInfoAsync(CancellationToken cancellationToken = default)
+    public async Task<ServerInfoModel?> GetServerInfoAsync(CancellationToken cancellationToken)
     {
-        ServerInfo? res = await GetFromJsonAsync<ServerInfo>("rest/api/2/serverInfo", cancellationToken);
+        var res = await GetFromJsonAsync<ServerInfoModel>("/rest/api/2/serverInfo", cancellationToken);
         return res;
     }
 

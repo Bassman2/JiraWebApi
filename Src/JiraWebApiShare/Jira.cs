@@ -3,7 +3,13 @@
 public sealed class Jira : IDisposable
 {
     private JiraService? service;
-        
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="host"></param>
+    /// <param name="apikey"></param>    
+    /// <exception cref="System.Security.Authentication.AuthenticationException">Thrown if authentication failed.</exception> 
     public Jira(Uri host, string apikey)
     {
         service = new JiraService(host, apikey);
@@ -19,13 +25,21 @@ public sealed class Jira : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    public async Task<LoginInfo?> GetLoginInfoAsync(CancellationToken cancellationToken = default)
+    #region ServerInfo
+
+    /// <summary>
+    /// Returns general information about the current JIRA server.
+    /// </summary>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<ServerInfo?> GetServerInfoAsync(CancellationToken cancellationToken = default)
     {
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
 
-        var res = await service.GetLoginInfoAsync(cancellationToken);
+        var res = await service.GetServerInfoAsync(cancellationToken);
         return res;
     }
+
+    #endregion
 
     #region Issues
 
@@ -56,7 +70,6 @@ public sealed class Jira : IDisposable
 
         var res = await service.GetIssueTypesAsync(cancellationToken);
         return res?.Select(static i => (IssueType)i!);
-        //return res?.Cast<IssueType>();   
     }
 
     #endregion

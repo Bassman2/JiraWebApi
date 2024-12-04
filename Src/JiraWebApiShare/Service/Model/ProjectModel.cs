@@ -3,42 +3,26 @@
 /// <summary>
 /// Rrepresentation of a JIRA project. 
 /// </summary>
-internal  class ProjectModel : ComparableElementModel
+internal  class ProjectModel //: ComparableElementModel
 {
-   
+    /// <summary>
+    /// Url of the JIRA REST project.
+    /// </summary>
+    [JsonPropertyName("self")]
+    public string? Self { get; set; }
 
     /// <summary>
-    /// Support of the JQL 'projectsLeadByUser()' operator in LINQ.
+    /// Id of the JIRA project.
     /// </summary>
-    /// <returns>Not used.</returns>
-    /// <remarks>For Linq use only.</remarks>
-    public static Project[] ProjectsLeadByUser()
-    {
-        throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
-    }
+    [JsonPropertyName("id")]
+    public string? Id { get; set; }
 
     /// <summary>
-    /// Support of the JQL 'projectsWhereUserHasPermission()' operator in LINQ.
+    /// Name of the JIRA project.
     /// </summary>
-    /// <returns>Not used.</returns>
-    /// <remarks>For Linq use only.</remarks>
-    [JqlFunction("projectsWhereUserHasPermission")]
-    public static Project[] ProjectsWhereUserHasPermission()
-    {
-        throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
-    }
+    [JsonPropertyName("name")]
+    public string? Name { get; set; }
 
-    /// <summary>
-    /// Support of the JQL 'projectsWhereUserHasRole()' operator in LINQ.
-    /// </summary>
-    /// <returns>Not used.</returns>
-    /// <remarks>For Linq use only.</remarks>
-    [JqlFunction("projectsWhereUserHasRole")]
-    public static Project[] ProjectsWhereUserHasRole()
-    {
-        throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
-    }
-    
     /// <summary>
     /// Key of the JIRY project.
     /// </summary>

@@ -3,51 +3,66 @@
 /// <summary>
 /// Representation of a JIRA issue type. 
 /// </summary>
-internal class IssueTypeModel : ComparableElementModel
+internal class IssueTypeModel 
 {
     /// <summary>
     /// Initializes a new instance of the IssueType class.
     /// </summary>
 
     /// <summary>
+    /// Url of the JIRA REST item.
+    /// </summary>
+    [JsonPropertyName("self")]
+    public string? Self { get; set; }
+
+    /// <summary>
+    /// Id of the JIRA item.
+    /// </summary>
+    [JsonPropertyName("id")]
+    public string? Id { get; set; }
+    
+    /// <summary>
     /// Description of the JIRA issue type.
     /// </summary>
     [JsonPropertyName("description")]
-    public string? Description { get; private set; }
+    public string? Description { get; set; }
 
     /// <summary>
     /// Url of the issue type icon.
     /// </summary>
     [JsonPropertyName("iconUrl")]
-    public Uri? IconUrl { get; private set; }
+    public Uri? IconUrl { get; set; }
+
+    /// <summary>
+    /// Name of the JIRA item.
+    /// </summary>
+    [JsonPropertyName("name")]
+    public string? Name { get; set; }
 
     /// <summary>
     /// Signals if the issue type is a subtask issue type.
     /// </summary>
     [JsonPropertyName("subtask")]
-    public bool IsSubtask { get; private set; }
+    public bool IsSubtask { get; set; }
 
     /// <summary>
-    /// Name of the classes which should be expanded.
+    /// Signals if the issue type is a subtask issue type.
     /// </summary>
-    [JsonPropertyName("expand")]
-    public string? Expand { get; private set; }
+    [JsonPropertyName("avatarId")]
+    public int AvatarId { get; set; }
+
+    ///// <summary>
+    ///// Name of the classes which should be expanded.
+    ///// </summary>
+    //[JsonPropertyName("expand")]
+    //public string? Expand { get; set; }
 
     /// <summary>
     /// Fields which are editable for this issue type. Used by meta information.
     /// </summary>
     /// <remarks>Only filled by <see cref="Jira.GetCreateMetaAsync">GetCreateMetaAsync</see> and <see cref="Jira.GetEditMetaAsync">GetEditMetaAsync</see>.</remarks>
     //[JsonPropertyName("fields")]
-    //public Fields? Fields { get; private set; }
-
-    ///// <summary>
-    ///// Returns a string that represents the issue type.
-    ///// </summary>
-    ///// <returns>A string that represents the issue type.</returns>
-    //public override string ToString()
-    //{
-    //    return this.Name;
-    //}
+    //public Fields? Fields { get; set; }
 
     public static implicit operator IssueType?(IssueTypeModel? model)
     {
@@ -55,11 +70,11 @@ internal class IssueTypeModel : ComparableElementModel
         {
             Self = model.Self,
             Id = model.Id,
-            Name = model.Name,
             Description = model.Description,
             IconUrl = model.IconUrl,
+            Name = model.Name,
             IsSubtask = model.IsSubtask,
-            Expand = model.Expand,
+            AvatarId = model.AvatarId,
             //Fields = model.Fields
         };
     }

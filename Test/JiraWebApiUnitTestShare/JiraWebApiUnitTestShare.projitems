@@ -10,6 +10,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)JiraBaseUnitTest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JiraIssueTypeUnitTest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JiraProjectUnitTest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JiraServerInfoUnitTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JiraTicketUnitTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Usings.cs" />
   </ItemGroup>

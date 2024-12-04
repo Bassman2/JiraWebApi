@@ -54,10 +54,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\SearchRequest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\SearchResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\SerializeMode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\ServerInfoModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\SessionModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\SessionGetResult.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\SessionPostRequestModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\SessionPostResultModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\SourceGenerationContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\TransitionGetResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\TransitionPostReq.cs" />
@@ -89,7 +88,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Old\Restrict.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Old\Roles.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Old\Schema.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Old\ServerInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ServerInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Old\Session.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Old\SortableElement.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Old\SortableString.cs" />

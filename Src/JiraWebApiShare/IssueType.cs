@@ -40,14 +40,16 @@ public sealed class IssueType
     /// </summary>
     public bool IsSubtask { get; internal init; }
 
-    /// <summary>
-    /// Name of the classes which should be expanded.
-    /// </summary>
-    public string? Expand { get; internal init; }
+    public int AvatarId { get; internal set; }
 
-    /// <summary>
-    /// Fields which are editable for this issue type. Used by meta information.
-    /// </summary>
-    /// <remarks>Only filled by <see cref="Jira.GetCreateMetaAsync">GetCreateMetaAsync</see> and <see cref="Jira.GetEditMetaAsync">GetEditMetaAsync</see>.</remarks>
-    public Fields? Fields { get; internal init; }
+    ///// <summary>
+    ///// Name of the classes which should be expanded.
+    ///// </summary>
+    //public string? Expand { get; internal init; }
+
+    ///// <summary>
+    ///// Fields which are editable for this issue type. Used by meta information.
+    ///// </summary>
+    ///// <remarks>Only filled by <see cref="Jira.GetCreateMetaAsync">GetCreateMetaAsync</see> and <see cref="Jira.GetEditMetaAsync">GetEditMetaAsync</see>.</remarks>
+    //public Fields? Fields { get; internal init; }
 }
