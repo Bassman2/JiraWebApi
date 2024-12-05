@@ -1167,6 +1167,17 @@ internal class JiraService : JsonService
         return res;
     }
 
+    public async Task<IssueModel?> CreateIssueAsync(CreateIssueModel issue, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(issue, nameof(issue));
+
+        IssueModel? res = await PostAsJsonAsync<CreateIssueModel, IssueModel>("rest/api/2/issue", issue, cancellationToken);
+        //issue.ResetAllChanged();
+        //res?.UpdateCustomFields(await GetCachedFieldsAsync());
+        return res;
+    }
+
+
     /// <summary>
     /// Returns a full representation of the issue for the given issue key. 
     /// </summary>
