@@ -40,7 +40,7 @@ public static class JiraExtentions
             Summary = summary,
             Description = description
         };
-        return await jira.CreateIssueAsync(issue);
+        return issue;
     }
 
     /// <summary>
@@ -53,20 +53,20 @@ public static class JiraExtentions
     /// <param name="summary">Summary of the new issue.</param>
     /// <param name="description">Description of the new issue.</param>
     /// <returns>The new issue embedded in the task object representing the asynchronous operation..</returns>
-    public static async Task<Issue?> CreateSubIssueAsync(this Jira jira, string parent, string type, string project, string summary, string? description = null)
-    {
-        var issueTypes = await jira.GetIssueTypesAsync();
-        var projects = await jira.GetProjectsAsync();
-        var issue = new Issue
-        {
-            IssueType = issueTypes!.Single(t => t.Name == type),
-            Project = projects!.Single(p => p.Name == project),
-            Summary = summary,
-            Description = description,
-            Parent = new Issue(parent)
-        };
-        return await jira.CreateIssueAsync(issue);
-    }
+    //public static async Task<Issue?> CreateSubIssueAsync(this Jira jira, string parent, string type, string project, string summary, string? description = null)
+    //{
+    //    var issueTypes = await jira.GetIssueTypesAsync();
+    //    var projects = await jira.GetProjectsAsync();
+    //    var issue = new Issue
+    //    {
+    //        IssueType = issueTypes!.Single(t => t.Name == type),
+    //        Project = projects!.Single(p => p.Name == project),
+    //        Summary = summary,
+    //        Description = description,
+    //        Parent = new Issue(parent)
+    //    };
+    //    return await jira.CreateIssueAsync(issue);
+    //}
 
     ///// <summary>
     ///// Create an issue link.

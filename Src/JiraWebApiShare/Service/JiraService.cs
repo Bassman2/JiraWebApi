@@ -697,11 +697,11 @@ internal class JiraService : JsonService
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<EditMeta?> GetEditMetaAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
+    public async Task<CreateMetaModel?> GetEditMetaAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
 
-        EditMeta? res = await GetFromJsonAsync<EditMeta>($"rest/api/2/issue/{issueIdOrKey}/editmeta", cancellationToken);
+        var res = await GetFromJsonAsync<CreateMetaModel>($"rest/api/2/issue/{issueIdOrKey}/editmeta", cancellationToken);
         return res;
     }
 
@@ -1167,15 +1167,25 @@ internal class JiraService : JsonService
         return res;
     }
 
-    public async Task<IssueModel?> CreateIssueAsync(CreateIssueModel issue, CancellationToken cancellationToken = default)
+    public async Task<IssueModel?> CreateIssueAsync(CreateIssueModel createIssue, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(issue, nameof(issue));
+        ArgumentNullException.ThrowIfNull(createIssue, nameof(createIssue));
 
-        IssueModel? res = await PostAsJsonAsync<CreateIssueModel, IssueModel>("rest/api/2/issue", issue, cancellationToken);
+        IssueModel? res = await PostAsJsonAsync<CreateIssueModel, IssueModel>("rest/api/2/issue", createIssue, cancellationToken);
         //issue.ResetAllChanged();
         //res?.UpdateCustomFields(await GetCachedFieldsAsync());
         return res;
     }
+
+    //public async Task<IssueModel?> CreateIssueAsync(CreateIssueModel createIssue, CancellationToken cancellationToken = default)
+    //{
+    //    IssueModel? res = await PostAsJsonAsync<CreateIssueModel, IssueModel>("rest/api/2/issue", createIssue, cancellationToken);
+    //    //issue.ResetAllChanged();
+    //    //res?.UpdateCustomFields(await GetCachedFieldsAsync());
+    //    return res;
+    //}
+
+   
 
 
     /// <summary>

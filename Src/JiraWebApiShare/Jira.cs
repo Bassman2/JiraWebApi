@@ -48,12 +48,34 @@ public sealed class Jira : IDisposable
     /// </summary>
     /// <param name="issue">Issue class to create.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<Issue?> CreateIssueAsync(Issue issue, CancellationToken cancellationToken = default)
+    public async Task<Issue?> CreateIssueAsync(string projectId, string issueTypeId, string reporter, string summary, string description, CancellationToken cancellationToken = default)
     {
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
 
-        CreateIssueModel createIssueModel = new CreateIssueModel(); 
-        var res = await service.CreateIssueAsync(createIssueModel, cancellationToken);
+        CreateIssueModel model = new() { Fields = [] };
+        model.Fields.Add("project", new ProjectModel() { Id = projectId });
+        model.Fields.Add("issuetype", new IssueTypeModel() { Id = issueTypeId });
+        model.Fields.Add("reporter", new UserModel() { Name = reporter });
+        model.Fields.Add("summary", summary);
+        model.Fields.Add("description", description);
+
+        var res = await service.CreateIssueAsync(model, cancellationToken);
+        return res;
+    }
+
+    public async Task<Issue?> CreateSubIssueAsync(string parentKey, string projectId, string issueTypeId, string reporter, string summary, string description, CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        CreateIssueModel model = new() { Fields = [] };
+        model.Fields.Add("parent", new IssueModel() { Key = parentKey });
+        model.Fields.Add("project", new ProjectModel() { Id = projectId });
+        model.Fields.Add("issuetype", new IssueTypeModel() { Id = issueTypeId });
+        model.Fields.Add("reporter", new UserModel() { Name = reporter });
+        model.Fields.Add("summary", summary);
+        model.Fields.Add("description", description);
+
+        var res = await service.CreateIssueAsync(model, cancellationToken);
         return res;
     }
 
@@ -99,6 +121,14 @@ public sealed class Jira : IDisposable
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
 
         var res = await service.GetCreateMetaAsync(projectKey, issueTypeId, cancellationToken);
+        return res;
+    }
+
+    public async Task<CreateMeta?> GetEditMetaAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        var res = await service.GetEditMetaAsync(issueIdOrKey, cancellationToken);
         return res;
     }
 

@@ -43,13 +43,13 @@ internal class IssueTypeModel
     /// Signals if the issue type is a subtask issue type.
     /// </summary>
     [JsonPropertyName("subtask")]
-    public bool IsSubtask { get; set; }
+    public bool? IsSubtask { get; set; }
 
     /// <summary>
     /// Signals if the issue type is a subtask issue type.
     /// </summary>
     [JsonPropertyName("avatarId")]
-    public int AvatarId { get; set; }
+    public int? AvatarId { get; set; }
 
     ///// <summary>
     ///// Name of the classes which should be expanded.

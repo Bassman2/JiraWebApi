@@ -38,9 +38,9 @@ public sealed class IssueType
     /// <summary>
     /// Signals if the issue type is a subtask issue type.
     /// </summary>
-    public bool IsSubtask { get; internal init; }
+    public bool? IsSubtask { get; internal init; }
 
-    public int AvatarId { get; internal set; }
+    public int? AvatarId { get; internal set; }
 
     ///// <summary>
     ///// Name of the classes which should be expanded.

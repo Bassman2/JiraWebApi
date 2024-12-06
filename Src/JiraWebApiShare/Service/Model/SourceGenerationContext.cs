@@ -9,5 +9,6 @@
 [JsonSerializable(typeof(IEnumerable<ProjectModel>))]
 [JsonSerializable(typeof(IssueModel))]
 [JsonSerializable(typeof(CreateMetaModel))]
+[JsonSerializable(typeof(CreateIssueModel))]
 internal partial class SourceGenerationContext : JsonSerializerContext
 { }
