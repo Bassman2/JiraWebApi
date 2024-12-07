@@ -575,7 +575,7 @@ internal class JiraService : JsonService
     /// <remarks>Only the fields Self, Id, Key, Name and AvatarUrls will be filled by GetProjectsAsync. Call GetProjectAsync to get all fields. </remarks>
     public async Task<IEnumerable<ProjectModel>?> GetProjectsAsync(CancellationToken cancellationToken = default)
     {
-        IEnumerable<ProjectModel>? res = await GetFromJsonAsync<IEnumerable<ProjectModel>>("rest/api/2/project", cancellationToken);
+        var res = await GetFromJsonAsync<IEnumerable<ProjectModel>>("rest/api/2/project", cancellationToken);
         return res;
     }
 
@@ -584,11 +584,11 @@ internal class JiraService : JsonService
     /// </summary>
     /// <param name="projectKey">Key of the project.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<Project?> GetProjectAsync(string projectKey, CancellationToken cancellationToken = default)
+    public async Task<ProjectModel?> GetProjectAsync(string projectIdOrKey, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNullOrEmpty(projectKey, nameof(projectKey));
+        ArgumentNullException.ThrowIfNullOrEmpty(projectIdOrKey, nameof(projectIdOrKey));
 
-        Project? res = await GetFromJsonAsync<Project>($"rest/api/2/project/{projectKey}", cancellationToken);
+        var res = await GetFromJsonAsync<ProjectModel>($"rest/api/2/project/{projectIdOrKey}", cancellationToken);
         return res;
     }
 

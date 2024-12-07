@@ -1,11 +1,45 @@
 ﻿namespace JiraWebApi;
 
 /// <summary>
-/// Rrepresentation of a JIRA project. 
+/// Representation of a JIRA project. 
 /// </summary>
 [DebuggerDisplay("{Id} {Key} {Name}")]
 public sealed class Project
 {
+    private readonly JiraService? service;
+
+    public Project()
+    {
+
+    }
+
+    public Project(object a, object b)
+    {
+
+    }
+
+    internal Project(JiraService service, ProjectModel model)
+    {
+        this.service = service;
+        Self = model.Self;
+        Id = model.Id;
+        Name = model.Name;
+        Key = model.Key!;
+        Description = model.Description;
+        IconUrl = model.IconUrl;
+        Lead = model.Lead;
+        Components = model.Components;
+        IssueTypes = model.IssueTypes;
+        Url = model.Url;
+        Email = model.Email;
+        AssigneeType = model.AssigneeType;
+        Versions = model.Versions;
+        Roles = model.Roles;
+        AvatarUrls = model.AvatarUrls;
+    }
+
+    #region Properties
+
     /// <summary>
     /// Url of the JIRA REST item.
     /// </summary>
@@ -20,49 +54,11 @@ public sealed class Project
     /// Name of the JIRA item.
     /// </summary>
     public string? Name { get; set; }
-
-    ///// <summary>
-    ///// Initializes a new instance of the Project class.
-    ///// </summary>
-    //internal Project()
-    //{ }
-
-    ///// <summary>
-    ///// Support of the JQL 'projectsLeadByUser()' operator in LINQ.
-    ///// </summary>
-    ///// <returns>Not used.</returns>
-    ///// <remarks>For Linq use only.</remarks>
-    //public static Project[] ProjectsLeadByUser()
-    //{
-    //    throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
-    //}
-
-    ///// <summary>
-    ///// Support of the JQL 'projectsWhereUserHasPermission()' operator in LINQ.
-    ///// </summary>
-    ///// <returns>Not used.</returns>
-    ///// <remarks>For Linq use only.</remarks>
-    //[JqlFunction("projectsWhereUserHasPermission")]
-    //public static Project[] ProjectsWhereUserHasPermission()
-    //{
-    //    throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
-    //}
-
-    ///// <summary>
-    ///// Support of the JQL 'projectsWhereUserHasRole()' operator in LINQ.
-    ///// </summary>
-    ///// <returns>Not used.</returns>
-    ///// <remarks>For Linq use only.</remarks>
-    //[JqlFunction("projectsWhereUserHasRole")]
-    //public static Project[] ProjectsWhereUserHasRole()
-    //{
-    //    throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
-    //}
-
+    
     /// <summary>
     /// Key of the JIRY project.
     /// </summary>
-    public string? Key { get; set; }
+    public string Key { get; }
             
     /// <summary>
     /// Description of the JIRY project.
@@ -119,6 +115,22 @@ public sealed class Project
     /// </summary>
     public AvatarUrls? AvatarUrls { get; set; }
 
+    #endregion
 
+    public async Task<CreateMeta?> GetCreateMetaAsync(string projectKey, string issueTypeId, CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        var res = await service.GetCreateMetaAsync(this.Key, issueTypeId, cancellationToken);
+        return res;
+    }
+
+    public async Task<CreateMeta?> GetEditMetaAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        var res = await service.GetEditMetaAsync(issueIdOrKey, cancellationToken);
+        return res;
+    }
 
 }

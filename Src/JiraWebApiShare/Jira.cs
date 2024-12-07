@@ -109,7 +109,15 @@ public sealed class Jira : IDisposable
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
 
         var res = await service.GetProjectsAsync(cancellationToken);
-        return res?.Select(static i => (Project)i!); 
+        return res.Cast<Project>(this.service);  //res?.Select(static i => (Project)i!); 
+    }
+
+    public async Task<Project?> GetProjectByKeyAsync(string projectKey, CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        var res = await service.GetProjectAsync(projectKey, cancellationToken);
+        return res.Cast<Project>(this.service);
     }
 
     #endregion
