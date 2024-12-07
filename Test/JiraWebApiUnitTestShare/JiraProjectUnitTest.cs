@@ -37,9 +37,9 @@ public class JiraProjectUnitTest : JiraBaseUnitTest
         Assert.AreEqual("25411", project.Id, nameof(project.Id));
         Assert.AreEqual("Navigation Suite", project.Name, nameof(project.Name));
         Assert.AreEqual("NAVSUITE", project.Key, nameof(project.Key));
-        Assert.AreEqual(null, project.Description, nameof(project.Description));
-        Assert.AreEqual(null, project.Url?.ToString(), nameof(project.Url));
+        Assert.AreEqual("Test Project", project.Description, nameof(project.Description));
+        Assert.AreEqual($"{host}projects/NAVSUITE/issues", project.Url?.ToString(), nameof(project.Url));
         Assert.AreEqual(null, project.Email, nameof(project.Email));
-        Assert.AreEqual(null, project.AssigneeType, nameof(project.AssigneeType));
+        Assert.AreEqual("PROJECT_LEAD", project.AssigneeType, nameof(project.AssigneeType));
     }
 }

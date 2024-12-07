@@ -1,4 +1,6 @@
-﻿namespace JiraWebApi;
+﻿using System.Reflection;
+
+namespace JiraWebApi;
 
 public sealed class Jira : IDisposable
 {
@@ -43,18 +45,31 @@ public sealed class Jira : IDisposable
 
     #region Issues
 
+    public async Task<Issue?> GetIssueAsync(string issueKey, CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(issueKey, nameof(issueKey));
+
+        var res = await service.GetIssueAsync(issueKey, null, null, cancellationToken);
+        return res.Cast<Issue>();
+    }
+
     /// <summary>
     /// Creates an issue or a sub-task.
     /// </summary>
     /// <param name="issue">Issue class to create.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<Issue?> CreateIssueAsync(string projectId, string issueTypeId, string reporter, string summary, string description, CancellationToken cancellationToken = default)
+    public async Task<Issue?> CreateIssueAsync(Project project, IssueType issueType, string reporter, string summary, string description, CancellationToken cancellationToken = default)
     {
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        ArgumentNullException.ThrowIfNull(project, nameof(project));
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(project.Id, nameof(project.Id));
+        ArgumentNullException.ThrowIfNull(issueType, nameof(issueType));
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(issueType.Id, nameof(issueType.Id));
 
         CreateIssueModel model = new() { Fields = [] };
-        model.Fields.Add("project", new ProjectModel() { Id = projectId });
-        model.Fields.Add("issuetype", new IssueTypeModel() { Id = issueTypeId });
+        model.Fields.Add("project", new ProjectModel() { Id = project.Id });
+        model.Fields.Add("issuetype", new IssueTypeModel() { Id = issueType.Id });
         model.Fields.Add("reporter", new UserModel() { Name = reporter });
         model.Fields.Add("summary", summary);
         model.Fields.Add("description", description);
@@ -93,6 +108,15 @@ public sealed class Jira : IDisposable
 
         var res = await service.GetIssueTypesAsync(cancellationToken);
         return res?.Select(static i => (IssueType)i!);
+    }
+
+    public async Task<IssueType?> GetIssueTypeAsync(string name, CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        var res = await service.GetIssueTypesAsync(cancellationToken);
+        var issueType = res?.FirstOrDefault(i => string.Equals(i.Name, name, StringComparison.OrdinalIgnoreCase));
+        return issueType.Cast<IssueType>();
     }
 
     #endregion

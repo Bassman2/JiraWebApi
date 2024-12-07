@@ -766,7 +766,7 @@ public sealed class Issue
     private List<CustomField>? customFields;
 
     #endregion
-        
+
     /*
     /// <summary>
     /// Determines whether the specified object is equal to the current object.
@@ -937,6 +937,23 @@ public sealed class Issue
         throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
     }
     */
+
+    
+    public async Task<Issue?> CreateSubIssueAsync(IssueType issueType, string reporter, string summary, string description, CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        CreateIssueModel model = new() { Fields = [] };
+        model.Fields.Add("parent", new IssueModel() { Key = parentKey });
+        model.Fields.Add("project", new ProjectModel() { Id = projectId });
+        model.Fields.Add("issuetype", new IssueTypeModel() { Id = issueTypeId });
+        model.Fields.Add("reporter", new UserModel() { Name = reporter });
+        model.Fields.Add("summary", summary);
+        model.Fields.Add("description", description);
+
+        var res = await service.CreateIssueAsync(model, cancellationToken);
+        return res;
+    }
 }
 
 

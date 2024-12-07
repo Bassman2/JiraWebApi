@@ -1195,7 +1195,7 @@ internal class JiraService : JsonService
     /// <param name="fields">Fields which should be filled.</param>
     /// <param name="expand">Objects which should be expanded.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<Issue?> GetIssueAsync(string issueIdOrKey, string? fields = null, string? expand = null, CancellationToken cancellationToken = default)
+    public async Task<Issue?> GetIssueAsync(string issueIdOrKey, string? fields, string? expand, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
 

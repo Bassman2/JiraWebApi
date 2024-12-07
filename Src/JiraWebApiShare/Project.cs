@@ -8,21 +8,11 @@ public sealed class Project
 {
     private readonly JiraService? service;
 
-    public Project()
-    {
-
-    }
-
-    public Project(object a, object b)
-    {
-
-    }
-
     internal Project(JiraService service, ProjectModel model)
     {
         this.service = service;
         Self = model.Self;
-        Id = model.Id;
+        Id = model.Id!;
         Name = model.Name;
         Key = model.Key!;
         Description = model.Description;
@@ -48,7 +38,7 @@ public sealed class Project
     /// <summary>
     /// Id of the JIRA item.
     /// </summary>
-    public string? Id { get; set; }
+    public string Id { get; set; }
 
     /// <summary>
     /// Name of the JIRA item.
@@ -116,8 +106,8 @@ public sealed class Project
     public AvatarUrls? AvatarUrls { get; set; }
 
     #endregion
-
-    public async Task<CreateMeta?> GetCreateMetaAsync(string projectKey, string issueTypeId, CancellationToken cancellationToken = default)
+    
+    public async Task<CreateMeta?> GetCreateMetaAsync(string issueTypeId, CancellationToken cancellationToken = default)
     {
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
 
@@ -133,4 +123,21 @@ public sealed class Project
         return res;
     }
 
+    public async Task<Issue?> CreateIssueAsync(IssueType issueType, string reporter, string summary, string description, CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        
+        ArgumentNullException.ThrowIfNull(issueType, nameof(issueType));
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(issueType.Id, nameof(issueType.Id));
+
+        CreateIssueModel model = new() { Fields = [] };
+        model.Fields.Add("project", new ProjectModel() { Id = this.Id });
+        model.Fields.Add("issuetype", new IssueTypeModel() { Id = issueType.Id });
+        model.Fields.Add("reporter", new UserModel() { Name = reporter });
+        model.Fields.Add("summary", summary);
+        model.Fields.Add("description", description);
+
+        var res = await service.CreateIssueAsync(model, cancellationToken);
+        return res;
+    }
 }
