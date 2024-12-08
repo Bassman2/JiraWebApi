@@ -9,38 +9,47 @@ public sealed class IssueType
     ///// <summary>
     ///// Initializes a new instance of the IssueType class.
     ///// </summary>
-    //internal IssueType()
-    //{ }
+    internal IssueType(IssueTypeModel model)
+    {
+        Self = model.Self;
+        Id = model.Id;
+        Name = model.Name;
+        Description = model.Description;
+        IconUrl = model.IconUrl;
+        IsSubtask = model.IsSubtask;
+        AvatarId = model.AvatarId;
+       //Fields = model.Fields
+    }
 
-    public string? Self { get; internal init; }
+    public string? Self { get; }
 
     /// <summary>
     /// Id of the JIRA item.
     /// </summary>
     
-    public string? Id { get; internal init; }
+    public string? Id { get; }
 
     /// <summary>
     /// Name of the issue type.
     /// </summary>
-    public string? Name { get; internal init; }
+    public string? Name { get; }
 
     /// <summary>
     /// Description of the JIRA issue type.
     /// </summary>
-    public string? Description { get; internal init; }
+    public string? Description { get; }
 
     /// <summary>
     /// Url of the issue type icon.
     /// </summary>
-    public Uri? IconUrl { get; internal init; }
+    public Uri? IconUrl { get; }
 
     /// <summary>
     /// Signals if the issue type is a subtask issue type.
     /// </summary>
-    public bool? IsSubtask { get; internal init; }
+    public bool? IsSubtask { get; }
 
-    public int? AvatarId { get; internal set; }
+    public int? AvatarId { get; }
 
     ///// <summary>
     ///// Name of the classes which should be expanded.

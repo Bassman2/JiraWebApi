@@ -99,11 +99,11 @@ internal class JiraService : JsonService
     /// </summary>
     /// <param name="issueTypeId">Id of the issue type.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IssueType?> GetIssueTypeAsync(string issueTypeId, CancellationToken cancellationToken = default)
+    public async Task<IssueTypeModel?> GetIssueTypeAsync(string issueTypeId, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueTypeId, nameof(issueTypeId));
         
-        IssueType? res = await GetFromJsonAsync<IssueType>($"rest/api/2/issuetype/{issueTypeId}", cancellationToken);
+        var res = await GetFromJsonAsync<IssueTypeModel>($"rest/api/2/issuetype/{issueTypeId}", cancellationToken);
         return res;
     }
 
@@ -883,7 +883,7 @@ internal class JiraService : JsonService
     }
 
     /// <summary>
-    /// Cast your vote in favour of an issue.
+    /// CastModel your vote in favour of an issue.
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
@@ -1157,15 +1157,15 @@ internal class JiraService : JsonService
     /// </summary>
     /// <param name="issue">Issue class to create.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IssueModel?> CreateIssueAsync(IssueModel issue, CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(issue, nameof(issue));
+    //public async Task<IssueModel?> CreateIssueAsync(IssueModel issue, CancellationToken cancellationToken = default)
+    //{
+    //    ArgumentNullException.ThrowIfNull(issue, nameof(issue));
 
-        IssueModel? res = await PostAsJsonAsync<IssueModel, IssueModel>("rest/api/2/issue", issue, cancellationToken);
-        //issue.ResetAllChanged();
-        //res?.UpdateCustomFields(await GetCachedFieldsAsync());
-        return res;
-    }
+    //    IssueModel? res = await PostAsJsonAsync<IssueModel, IssueModel>("rest/api/2/issue", issue, cancellationToken);
+    //    //issue.ResetAllChanged();
+    //    //res?.UpdateCustomFields(await GetCachedFieldsAsync());
+    //    return res;
+    //}
 
     public async Task<IssueModel?> CreateIssueAsync(CreateIssueModel createIssue, CancellationToken cancellationToken = default)
     {
@@ -1195,7 +1195,7 @@ internal class JiraService : JsonService
     /// <param name="fields">Fields which should be filled.</param>
     /// <param name="expand">Objects which should be expanded.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<Issue?> GetIssueAsync(string issueIdOrKey, string? fields, string? expand, CancellationToken cancellationToken)
+    public async Task<IssueModel?> GetIssueAsync(string issueIdOrKey, string? fields, string? expand, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
 
@@ -1204,8 +1204,8 @@ internal class JiraService : JsonService
         string expandPar = string.IsNullOrEmpty(expand) ? "" : (string.IsNullOrEmpty(fields) ? "?expand=" : "&expand=") + expand;
         try
         {
-            Issue? res = await GetFromJsonAsync<Issue>($"rest/api/2/issue/{issueIdOrKey}{fieldsPar}{expandPar}", cancellationToken);
-            //res?.UpdateCustomFields(await GetCachedFieldsAsync());
+            //var res = await GetFromJsonAsync<IssueModel>($"rest/api/2/issue/{issueIdOrKey}{fieldsPar}{expandPar}", cancellationToken);
+            var res = await GetFromJsonAsync<IssueModel>($"rest/api/2/issue/{issueIdOrKey}", cancellationToken);
             return res;
         }
         catch (WebServiceException ex)
@@ -1226,12 +1226,14 @@ internal class JiraService : JsonService
     public async Task UpdateIssueAsync(Issue issue, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(issue, nameof(issue));
-        
+
         //issue.UpdateCustomFields(await GetCachedFieldsAsync());
         //issue.SerializeMode = SerializeMode.Update; // set for trace
         //JsonTrace.WriteRequest(this, issue);
         //issue.SerializeMode = SerializeMode.Update; // set for update
-        await PutAsJsonAsync<Issue, Issue>($"rest/api/2/issue/{issue.Key}", issue, cancellationToken);
+
+        IssueModel req = new();
+        await PutAsJsonAsync<IssueModel, IssueModel>($"rest/api/2/issue/{issue.Key}", req, cancellationToken);
         //issue.ResetAllChanged();
     }
 

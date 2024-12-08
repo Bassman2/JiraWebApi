@@ -63,19 +63,4 @@ internal class IssueTypeModel
     /// <remarks>Only filled by <see cref="Jira.GetCreateMetaAsync">GetCreateMetaAsync</see> and <see cref="Jira.GetEditMetaAsync">GetEditMetaAsync</see>.</remarks>
     //[JsonPropertyName("fields")]
     //public Fields? Fields { get; set; }
-
-    public static implicit operator IssueType?(IssueTypeModel? model)
-    {
-        return model is null ? null : new IssueType()
-        {
-            Self = model.Self,
-            Id = model.Id,
-            Description = model.Description,
-            IconUrl = model.IconUrl,
-            Name = model.Name,
-            IsSubtask = model.IsSubtask,
-            AvatarId = model.AvatarId,
-            //Fields = model.Fields
-        };
-    }
 }

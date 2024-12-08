@@ -13,13 +13,13 @@ public sealed class Project
         this.service = service;
         Self = model.Self;
         Id = model.Id!;
-        Name = model.Name;
         Key = model.Key!;
+        Name = model.Name;
         Description = model.Description;
         IconUrl = model.IconUrl;
         Lead = model.Lead;
         Components = model.Components;
-        IssueTypes = model.IssueTypes;
+        IssueTypes = model.IssueTypes.CastModel<IssueType>();
         Url = model.Url;
         Email = model.Email;
         AssigneeType = model.AssigneeType;
@@ -39,17 +39,17 @@ public sealed class Project
     /// Id of the JIRA item.
     /// </summary>
     public string Id { get; set; }
+     
+    /// <summary>
+    /// Key of the JIRY project.
+    /// </summary>
+    public string Key { get; }
 
     /// <summary>
     /// Name of the JIRA item.
     /// </summary>
     public string? Name { get; set; }
-    
-    /// <summary>
-    /// Key of the JIRY project.
-    /// </summary>
-    public string Key { get; }
-            
+
     /// <summary>
     /// Description of the JIRY project.
     /// </summary>
@@ -138,6 +138,6 @@ public sealed class Project
         model.Fields.Add("description", description);
 
         var res = await service.CreateIssueAsync(model, cancellationToken);
-        return res;
+        return res.CastModel<Issue>(service);
     }
 }

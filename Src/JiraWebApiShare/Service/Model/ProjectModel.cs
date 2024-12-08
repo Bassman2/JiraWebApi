@@ -60,7 +60,7 @@ internal class ProjectModel
     /// Issue types of the JIRY project.
     /// </summary>
     [JsonPropertyName("issueTypes")]
-    public IEnumerable<IssueType>? IssueTypes { get; set; }
+    public IEnumerable<IssueTypeModel>? IssueTypes { get; set; }
 
     /// <summary>
     /// URL of the JIRY project.
@@ -97,26 +97,4 @@ internal class ProjectModel
     /// </summary>
     [JsonPropertyName("avatarUrls")]
     public AvatarUrlsModel? AvatarUrls { get; set; }
-
-    //public static implicit operator Project?(ProjectModel? model)
-    //{
-    //    return model is null ? null : new Project()
-    //    {
-    //        Self = model.Self,
-    //        Id = model.Id,
-    //        Name = model.Name,
-    //        Key = model.Key,
-    //        Description = model.Description,
-    //        IconUrl = model.IconUrl,
-    //        Lead = model.Lead,
-    //        Components = model.Components,
-    //        IssueTypes = model.IssueTypes,
-    //        Url = model.Url,
-    //        Email = model.Email,
-    //        AssigneeType = model.AssigneeType,
-    //        Versions = model.Versions,
-    //        Roles = model.Roles,
-    //        AvatarUrls = model.AvatarUrls
-    //    };
-    //}
 }

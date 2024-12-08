@@ -51,7 +51,7 @@ public sealed class Jira : IDisposable
         ArgumentNullException.ThrowIfNullOrWhiteSpace(issueKey, nameof(issueKey));
 
         var res = await service.GetIssueAsync(issueKey, null, null, cancellationToken);
-        return res.Cast<Issue>();
+        return res.CastModel<Issue>(service);
     }
 
     /// <summary>
@@ -75,7 +75,7 @@ public sealed class Jira : IDisposable
         model.Fields.Add("description", description);
 
         var res = await service.CreateIssueAsync(model, cancellationToken);
-        return res;
+        return res.CastModel<Issue>(service);
     }
 
     public async Task<Issue?> CreateSubIssueAsync(string parentKey, string projectId, string issueTypeId, string reporter, string summary, string description, CancellationToken cancellationToken = default)
@@ -91,7 +91,7 @@ public sealed class Jira : IDisposable
         model.Fields.Add("description", description);
 
         var res = await service.CreateIssueAsync(model, cancellationToken);
-        return res;
+        return res.CastModel<Issue>(service);
     }
 
     #endregion
@@ -107,7 +107,7 @@ public sealed class Jira : IDisposable
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
 
         var res = await service.GetIssueTypesAsync(cancellationToken);
-        return res?.Select(static i => (IssueType)i!);
+        return res.CastModel<IssueType>();
     }
 
     public async Task<IssueType?> GetIssueTypeAsync(string name, CancellationToken cancellationToken = default)
@@ -116,7 +116,7 @@ public sealed class Jira : IDisposable
 
         var res = await service.GetIssueTypesAsync(cancellationToken);
         var issueType = res?.FirstOrDefault(i => string.Equals(i.Name, name, StringComparison.OrdinalIgnoreCase));
-        return issueType.Cast<IssueType>();
+        return issueType.CastModel<IssueType>();
     }
 
     #endregion
@@ -133,7 +133,7 @@ public sealed class Jira : IDisposable
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
 
         var res = await service.GetProjectsAsync(cancellationToken);
-        return res.Cast<Project>(this.service);  //res?.Select(static i => (Project)i!); 
+        return res.CastModel<Project>(this.service);  //res?.Select(static i => (Project)i!); 
     }
 
     public async Task<Project?> GetProjectByKeyAsync(string projectKey, CancellationToken cancellationToken = default)
@@ -141,7 +141,7 @@ public sealed class Jira : IDisposable
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
 
         var res = await service.GetProjectAsync(projectKey, cancellationToken);
-        return res.Cast<Project>(this.service);
+        return res.CastModel<Project>(this.service);
     }
 
     #endregion

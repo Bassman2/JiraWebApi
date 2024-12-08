@@ -33,6 +33,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Old\CustomFieldValue.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Old\Date.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Old\EditMeta.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\CustomField.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\ElementModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Old\Enumerable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Old\Field.cs" />
