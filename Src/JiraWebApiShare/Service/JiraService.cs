@@ -364,11 +364,11 @@ internal class JiraService : JsonService
     /// </summary>
     /// <param name="projectKey">Key of the project.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IEnumerable<Component>?> GetComponentsAsync(string projectKey, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<ComponentModel>?> GetComponentsAsync(string projectIdOrKey, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNullOrEmpty(projectKey, nameof(projectKey));
+        ArgumentNullException.ThrowIfNullOrEmpty(projectIdOrKey, nameof(projectIdOrKey));
 
-        IEnumerable<Component>? res = await GetFromJsonAsync<IEnumerable<Component>>($"rest/api/2/project/{projectKey}/components", cancellationToken);
+        var res = await GetFromJsonAsync<IEnumerable<ComponentModel>>($"rest/api/2/project/{projectIdOrKey}/components", cancellationToken);
         return res;
     }
 
@@ -377,7 +377,7 @@ internal class JiraService : JsonService
     /// </summary>
     /// <param name="component">Component class to create.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<Component?> CreateComponentAsync(Component component, CancellationToken cancellationToken = default)
+    public async Task<Component?> CreateComponentAsync(Component component, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(component, nameof(component));
 
@@ -390,11 +390,9 @@ internal class JiraService : JsonService
     /// </summary>
     /// <param name="componentId">Id of the component to get.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<Component?> GetComponentAsync(string componentId, CancellationToken cancellationToken = default)
+    public async Task<ComponentModel?> GetComponentAsync(long componentId, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNullOrEmpty(componentId, nameof(componentId));
-        
-        Component? res = await GetFromJsonAsync<Component>($"rest/api/2/component/{componentId}", cancellationToken);
+        ComponentModel? res = await GetFromJsonAsync<ComponentModel>($"rest/api/2/component/{componentId}", cancellationToken);
         return res;
     }
 
@@ -403,7 +401,7 @@ internal class JiraService : JsonService
     /// </summary>
     /// <param name="component">Component class to update.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<Component?> UpdateComponentAsync(Component component, CancellationToken cancellationToken = default)
+    public async Task<Component?> UpdateComponentAsync(Component component, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(component, nameof(component));
 
@@ -417,7 +415,7 @@ internal class JiraService : JsonService
     /// <param name="componentId">Id of the component to delete.</param>
     /// <param name="moveIssuesTo">The new component applied to issues whose 'id' component will be deleted. If this value is null, then the 'id' component is simply removed from the related isues.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task DeleteComponentAsync(string componentId, string? moveIssuesTo = null, CancellationToken cancellationToken = default)
+    public async Task DeleteComponentAsync(string componentId, string? moveIssuesTo, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(componentId, nameof(componentId));
 
@@ -429,7 +427,7 @@ internal class JiraService : JsonService
     /// </summary>
     /// <param name="componentId">Id of the component.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<int> ComponentRelatedIssuesCountAsync(string componentId, CancellationToken cancellationToken = default)
+    public async Task<int> ComponentRelatedIssuesCountAsync(string componentId, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(componentId, nameof(componentId));
 

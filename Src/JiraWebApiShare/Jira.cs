@@ -152,6 +152,28 @@ public sealed class Jira : IDisposable
 
     #endregion
 
+
+
+    #region Component
+
+    public async Task<IEnumerable<Component>?> GetComponentsAsync(Project project, CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        var res = await service.GetComponentsAsync(project.Id, cancellationToken);
+        return res.CastModel<Component>();
+    }
+
+    public async Task<Component?> GetComponentAsync(long componentId, CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        var res = await service.GetComponentAsync(componentId, cancellationToken);
+        return res.CastModel<Component>();
+    }
+
+    #endregion
+
     #region Meta
 
     public async Task<CreateMeta?> GetCreateMetaAsync(string projectKey, string issueTypeId, CancellationToken cancellationToken = default)
@@ -179,7 +201,7 @@ public sealed class Jira : IDisposable
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
 
         var res = await service.GetUserAsync(username, cancellationToken);
-        return res;
+        return res.CastModel<User>(); 
     }
 
     public async Task<User?> GetCurrentUserAsync(CancellationToken cancellationToken = default)
@@ -187,7 +209,7 @@ public sealed class Jira : IDisposable
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
 
         var res = await service.GetCurrentUserAsync(cancellationToken);
-        return res;
+        return res.CastModel<User>(); 
     }
 
     #endregion

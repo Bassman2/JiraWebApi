@@ -65,23 +65,4 @@ public sealed class UserModel
     /// </summary>
     [JsonPropertyName("locale")]
     public string? Locale { get; set; }
-
-
-
-    public static implicit operator User?(UserModel? model)
-    {
-        return model is null ? null : new User()
-        {
-            Self = model.Self,
-            Key = model.Key,
-            Name = model.Name,
-            EmailAddress = model.EmailAddress,
-            AvatarUrls = model.AvatarUrls,
-            DisplayName = model.DisplayName,
-            IsActive = model.IsActive,
-            IsDeleted = model.IsDeleted,
-            TimeZone = model.TimeZone,
-            Locale = model.Locale
-        };
-    }
 }

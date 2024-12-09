@@ -54,7 +54,7 @@ internal class ProjectModel
     /// Components of the JIRY project.
     /// </summary>
     [JsonPropertyName("components")]
-    public IEnumerable<Component>? Components { get; set; }
+    public IEnumerable<ComponentModel>? Components { get; set; }
 
     /// <summary>
     /// Issue types of the JIRY project.

@@ -6,15 +6,15 @@ public class JiraIssueUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodCreateIssueAsync()
     {
-        using var jira = new Jira(new Uri(host), token);
+        using var jira = new Jira(storeKey);
 
-        var project = await jira.GetProjectByKeyAsync(testProject);
+        var project = await jira.GetProjectByKeyAsync(testProjectKey);
         Assert.IsNotNull(project);
 
         var issueType = await jira.GetIssueTypeAsync("Bug");
         Assert.IsNotNull(issueType);
 
-        var issue = await jira.CreateIssueAsync(project!, issueType!, login, "Test Ticket 1", "Description of the issue");
+        var issue = await jira.CreateIssueAsync(project!, issueType!, testUserKey, "Test Ticket 1", "Description of the issue");
 
         Assert.IsNotNull(issue);
         StringAssert.StartsWith(issue.Key, "NAVSUITE-", nameof(issue.Key));
@@ -27,15 +27,15 @@ public class JiraIssueUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodCreateProjectIssueAsync()
     {
-        using var jira = new Jira(new Uri(host), token);
+        using var jira = new Jira(storeKey);
 
-        var project = await jira.GetProjectByKeyAsync(testProject);
+        var project = await jira.GetProjectByKeyAsync(testProjectKey);
         Assert.IsNotNull(project);
 
         var issueType = await jira.GetIssueTypeAsync("Bug");
         Assert.IsNotNull(issueType);
 
-        var issue = await project!.CreateIssueAsync(issueType!, login, "Test Ticket 1", "Description of the issue");
+        var issue = await project!.CreateIssueAsync(issueType!, testUserKey, "Test Ticket 1", "Description of the issue");
 
         Assert.IsNotNull(issue);
         StringAssert.StartsWith(issue.Key, "NAVSUITE-", nameof(issue.Key));
@@ -48,7 +48,7 @@ public class JiraIssueUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodCreateSubIssueAsync()
     {
-        using var jira = new Jira(new Uri(host), token);
+        using var jira = new Jira(storeKey);
 
         var main = await jira.GetIssueAsync(mainIssue);
         Assert.IsNotNull(main);
@@ -56,7 +56,7 @@ public class JiraIssueUnitTest : JiraBaseUnitTest
         var issueType = await jira.GetIssueTypeAsync("sub-task");
         Assert.IsNotNull(issueType);
 
-        var issue = await main!.CreateSubIssueAsync(issueType!, login, "Test Sub Ticket 1", "Description of the sub issue");
+        var issue = await main!.CreateSubIssueAsync(issueType!, testUserKey, "Test Sub Ticket 1", "Description of the sub issue");
 
         Assert.IsNotNull(issue);
         StringAssert.StartsWith(issue.Key, "NAVSUITE-", nameof(issue.Key));

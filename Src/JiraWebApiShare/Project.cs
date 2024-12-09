@@ -17,8 +17,8 @@ public sealed class Project
         Name = model.Name;
         Description = model.Description;
         IconUrl = model.IconUrl;
-        Lead = model.Lead;
-        Components = model.Components;
+        Lead = model.Lead.CastModel<User>();
+        Components = model.Components.CastModel<Component>();
         IssueTypes = model.IssueTypes.CastModel<IssueType>();
         Url = model.Url;
         Email = model.Email;
@@ -139,5 +139,13 @@ public sealed class Project
 
         var res = await service.CreateIssueAsync(model, cancellationToken);
         return res.CastModel<Issue>(service);
+    }
+
+    public async Task<IEnumerable<Component>?> GetComponentsAsync(CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        var res = await service.GetComponentsAsync(Id, cancellationToken);
+        return res.CastModel<Component>();
     }
 }

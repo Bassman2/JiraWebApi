@@ -25,7 +25,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\AvatarUrlsModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\ComparableElementModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Old\ComparableList.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Old\Component.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Component.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\ComponentModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\CreateIssueModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\CreateMetaModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Old\CustomFieldOption.cs" />
