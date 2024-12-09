@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace JiraWebApi;
+﻿namespace JiraWebApi;
 
 public sealed class Jira : IDisposable
 {
@@ -8,7 +6,7 @@ public sealed class Jira : IDisposable
 
     public Jira(string storeKey)
     {
-        var key = WebServiceClient.Store.KeyStore.Key("jira")!;
+        var key = WebServiceClient.Store.KeyStore.Key(storeKey)!;
         string host = key.Host!;
         string token = key.Token!;
         service = new JiraService(new Uri(host), token);
