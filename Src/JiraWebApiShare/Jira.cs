@@ -6,6 +6,14 @@ public sealed class Jira : IDisposable
 {
     private JiraService? service;
 
+    public Jira(string storeKey)
+    {
+        var key = WebServiceClient.Store.KeyStore.Key("jira")!;
+        string host = key.Host!;
+        string token = key.Token!;
+        service = new JiraService(new Uri(host), token);
+    }
+
     /// <summary>
     /// 
     /// </summary>
