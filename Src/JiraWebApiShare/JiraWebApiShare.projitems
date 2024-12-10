@@ -49,7 +49,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\IssueCountModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Linq\ExceptionMessages.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\IssueModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\IssueLinkTypesResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\IssueLinkTypesRespnseModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\IssueTypeModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\LoginInfoModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\ProjectModel.cs" />
@@ -68,7 +68,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\WorklogListModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Issue.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\IssueLinkModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\IssueLinkType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\IssueLinkTypeModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IssueType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IssueVersion.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\JiraService.cs" />

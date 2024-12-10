@@ -1,9 +1,9 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
 
 /// <summary>
 /// Representation of a JIRA issue link type.
 /// </summary>
-public sealed class IssueLinkType 
+internal class IssueLinkTypeModel 
 {
     /// <summary>
     /// Url of the JIRA REST item.

@@ -17,7 +17,7 @@ internal sealed class IssueLinkModel
     /// Type of the issue link.
     /// </summary>
     [JsonPropertyName("type")]
-    public IssueLinkType? Type { get; set; }
+    public IssueLinkTypeModel? Type { get; set; }
 
     /// <summary>
     /// Inward issue of the issue link.

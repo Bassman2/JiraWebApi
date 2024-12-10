@@ -665,9 +665,9 @@ return issueResult
     /// Returns a list of available issue link types, if issue linking is enabled. Each issue link type has an id, a name and a label for the outward and inward link relationship.
     /// </summary>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IEnumerable<IssueLinkType>?> GetIssueLinkTypesAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<IssueLinkTypeModel>?> GetIssueLinkTypesAsync(CancellationToken cancellationToken = default)
     {
-        IssueLinkTypesRespnse? res = await GetFromJsonAsync<IssueLinkTypesRespnse>("rest/api/2/issueLinkType", cancellationToken);
+        var res = await GetFromJsonAsync<IssueLinkTypesRespnseModel>("rest/api/2/issueLinkType", cancellationToken);
         return res?.IssueLinkTypes;
     }
 
@@ -676,11 +676,11 @@ return issueResult
     /// </summary>
     /// <param name="issueLinkTypeId">Id of the link type.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IssueLinkType?> GetIssueLinkTypeAsync(string issueLinkTypeId, CancellationToken cancellationToken = default)
+    public async Task<IssueLinkTypeModel?> GetIssueLinkTypeAsync(string issueLinkTypeId, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueLinkTypeId, nameof(issueLinkTypeId));
 
-        IssueLinkType? res = await GetFromJsonAsync<IssueLinkType>($"rest/api/2/issueLinkType/{issueLinkTypeId}", cancellationToken);
+        var res = await GetFromJsonAsync<IssueLinkTypeModel>($"rest/api/2/issueLinkType/{issueLinkTypeId}", cancellationToken);
         return res;
     }
 
