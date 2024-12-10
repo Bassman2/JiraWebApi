@@ -11,6 +11,9 @@ internal class ComponentModel
     [JsonPropertyName("name")]
     public string? Name { get; set; }
 
+    [JsonPropertyName("description")]
+    public string? Description { get; set; }
+
     [JsonPropertyName("assigneeType")]
     public string? AssigneeType { get; set; }
 

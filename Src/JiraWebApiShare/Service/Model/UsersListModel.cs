@@ -3,9 +3,9 @@
 /// <summary>
 /// List of users.
 /// </summary>
-public sealed class Users
+public sealed class UsersListModel
 {
-    internal Users()
+    internal UsersListModel()
     { }
 
     /// <summary>

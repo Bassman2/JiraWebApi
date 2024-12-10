@@ -1,22 +1,22 @@
 ﻿namespace JiraWebApi.Service.Model;
 
-internal class SearchResult
+internal class SearchListModel
 {
     /// <summary>
     /// Name of the classes which should be expanded.
     /// </summary>
     [JsonPropertyName("expand")]
-    public string? Expand { get; private set; }
+    public string? Expand { get; set; }
     
     [JsonPropertyName("startAt")]
-    public int StartAt { get; private set; }
+    public int StartAt { get; set; }
 
     [JsonPropertyName("maxResults")]
-    public int MaxResults { get; private set; }
+    public int MaxResults { get; set; }
 
     [JsonPropertyName("total")]
-    public int Total { get; private set; }
+    public int Total { get; set; }
 
     [JsonPropertyName("issues")]
-    public IEnumerable<Issue>? Issues { get; private set; }
+    public IEnumerable<Issue>? Issues { get; set; }
 }

@@ -1,6 +1,6 @@
 ﻿namespace JiraWebApi.Service.Model;
 
-internal class CommentGetResult
+internal class CommentListModel
 {
     [JsonPropertyName("startAt")]
     public int StartAt { get; set; }

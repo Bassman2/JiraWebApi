@@ -1,6 +1,6 @@
 ﻿namespace JiraWebApi.Service.Model;
 
-internal class WorklogGetResult
+internal class WorklogListModel
 {
     [JsonPropertyName("startAt")]
     public int StartAt { get; set; }

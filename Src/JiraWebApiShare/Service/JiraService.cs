@@ -1,6 +1,4 @@
-﻿using JiraWebApi.Service.Model;
-
-namespace JiraWebApi.Service;
+﻿namespace JiraWebApi.Service;
 
 // https://developer.atlassian.com/server/jira/platform/rest/v10002/api-group-serverinfo/#api-group-serverinfo
 // https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-projects/#api-group-projects
@@ -13,6 +11,7 @@ namespace JiraWebApi.Service;
 internal class JiraService : JsonService
 {
     //private readonly JiraQueryProvider provider;
+    //this.provider = new JiraQueryProvider(this);
 
     /// <summary>
     /// Initializes a new instance of the Jira class.
@@ -43,33 +42,12 @@ internal class JiraService : JsonService
         }
     }
 
-    //this.host = host;
-    //this.provider = new JiraQueryProvider(this);
+    protected override async Task ErrorHandlingAsync(HttpResponseMessage response, string memberName, CancellationToken cancellationToken)
+    {
+        var error = await ReadFromJsonAsync<ErrorModel>(response, cancellationToken);
+        throw new WebServiceException(error?.ToString(), response.RequestMessage?.RequestUri, response.StatusCode, response.ReasonPhrase, memberName);
+    }
 
-    //// connect
-    //this.handler = new HttpClientHandler();
-    //this.handler.CookieContainer = new System.Net.CookieContainer();
-    //this.handler.UseCookies = true;
-    //this.client = new HttpClient(this.handler);
-    //this.client.BaseAddress = host;
-
-
-    //this.jsonMediaTypeFormatter = new JsonMediaTypeFormatter()
-    //{ 
-    //    SerializerSettings = new JsonSerializerSettings()
-    //    { 
-    //        Context = new StreamingContext(StreamingContextStates.All, this),
-    //        NullValueHandling = NullValueHandling.Ignore,
-    //        //DateTimeZoneHandling = DateTimeZoneHandling.RoundtripKind
-    //    }
-    //};
-    //this.jsonFormatters = new MediaTypeFormatter[] { this.jsonMediaTypeFormatter };
-
-    //if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
-    //{
-    //    this.LoginAsync(username, password).Wait();
-    //}
-    
     #region ServerInfo
 
     /// <summary>
@@ -430,7 +408,7 @@ internal class JiraService : JsonService
     /// </summary>
     /// <param name="componentId">Id of the component.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IssueCountModel> ComponentRelatedIssuesCountAsync(int componentId, CancellationToken cancellationToken)
+    public async Task<IssueCountModel?> ComponentRelatedIssuesCountAsync(int componentId, CancellationToken cancellationToken)
     {
         var res = await GetFromJsonAsync<IssueCountModel>($"rest/api/2/component/{componentId}/relatedIssueCounts", cancellationToken);
         return res;
@@ -604,7 +582,7 @@ internal class JiraService : JsonService
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
 
-        CommentGetResult? res = await GetFromJsonAsync<CommentGetResult>($"rest/api/2/issue/{issueIdOrKey}/comment", cancellationToken);
+        var res = await GetFromJsonAsync<CommentListModel>($"rest/api/2/issue/{issueIdOrKey}/comment", cancellationToken);
         return res?.Comments;
     }
     
@@ -963,7 +941,7 @@ internal class JiraService : JsonService
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
 
-        WorklogGetResult? res = await GetFromJsonAsync<WorklogGetResult>($"rest/api/2/issue/{issueIdOrKey}/worklog", cancellationToken);
+        var res = await GetFromJsonAsync<WorklogListModel>($"rest/api/2/issue/{issueIdOrKey}/worklog", cancellationToken);
         return res?.Worklogs;
     }
 
@@ -1306,10 +1284,10 @@ return issueResult
     {
         ArgumentNullException.ThrowIfNullOrEmpty(jql, nameof(jql));
 
-        var req = new SearchRequest() { Jql = jql, StartAt = startAt, MaxResults = maxResults, Fields = fields, Expand = expand };
+        var req = new SearchRequestModel() { Jql = jql, StartAt = startAt, MaxResults = maxResults, Fields = fields, Expand = expand };
         try
         {
-            SearchResult? res = await PostAsJsonAsync<SearchRequest, SearchResult>("rest/api/2/search", req, cancellationToken);
+            var res = await PostAsJsonAsync<SearchRequestModel, SearchListModel>("rest/api/2/search", req, cancellationToken);
             
             IEnumerable<Field?>? fieldInfo = await GetCachedFieldsAsync();
             //foreach (Issue issue in res!.Issues)

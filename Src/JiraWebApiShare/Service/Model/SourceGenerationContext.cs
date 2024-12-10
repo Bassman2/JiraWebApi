@@ -11,5 +11,7 @@
 [JsonSerializable(typeof(IssueModel))]
 [JsonSerializable(typeof(CreateMetaModel))]
 [JsonSerializable(typeof(CreateIssueModel))]
+
+[JsonSerializable(typeof(ErrorModel))]
 internal partial class SourceGenerationContext : JsonSerializerContext
 { }

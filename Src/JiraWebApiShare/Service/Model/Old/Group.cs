@@ -27,7 +27,7 @@ public sealed class Group
     /// Users of the JIRA group.
     /// </summary>
     [JsonPropertyName("users")]
-    public Users? Users { get; set; }
+    public UsersListModel? Users { get; set; }
 
     /// <summary>
     /// Names of the expanded fields.

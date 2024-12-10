@@ -14,6 +14,7 @@ public sealed class Component
         Self = model.Self!;
         Id = model.Id;
         Name = model.Name;
+        Description = model.Description;
 
         AssigneeType = model.AssigneeType;
         Assignee = model.Assignee.CastModel<User>();
@@ -33,7 +34,9 @@ public sealed class Component
     //public string Key { get; }
 
     public string? Name { get; set; }
-       
+
+    public string? Description { get; set; }
+
     public string? AssigneeType { get; set; }
 
     public User? Assignee { get; set; }

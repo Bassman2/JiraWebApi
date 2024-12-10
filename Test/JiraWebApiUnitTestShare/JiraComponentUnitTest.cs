@@ -64,6 +64,7 @@ public class JiraComponentUnitTest : JiraBaseUnitTest
         Assert.AreEqual($"{testHost}rest/api/2/component/{testComponentId}", component.Self, nameof(component.Self));
         Assert.AreEqual(testComponentId, component.Id, nameof(component.Id));
         Assert.AreEqual(testComponentName, component.Name, nameof(component.Name));
+        Assert.AreEqual("Application Description", component.Description, nameof(component.Description));
         Assert.AreEqual(testProjectKey, component.ProjectKey, nameof(component.ProjectKey));
         Assert.AreEqual(testProjectId, component.ProjectId, nameof(component.ProjectId));
     }
