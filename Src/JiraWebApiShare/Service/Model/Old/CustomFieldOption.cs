@@ -3,7 +3,7 @@
 /// <summary>
 /// Representation of JIRA options for fixed value custom fields. 
 /// </summary>
-public sealed class CustomFieldOption
+internal sealed class CustomFieldOption
 {
     /// <summary>
     /// Initializes a new instance of the CustomFieldOption class.

@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents a JIRA icon of a remoteLink object.
 /// </summary>
-public sealed class Icon
+internal class Icon
 {
     /// <summary>
     /// Initializes a new instance of the Icon class.

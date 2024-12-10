@@ -3,7 +3,7 @@
 /// <summary>
 /// Representation of a JIRA permission.
 /// </summary>
-public sealed class Permission
+internal sealed class Permission
 {
     /// <summary>
     /// Initializes a new instance of the Permission class.

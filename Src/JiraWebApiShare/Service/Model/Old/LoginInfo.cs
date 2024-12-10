@@ -3,7 +3,7 @@
 /// <summary>
 /// Representation of a JIRA login info. 
 /// </summary>
-public sealed class LoginInfo
+internal sealed class LoginInfo
 {
     /// <summary>
     /// Number of failed logins of the current user.

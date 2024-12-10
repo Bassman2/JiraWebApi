@@ -24,7 +24,7 @@ public sealed class Project
         Email = model.Email;
         AssigneeType = model.AssigneeType;
         Versions = model.Versions;
-        Roles = model.Roles;
+        //Roles = model.Roles;
         AvatarUrls = model.AvatarUrls;
     }
 
@@ -98,7 +98,7 @@ public sealed class Project
     /// <summary>
     /// Roles of the JIRY project.
     /// </summary>
-    public Roles? Roles { get; set; }
+    //public Roles? Roles { get; set; }
 
     /// <summary>
     /// Avatar URLs of the JIRY project.

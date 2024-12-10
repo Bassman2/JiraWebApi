@@ -3,7 +3,7 @@
 /// <summary>
 /// Representation of a JIRA filter.
 /// </summary>
-public sealed class Filter 
+internal sealed class Filter 
 {
     /// <summary>
     /// Url of the JIRA REST item.

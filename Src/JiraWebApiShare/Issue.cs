@@ -358,7 +358,7 @@ public sealed class Issue
     /// <summary>
     /// The importance of the issue in relation to other issues.
     /// </summary>
-    public Priority? Priority { get; }
+    //public Priority? Priority { get; }
     
     /// <summary>
     /// Progress of the issue.
@@ -419,7 +419,7 @@ public sealed class Issue
     /// <summary>
     /// The stage the issue is currently at in its lifecycle ('workflow'). 
     /// </summary>
-    public Status? Status { get; }
+    //public Status? Status { get; }
     
     /// <summary>
     /// Subtask issues of this issue.
@@ -440,7 +440,7 @@ public sealed class Issue
     /// <summary>
     /// Time tracking of the issue.
     /// </summary>
-    public TimeTracking? TimeTracking { get; }
+    //public TimeTracking? TimeTracking { get; }
 
     /// <summary>
     /// The time and date on which this issue was last edited.

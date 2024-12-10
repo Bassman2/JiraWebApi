@@ -4,7 +4,7 @@
 /// Representation of a JIRA issue priority. 
 /// </summary>
 [DebuggerDisplay("{Id}, {Name}, {Description}")]
-public sealed class Priority 
+internal class Priority 
 {
     /// <summary>
     /// Url of the JIRA REST item.

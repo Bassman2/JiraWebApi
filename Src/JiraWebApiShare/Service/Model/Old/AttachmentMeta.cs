@@ -3,7 +3,7 @@
 /// <summary>
 /// Representation of attachment meta information. 
 /// </summary>
-public sealed class AttachmentMeta
+internal sealed class AttachmentMeta
 {
     /// <summary>
     /// Initializes a new instance of the AttachmentMeta class.

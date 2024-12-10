@@ -4,7 +4,7 @@
 /// Rrepresentation of a JIRA field. 
 /// </summary>
 [DebuggerDisplay("{Id}, {Name}, {this.IsCustom}{this.IsOrderable}{IsNavigable}{IsSearchable}, {Schema}")]
-public sealed class Field
+internal sealed class Field
 {
     /// <summary>
     /// Initializes a new instance of the Field class.

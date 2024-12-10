@@ -3,7 +3,7 @@
 /// <summary>
 /// Representation of JIRA roles. 
 /// </summary>
-public sealed class Roles
+internal sealed class Roles
 {
     /// <summary>
     /// Initializes a new instance of the Roles class.

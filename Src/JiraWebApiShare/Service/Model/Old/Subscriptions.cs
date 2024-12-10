@@ -3,7 +3,7 @@
 /// <summary>
 /// Users who has subscribed to an issue.
 /// </summary>
-public sealed class Subscriptions
+internal class Subscriptions
 {
     /// <summary>
     /// Initializes a new instance of the Subscriptions class.

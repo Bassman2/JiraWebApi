@@ -4,7 +4,7 @@
 /// Meta infromatins for the fields.
 /// </summary>
 [DebuggerDisplay("{Name} {IsRequired}")]
-public sealed class FieldMeta
+internal sealed class FieldMeta
 {
     /// <summary>
     /// Initializes a new instance of the FieldMeta class.

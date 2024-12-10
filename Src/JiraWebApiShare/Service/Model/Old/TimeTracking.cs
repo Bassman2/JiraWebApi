@@ -3,7 +3,7 @@
 /// <summary>
 /// Representation of a JIRA issue time tracking.
 /// </summary>
-public sealed class TimeTracking
+internal class TimeTracking
 {
     /// <summary>
     /// Initializes a new instance of the TimeTracking class.

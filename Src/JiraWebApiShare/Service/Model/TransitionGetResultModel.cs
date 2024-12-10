@@ -1,6 +1,6 @@
 ﻿namespace JiraWebApi.Service.Model;
 
-internal class TransitionGetResult
+internal class TransitionGetResultModel
 {
     /// <summary>
     /// Name of the classes which should be expanded.

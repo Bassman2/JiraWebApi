@@ -44,7 +44,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Icon.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Jira.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\IssueVersionModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\AssignPutRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\AssignPutRequestModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\CommentListModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\IssueCountModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Linq\ExceptionMessages.cs" />
@@ -58,12 +58,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Enums\SerializeMode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\ServerInfoModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\SourceGenerationContext.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\TransitionGetResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\TransitionGetResultModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\TransitionPostReqModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\UserModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\VersionMoveAfterPostRequest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\VersionMovePositionPostRequest.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\VersionRelatedIssueCounts.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\VersionRelatedIssueCountsModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\VersionUnresolvedIssueCount.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\WorklogListModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Issue.cs" />
@@ -75,7 +75,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\LoginInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\NotifyModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\NotifyTo.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Object.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\ObjectModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Permission.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Enums\Position.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Priority.cs" />

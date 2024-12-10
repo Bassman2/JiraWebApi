@@ -3,7 +3,7 @@
 /// <summary>
 /// Signals to whom the notification should be send.
 /// </summary>
-public sealed class NotifyTo
+internal sealed class NotifyTo
 {
     /// <summary>
     /// Initializes a new instance of the NotifyTo class.

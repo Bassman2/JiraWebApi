@@ -3,7 +3,7 @@
 /// <summary>
 /// Representation of meta information for issue editing.
 /// </summary>
-public sealed class EditMeta
+internal sealed class EditMeta
 {
     /// <summary>
     /// Initializes a new instance of the EditMeta class.

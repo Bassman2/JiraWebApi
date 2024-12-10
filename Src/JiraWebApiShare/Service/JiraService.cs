@@ -590,8 +590,8 @@ internal class JiraService : JsonService
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
         ArgumentNullException.ThrowIfNullOrEmpty(userName, nameof(userName));
 
-        var req = new AssignPutRequest() { Name = userName };
-        await PutAsJsonAsync<AssignPutRequest, AssignPutRequest>($"rest/api/2/issue/{issueIdOrKey}/assignee", req, cancellationToken);
+        var req = new AssignPutRequestModel() { Name = userName };
+        await PutAsJsonAsync<AssignPutRequestModel, AssignPutRequestModel>($"rest/api/2/issue/{issueIdOrKey}/assignee", req, cancellationToken);
     }
 
 
@@ -838,7 +838,7 @@ return issueResult
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
 
-        var res = await GetFromJsonAsync<TransitionGetResult>($"rest/api/2/issue/{issueIdOrKey}/transitions", cancellationToken);
+        var res = await GetFromJsonAsync<TransitionGetResultModel>($"rest/api/2/issue/{issueIdOrKey}/transitions", cancellationToken);
         return res?.Transitions;
     }
 
@@ -853,7 +853,7 @@ return issueResult
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
         ArgumentNullException.ThrowIfNullOrEmpty(transitionId, nameof(transitionId));
 
-        var res = await GetFromJsonAsync<TransitionGetResult>($"rest/api/2/issue/{issueIdOrKey}/transitions?transitionId={transitionId}", cancellationToken);
+        var res = await GetFromJsonAsync<TransitionGetResultModel>($"rest/api/2/issue/{issueIdOrKey}/transitions?transitionId={transitionId}", cancellationToken);
         return res?.Transitions?.FirstOrDefault();
     }
 
@@ -1290,7 +1290,7 @@ return issueResult
     {
         ArgumentNullException.ThrowIfNullOrEmpty(versionId, nameof(versionId));
 
-        VersionRelatedIssueCounts? res = await GetFromJsonAsync<VersionRelatedIssueCounts>($"rest/api/2/version/{versionId}/relatedIssueCounts", cancellationToken);
+        var res = await GetFromJsonAsync<VersionRelatedIssueCountsModel>($"rest/api/2/version/{versionId}/relatedIssueCounts", cancellationToken);
         return res?.IssuesAffectedCount ?? 0;
     }
 

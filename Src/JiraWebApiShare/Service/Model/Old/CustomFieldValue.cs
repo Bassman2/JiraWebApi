@@ -3,7 +3,7 @@
 /// <summary>
 /// Value of a custom field.
 /// </summary>
-public class CustomFieldValue
+internal class CustomFieldValue
 {
     /// <summary>
     /// Value of the custom field value.

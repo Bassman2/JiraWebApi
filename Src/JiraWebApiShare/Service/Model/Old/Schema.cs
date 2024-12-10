@@ -3,7 +3,7 @@
 /// <summary>
 /// Rrepresentation of a JIRA schema. 
 /// </summary>
-public sealed class Schema
+internal class Schema
 {
     /// <summary>
     /// Initializes a new instance of the Schema class.

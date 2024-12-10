@@ -1,6 +1,6 @@
 ﻿namespace JiraWebApi.Service.Model;
 
-internal class VersionRelatedIssueCounts
+internal class VersionRelatedIssueCountsModel
 {
     /// <summary>
     /// Url of the JIRA REST item.

@@ -1,15 +1,11 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
 
 /// <summary>
 /// Object of a remote link.
 /// </summary>
-public sealed class Object
+internal class ObjectModel
 {
-    /// <summary>
-    /// Initializes a new instance of the Object class.
-    /// </summary>
-    public Object()
-    { }
+    
 
     /// <summary>
     /// Url of the remote link object.

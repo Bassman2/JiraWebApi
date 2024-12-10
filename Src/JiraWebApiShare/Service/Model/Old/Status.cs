@@ -3,7 +3,7 @@
 /// <summary>
 /// Representation of a JIRA issue status. 
 /// </summary>
-public sealed class Status
+internal class Status
 {
     /// <summary>
     /// Url of the JIRA REST item.
