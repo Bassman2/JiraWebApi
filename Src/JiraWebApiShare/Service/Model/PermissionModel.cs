@@ -1,15 +1,11 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
+
 
 /// <summary>
 /// Representation of a JIRA permission.
 /// </summary>
-internal sealed class Permission
+internal sealed class PermissionModel
 {
-    /// <summary>
-    /// Initializes a new instance of the Permission class.
-    /// </summary>
-    public Permission()
-    { }
 
     /// <summary>
     /// Id of the permission.

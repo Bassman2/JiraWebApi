@@ -1,15 +1,11 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
 
 /// <summary>
 /// Representation of attachment meta information. 
 /// </summary>
-internal sealed class AttachmentMeta
+internal sealed class AttachmentMetaModel
 {
-    /// <summary>
-    /// Initializes a new instance of the AttachmentMeta class.
-    /// </summary>
-    private AttachmentMeta()
-    { }
+    
 
     /// <summary>
     /// Signals if attachments enabled on this JIRA server.

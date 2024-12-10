@@ -138,9 +138,9 @@ internal class JiraService : JsonService
     /// Returns the meta informations for an attachments, specifically if they are enabled and the maximum upload size allowed.
     /// </summary>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<AttachmentMeta?> GetAttachmentMetaAsync(CancellationToken cancellationToken = default)
+    public async Task<AttachmentMetaModel?> GetAttachmentMetaAsync(CancellationToken cancellationToken = default)
     {
-        AttachmentMeta? res = await GetFromJsonAsync<AttachmentMeta>("rest/api/2/attachment/meta", cancellationToken);
+        var res = await GetFromJsonAsync<AttachmentMetaModel>("rest/api/2/attachment/meta", cancellationToken);
         return res;
     }
 
@@ -950,11 +950,11 @@ return issueResult
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<Watchers?> GetIssueWatchersAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
+    public async Task<WatchersModel?> GetIssueWatchersAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
 
-        Watchers? res = await GetFromJsonAsync<Watchers>($"rest/api/2/issue/{issueIdOrKey}/watchers", cancellationToken);
+        var res = await GetFromJsonAsync<WatchersModel>($"rest/api/2/issue/{issueIdOrKey}/watchers", cancellationToken);
         return res;
     }
 
@@ -1004,9 +1004,9 @@ return issueResult
     /// Returns a list of all issue priorities.
     /// </summary>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IEnumerable<Priority>?> GetPrioritiesAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<PriorityModel>?> GetPrioritiesAsync(CancellationToken cancellationToken = default)
     {
-        IEnumerable<Priority>? res = await GetFromJsonAsync<IEnumerable<Priority>>("rest/api/2/priority", cancellationToken);
+        var res = await GetFromJsonAsync<IEnumerable<PriorityModel>>("rest/api/2/priority", cancellationToken);
         return res;
     }
 
@@ -1015,11 +1015,11 @@ return issueResult
     /// </summary>
     /// <param name="priorityId">Id of the priority.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<Priority?> GetPriorityAsync(string priorityId, CancellationToken cancellationToken = default)
+    public async Task<PriorityModel?> GetPriorityAsync(string priorityId, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(priorityId, nameof(priorityId));
 
-        Priority? res = await GetFromJsonAsync<Priority>($"rest/api/2/priority/{priorityId}", cancellationToken);
+        var res = await GetFromJsonAsync<PriorityModel>($"rest/api/2/priority/{priorityId}", cancellationToken);
         return res;
     }
 
@@ -1143,9 +1143,9 @@ return issueResult
     /// Returns a list of all statuses.
     /// </summary>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IEnumerable<Status>?> GetStatusesAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<StatusModel>?> GetStatusesAsync(CancellationToken cancellationToken = default)
     {
-        IEnumerable<Status>? res = await GetFromJsonAsync<IEnumerable<Status>>("rest/api/2/status", cancellationToken);
+        var res = await GetFromJsonAsync<IEnumerable<StatusModel>>("rest/api/2/status", cancellationToken);
         return res;
     }
 
@@ -1154,11 +1154,11 @@ return issueResult
     /// </summary>
     /// <param name="statusIdOrName">Id or name of the status.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<Status?> GetStatusAsync(string statusIdOrName, CancellationToken cancellationToken = default)
+    public async Task<StatusModel?> GetStatusAsync(string statusIdOrName, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(statusIdOrName, nameof(statusIdOrName));
 
-        Status? res = await GetFromJsonAsync<Status>($"rest/api/2/status/{statusIdOrName}", cancellationToken);
+        var res = await GetFromJsonAsync<StatusModel>($"rest/api/2/status/{statusIdOrName}", cancellationToken);
         return res;
     }
 
@@ -1261,8 +1261,8 @@ return issueResult
         ArgumentNullException.ThrowIfNullOrEmpty(versionId, nameof(versionId));
         ArgumentNullException.ThrowIfNullOrEmpty(versionIdAfter, nameof(versionIdAfter));
 
-        var req = new VersionMoveAfterPostRequest() { After = versionIdAfter };
-        IssueVersion? res = await PostAsJsonAsync<VersionMoveAfterPostRequest, IssueVersion>($"rest/api/2/version/{versionId}/move", req, cancellationToken);
+        var req = new VersionMoveAfterPostRequestModel() { After = versionIdAfter };
+        IssueVersion? res = await PostAsJsonAsync<VersionMoveAfterPostRequestModel, IssueVersion>($"rest/api/2/version/{versionId}/move", req, cancellationToken);
         return res;
     }
 
@@ -1276,8 +1276,8 @@ return issueResult
     {
         ArgumentNullException.ThrowIfNullOrEmpty(versionId, nameof(versionId));
 
-        var req = new VersionMovePositionPostRequest() { Position = position };
-        IssueVersion? res = await PostAsJsonAsync<VersionMovePositionPostRequest, IssueVersion>($"rest/api/2/version/{versionId}/move", req, cancellationToken);
+        var req = new VersionMovePositionPostRequestModel() { Position = position };
+        IssueVersion? res = await PostAsJsonAsync<VersionMovePositionPostRequestModel, IssueVersion>($"rest/api/2/version/{versionId}/move", req, cancellationToken);
         return res;
     }
 
@@ -1303,7 +1303,7 @@ return issueResult
     {
         ArgumentNullException.ThrowIfNullOrEmpty(versionId, nameof(versionId));
 
-        VersionUnresolvedIssueCount? res = await GetFromJsonAsync<VersionUnresolvedIssueCount>($"rest/api/2/version/{versionId}/unresolvedIssueCount", cancellationToken);
+        var res = await GetFromJsonAsync<VersionUnresolvedIssueCountModel>($"rest/api/2/version/{versionId}/unresolvedIssueCount", cancellationToken);
         return res?.IssuesUnresolvedCount ?? 0;
     }
 

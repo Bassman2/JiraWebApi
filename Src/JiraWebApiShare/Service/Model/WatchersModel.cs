@@ -1,15 +1,11 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
 
 /// <summary>
 /// Representation of JIRA issue watchers.
 /// </summary>
-public sealed class Watchers
+public sealed class WatchersModel
 {
-    /// <summary>
-    /// Initializes a new instance of the Watchers class.
-    /// </summary>
-    private Watchers()
-    { }
+    
 
     /// <summary>
     /// Url of the REST item.

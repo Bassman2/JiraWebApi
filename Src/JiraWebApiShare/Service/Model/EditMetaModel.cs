@@ -1,15 +1,12 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
+
 
 /// <summary>
 /// Representation of meta information for issue editing.
 /// </summary>
-internal sealed class EditMeta
+internal sealed class EditMetaModel
 {
-    /// <summary>
-    /// Initializes a new instance of the EditMeta class.
-    /// </summary>
-    private EditMeta()
-    { }
+   
 
     /// <summary>
     /// Available fields for issue editing.

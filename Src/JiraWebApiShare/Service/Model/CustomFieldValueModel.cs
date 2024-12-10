@@ -1,9 +1,10 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
+
 
 /// <summary>
 /// Value of a custom field.
 /// </summary>
-internal class CustomFieldValue
+internal class CustomFieldValueModel
 {
     /// <summary>
     /// Value of the custom field value.

@@ -27,7 +27,7 @@ internal class TransitionModel
     /// Result status of this issue transition.
     /// </summary>
     [JsonPropertyName("to")]
-    public Status? To { get; set; }
+    public StatusModel? To { get; set; }
 
     /// <summary>
     /// Fields which are editable during this transition.

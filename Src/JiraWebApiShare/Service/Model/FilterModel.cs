@@ -1,9 +1,10 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
+
 
 /// <summary>
 /// Representation of a JIRA filter.
 /// </summary>
-internal sealed class Filter 
+internal class FilterModel 
 {
     /// <summary>
     /// Url of the JIRA REST item.

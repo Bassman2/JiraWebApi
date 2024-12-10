@@ -1,15 +1,11 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
 
 /// <summary>
 /// Representation of JIRA options for fixed value custom fields. 
 /// </summary>
-internal sealed class CustomFieldOption
+internal sealed class CustomFieldOptionModel
 {
-    /// <summary>
-    /// Initializes a new instance of the CustomFieldOption class.
-    /// </summary>
-    private CustomFieldOption()
-    { }
+    
 
     /// <summary>
     /// Url of the JIRA REST item.

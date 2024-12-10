@@ -1,9 +1,10 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
 
 /// <summary>
-/// Representation of a JIRA issue status. 
+/// Representation of a JIRA issue priority. 
 /// </summary>
-internal class Status
+[DebuggerDisplay("{Id}, {Name}, {Description}")]
+internal class PriorityModel
 {
     /// <summary>
     /// Url of the JIRA REST item.
@@ -24,14 +25,20 @@ internal class Status
     public string? Name { get; set; }
 
     /// <summary>
-    /// Description of the JIRA status.
+    /// Description of the JIRA priority.
     /// </summary>
     [JsonPropertyName("description")]
-    public string? Description { get; private set; }
+    public string? Description { get; set; }
 
     /// <summary>
-    /// Url of the issue status icon.
+    /// Url of the icon of the JIRA priority.
     /// </summary>
     [JsonPropertyName("iconUrl")]
-    public Uri? IconUrl { get; private set; }
+    public Uri? IconUrl { get; set; }
+
+    /// <summary>
+    /// Status color of the JIRA priority.
+    /// </summary>
+    [JsonPropertyName("statusColor")]
+    public string? StatusColor { get; set; }
 }

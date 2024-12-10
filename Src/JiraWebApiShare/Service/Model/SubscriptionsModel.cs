@@ -1,15 +1,12 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
+
 
 /// <summary>
 /// Users who has subscribed to an issue.
 /// </summary>
-internal class Subscriptions
+internal class SubscriptionsModel
 {
-    /// <summary>
-    /// Initializes a new instance of the Subscriptions class.
-    /// </summary>
-    private Subscriptions()
-    { }
+    
 
     /// <summary>
     /// Number of the subscriptions.

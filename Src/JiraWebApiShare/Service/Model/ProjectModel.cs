@@ -90,7 +90,7 @@ internal class ProjectModel
     /// Roles of the JIRY project.
     /// </summary>
     [JsonPropertyName("roles")]
-    public Roles? Roles { get; set; }
+    public RolesModel? Roles { get; set; }
 
     /// <summary>
     /// Avatar URLs of the JIRY project.

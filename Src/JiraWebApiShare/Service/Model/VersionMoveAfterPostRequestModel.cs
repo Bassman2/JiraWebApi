@@ -1,6 +1,6 @@
 ﻿namespace JiraWebApi.Service.Model;
 
-internal class VersionMoveAfterPostRequest
+internal class VersionMoveAfterPostRequestModel
 {
     /// <summary>
     /// 

@@ -1,15 +1,12 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
+
 
 /// <summary>
 /// Signals to whom the notification should be send.
 /// </summary>
-internal sealed class NotifyTo
+internal class NotifyToModel
 {
-    /// <summary>
-    /// Initializes a new instance of the NotifyTo class.
-    /// </summary>
-    public NotifyTo()
-    { }
+   
 
     /// <summary>
     /// Signals if the notification should be send to the reporter of the issue.

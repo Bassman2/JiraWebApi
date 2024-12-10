@@ -1,16 +1,10 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
 
 /// <summary>
 /// Representation of JIRA issue votes.
 /// </summary>
-public class Votes
+public class VotesModel
 {
-    /// <summary>
-    /// Initializes a new instance of the Votes class.
-    /// </summary>
-    public Votes()
-    {}
-
     /// <summary>
     /// Url of the JIRA REST item.
     /// </summary>

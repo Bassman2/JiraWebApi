@@ -1,17 +1,12 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
+
 
 /// <summary>
 /// Meta infromatins for the fields.
 /// </summary>
 [DebuggerDisplay("{Name} {IsRequired}")]
-internal sealed class FieldMeta
+internal sealed class FieldMetaModel
 {
-    /// <summary>
-    /// Initializes a new instance of the FieldMeta class.
-    /// </summary>
-    private FieldMeta()
-    { }
-
     /// <summary>
     /// Is field required.
     /// </summary>

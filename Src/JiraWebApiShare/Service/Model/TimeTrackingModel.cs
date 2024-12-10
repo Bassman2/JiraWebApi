@@ -1,16 +1,11 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
 
 /// <summary>
 /// Representation of a JIRA issue time tracking.
 /// </summary>
-internal class TimeTracking
+internal class TimeTrackingModel
 {
-    /// <summary>
-    /// Initializes a new instance of the TimeTracking class.
-    /// </summary>
-    public TimeTracking()
-    { }
-
+   
     /// <summary>
     /// Time original estimate.
     /// </summary>

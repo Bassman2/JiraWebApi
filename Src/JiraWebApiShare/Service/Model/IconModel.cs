@@ -1,15 +1,11 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
 
 /// <summary>
 /// Represents a JIRA icon of a remoteLink object.
 /// </summary>
-internal class Icon
+internal class IconModel
 {
-    /// <summary>
-    /// Initializes a new instance of the Icon class.
-    /// </summary>
-    public Icon()
-    { }
+    
 
     /// <summary>
     /// Url of the JIRA icon.

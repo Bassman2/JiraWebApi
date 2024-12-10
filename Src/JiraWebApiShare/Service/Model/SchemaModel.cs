@@ -1,15 +1,12 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
+
 
 /// <summary>
 /// Rrepresentation of a JIRA schema. 
 /// </summary>
-internal class Schema
+internal class SchemaModel
 {
-    /// <summary>
-    /// Initializes a new instance of the Schema class.
-    /// </summary>
-    private Schema()
-    { }
+    
 
     /// <summary>
     /// Type of the JIRA schema.

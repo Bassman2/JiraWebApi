@@ -5,8 +5,6 @@
 /// </summary>
 internal class ObjectModel
 {
-    
-
     /// <summary>
     /// Url of the remote link object.
     /// </summary>
@@ -29,7 +27,7 @@ internal class ObjectModel
     /// Icon of the remote link object.
     /// </summary>
     [JsonPropertyName("icon")]
-    public Icon? Icon { get; set; }
+    public IconModel? Icon { get; set; }
 
     // TODO
     //[JsonPropertyName("status")]
