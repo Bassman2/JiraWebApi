@@ -11,7 +11,7 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)CreateMeta.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Enums\AdjustEstimate.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Application.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\ApplicationModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Attachment.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\AttachmentMeta.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AvatarUrls.cs" />
@@ -36,14 +36,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Service\Linq\Date.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\EditMeta.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\CustomField.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\ElementModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Linq\Enumerable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Field.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\FieldMeta.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Fields.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Filter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)JiraExtentions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Group.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\GroupModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Icon.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Jira.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\IssueVersionModel.cs" />
@@ -60,7 +58,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\SearchListModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Enums\SerializeMode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\ServerInfoModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\SessionModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\SourceGenerationContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\TransitionGetResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\TransitionPostReq.cs" />
@@ -77,7 +74,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)IssueVersion.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\JiraService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\LoginInfo.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Notify.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\NotifyModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\NotifyTo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Object.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Permission.cs" />
@@ -85,9 +82,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Priority.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Progress.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Project.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\RemoteLink.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\RemoteLinkModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Resolution.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Restrict.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\RestrictModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Roles.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Schema.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ServerInfo.cs" />

@@ -3,13 +3,19 @@
 /// <summary>
 /// Representation of a JIRA issue comment. 
 /// </summary>
-public sealed class Comment : ElementModel
+public sealed class Comment 
 {
     /// <summary>
-    /// Initializes a new instance of the Comment class.
+    /// Url of the JIRA REST item.
     /// </summary>
-    public Comment()
-    { }
+    [JsonPropertyName("self")]
+    public string? Self { get; set; }
+
+    /// <summary>
+    /// Id of the JIRA item.
+    /// </summary>
+    [JsonPropertyName("id")]
+    public string? Id { get; set; }
 
     /// <summary>
     /// Author of the JIRA comment.

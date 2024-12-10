@@ -1,9 +1,9 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
 
 /// <summary>
 /// Representatiojn of a JIRA notification e-mail.
 /// </summary>
-public sealed class Notify
+internal sealed class NotifyModel
 {
     /// <summary>
     /// Subject of the notification e-mail.
@@ -33,5 +33,5 @@ public sealed class Notify
     /// Restriction of the notification.
     /// </summary>
     [JsonPropertyName("restrict")]
-    public Restrict? Restrict { get; set; }
+    public RestrictModel? Restrict { get; set; }
 }

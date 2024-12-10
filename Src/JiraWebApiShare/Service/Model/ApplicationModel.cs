@@ -1,16 +1,10 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
 
 /// <summary>
 /// Represent an Application for remote links. 
 /// </summary>
-public sealed class Application
+internal class ApplicationModel
 {
-    /// <summary>
-    /// Initializes a new instance of the Application class.
-    /// </summary>
-    public Application()
-    { }
-
     /// <summary>
     /// Type of the application.
     /// </summary>

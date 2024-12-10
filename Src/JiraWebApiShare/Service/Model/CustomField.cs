@@ -1,5 +1,4 @@
-﻿
-namespace JiraWebApi.Service.Model;
+﻿namespace JiraWebApi.Service.Model;
 
 
 [DebuggerDisplay("{Id} {Name}")]

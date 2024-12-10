@@ -89,15 +89,15 @@ public class CustomFieldValue
         this.Type = CustomFieldType.User;
     }
 
-    /// <summary>
-    /// Initializes a new instance of the CustomFieldValue class.
-    /// </summary>
-    /// <param name="value">Parameter to initialize with.</param>
-    public CustomFieldValue(Group value)
-    {
-        this.Value = value;
-        this.Type = CustomFieldType.Group;
-    }
+    ///// <summary>
+    ///// Initializes a new instance of the CustomFieldValue class.
+    ///// </summary>
+    ///// <param name="value">Parameter to initialize with.</param>
+    //public CustomFieldValue(Group value)
+    //{
+    //    this.Value = value;
+    //    this.Type = CustomFieldType.Group;
+    //}
 
     /// <summary>
     /// Initializes a new instance of the CustomFieldValue class.
@@ -113,11 +113,11 @@ public class CustomFieldValue
     /// Initializes a new instance of the CustomFieldValue class.
     /// </summary>
     /// <param name="value">Parameter to initialize with.</param>
-    public CustomFieldValue(IEnumerable<Group> value)
-    {
-        this.Value = value == null ? null : value.ToArray();
-        this.Type = CustomFieldType.GroupArray;
-    }
+    //public CustomFieldValue(IEnumerable<Group> value)
+    //{
+    //    this.Value = value == null ? null : value.ToArray();
+    //    this.Type = CustomFieldType.GroupArray;
+    //}
 
     /// <summary>
     /// Initializes a new instance of the CustomFieldValue class.
@@ -193,25 +193,25 @@ public class CustomFieldValue
         return new CustomFieldValue(value);
     }
 
-    /// <summary>
-    /// Case Group to CustomFieldValue.
-    /// </summary>
-    /// <param name="value">Value to cast from.</param>
-    /// <returns>CustomFieldValue to cast to.</returns>
-    public static implicit operator CustomFieldValue(Group value)
-    {
-        return new CustomFieldValue(value);
-    }
+    ///// <summary>
+    ///// Case Group to CustomFieldValue.
+    ///// </summary>
+    ///// <param name="value">Value to cast from.</param>
+    ///// <returns>CustomFieldValue to cast to.</returns>
+    //public static implicit operator CustomFieldValue(Group value)
+    //{
+    //    return new CustomFieldValue(value);
+    //}
 
-    /// <summary>
-    /// Case Group array to CustomFieldValue.
-    /// </summary>
-    /// <param name="value">Value to cast from.</param>
-    /// <returns>CustomFieldValue to cast to.</returns>
-    public static implicit operator CustomFieldValue(Group[] value)
-    {
-        return new CustomFieldValue(value);
-    }
+    ///// <summary>
+    ///// Case Group array to CustomFieldValue.
+    ///// </summary>
+    ///// <param name="value">Value to cast from.</param>
+    ///// <returns>CustomFieldValue to cast to.</returns>
+    //public static implicit operator CustomFieldValue(Group[] value)
+    //{
+    //    return new CustomFieldValue(value);
+    //}
 
     /// <summary>
     /// Case User to CustomFieldValue.
@@ -337,25 +337,25 @@ public class CustomFieldValue
         return (User[])value.Value!;
     }
 
-    /// <summary>
-    /// Get Group from custom field.
-    /// </summary>
-    /// <param name="value">Istance of CustomFieldValue to get value from.</param>
-    /// <returns>Casted Value of CustomFieldValue.</returns>
-    public static explicit operator Group(CustomFieldValue value)
-    {
-        return (Group)value.Value!;
-    }
+    ///// <summary>
+    ///// Get Group from custom field.
+    ///// </summary>
+    ///// <param name="value">Istance of CustomFieldValue to get value from.</param>
+    ///// <returns>Casted Value of CustomFieldValue.</returns>
+    //public static explicit operator Group(CustomFieldValue value)
+    //{
+    //    return (Group)value.Value!;
+    //}
 
-    /// <summary>
-    /// Get Group array from custom field.
-    /// </summary>
-    /// <param name="value">Istance of CustomFieldValue to get value from.</param>
-    /// <returns>Casted Value of CustomFieldValue.</returns>
-    public static explicit operator Group[](CustomFieldValue value)
-    {
-        return (Group[])value.Value!;
-    }
+    ///// <summary>
+    ///// Get Group array from custom field.
+    ///// </summary>
+    ///// <param name="value">Istance of CustomFieldValue to get value from.</param>
+    ///// <returns>Casted Value of CustomFieldValue.</returns>
+    //public static explicit operator Group[](CustomFieldValue value)
+    //{
+    //    return (Group[])value.Value!;
+    //}
 
     /// <summary>
     /// Get string array from custom field.

@@ -3,13 +3,19 @@
 /// <summary>
 /// Representation of a JIRA issue attachment. 
 /// </summary>
-public sealed class Attachment : ElementModel
+public sealed class Attachment 
 {
     /// <summary>
-    /// Initializes a new instance of the Attachment class.
+    /// Url of the JIRA REST item.
     /// </summary>
-    public Attachment()
-    { }
+    [JsonPropertyName("self")]
+    public string? Self { get; set; }
+
+    /// <summary>
+    /// Id of the JIRA item.
+    /// </summary>
+    [JsonPropertyName("id")]
+    public string? Id { get; set; }
 
     /// <summary>
     /// File name of the JIRA attachment.

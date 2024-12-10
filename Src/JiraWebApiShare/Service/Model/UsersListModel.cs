@@ -1,9 +1,9 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
 
 /// <summary>
 /// List of users.
 /// </summary>
-public sealed class UsersListModel
+internal sealed class UsersListModel
 {
     internal UsersListModel()
     { }

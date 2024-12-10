@@ -1,15 +1,11 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
 
 /// <summary>
 /// Representation of a JIRA group.
 /// </summary>
-public sealed class Group
+internal class GroupModel
 {
-    /// <summary>
-    /// Initializes a new instance of the Group class.
-    /// </summary>
-    public Group()
-    { }
+    
 
     /// <summary>
     /// Url of the JIRA REST item.

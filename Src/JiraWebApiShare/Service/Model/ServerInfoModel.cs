@@ -1,4 +1,4 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
 
 /// <summary>
 /// Informations about the JIRA server.

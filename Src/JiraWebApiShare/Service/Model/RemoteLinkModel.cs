@@ -1,16 +1,22 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
 
 /// <summary>
 /// Rrepresentation of a JIRA issue remote link. 
 /// </summary>
-public sealed class RemoteLink : ElementModel
+internal class RemoteLinkModel
 {
-    /// <summary>
-    /// Initializes a new instance of the RemoteLink class.
-    /// </summary>
-    public RemoteLink()
-    { }
 
+    /// <summary>
+    /// Url of the JIRA REST item.
+    /// </summary>
+    [JsonPropertyName("self")]
+    public string? Self { get; set; }
+
+    /// <summary>
+    /// Id of the JIRA item.
+    /// </summary>
+    [JsonPropertyName("id")]
+    public string? Id { get; set; }
     /// <summary>
     /// Global Id of the JIRA issue global link.
     /// </summary>
@@ -21,7 +27,7 @@ public sealed class RemoteLink : ElementModel
     /// Application of the remote link.
     /// </summary>
     [JsonPropertyName("application")]
-    public Application? Application { get; set; }
+    public ApplicationModel? Application { get; set; }
 
     /// <summary>
     /// Relationship of the JIRA issue global link.

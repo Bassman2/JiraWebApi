@@ -1,21 +1,17 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
 
 /// <summary>
 /// Representation of a restrict.
 /// </summary>
-public sealed class Restrict
+internal sealed class RestrictModel
 {
-    /// <summary>
-    /// Initializes a new instance of the Restrict class.
-    /// </summary>
-    private Restrict()
-    { }
+    
 
     /// <summary>
     /// Groups of the restriction.
     /// </summary>
     [JsonPropertyName("groups")]
-    public IEnumerable<Group>? Groups { get; set; }
+    public IEnumerable<GroupModel>? Groups { get; set; }
 
     /// <summary>
     /// Permissions of the restriction.

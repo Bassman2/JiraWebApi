@@ -4,8 +4,20 @@
 /// Base class for for compareable Jira items.
 /// </summary>
 [DebuggerDisplay("{Id} {Name}")]
-public abstract class ComparableElementModel : ElementModel
+public abstract class ComparableElementModel 
 {
+    /// <summary>
+    /// Url of the JIRA REST item.
+    /// </summary>
+    [JsonPropertyName("self")]
+    public string? Self { get; set; }
+
+    /// <summary>
+    /// Id of the JIRA item.
+    /// </summary>
+    [JsonPropertyName("id")]
+    public string? Id { get; set; }
+
     /// <summary>
     /// Name of the JIRA item.
     /// </summary>
