@@ -3,13 +3,13 @@
 internal class ComponentModel
 {
     [JsonPropertyName("self")]
-    public required string Self { get; set; }
+    public string? Self { get; set; }
 
     [JsonPropertyName("id")]
-    public required int Id { get; set; }
+    public int Id { get; set; }
 
     [JsonPropertyName("name")]
-    public required string Name { get; set; }
+    public string? Name { get; set; }
 
     [JsonPropertyName("assigneeType")]
     public string? AssigneeType { get; set; }

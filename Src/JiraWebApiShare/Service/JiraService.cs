@@ -1,4 +1,6 @@
-﻿namespace JiraWebApi.Service;
+﻿using JiraWebApi.Service.Model;
+
+namespace JiraWebApi.Service;
 
 // https://developer.atlassian.com/server/jira/platform/rest/v10002/api-group-serverinfo/#api-group-serverinfo
 // https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-projects/#api-group-projects
@@ -373,39 +375,41 @@ internal class JiraService : JsonService
     }
 
     /// <summary>
-    /// Create a component.
-    /// </summary>
-    /// <param name="component">Component class to create.</param>
-    /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<Component?> CreateComponentAsync(Component component, CancellationToken cancellationToken)
-    {
-        ArgumentNullException.ThrowIfNull(component, nameof(component));
-
-        Component? res = await PostAsJsonAsync<Component, Component>("rest/api/2/component", component, cancellationToken);
-        return res;
-    }
-
-    /// <summary>
     /// Returns a project component.
     /// </summary>
     /// <param name="componentId">Id of the component to get.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     public async Task<ComponentModel?> GetComponentAsync(long componentId, CancellationToken cancellationToken)
     {
-        ComponentModel? res = await GetFromJsonAsync<ComponentModel>($"rest/api/2/component/{componentId}", cancellationToken);
+        var res = await GetFromJsonAsync<ComponentModel>($"rest/api/2/component/{componentId}", cancellationToken);
         return res;
     }
+
+    /// <summary>
+    /// Create a component.
+    /// </summary>
+    /// <param name="component">Component class to create.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<ComponentModel?> CreateComponentAsync(ComponentModel component, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(component, nameof(component));
+
+        var res = await PostAsJsonAsync<ComponentModel, ComponentModel>("rest/api/2/component", component, cancellationToken);
+        return res;
+    }
+
+    
 
     /// <summary>
     /// Modify a component.
     /// </summary>
     /// <param name="component">Component class to update.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<Component?> UpdateComponentAsync(Component component, CancellationToken cancellationToken)
+    public async Task<ComponentModel?> UpdateComponentAsync(ComponentModel component, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(component, nameof(component));
 
-        Component? res = await PutAsJsonAsync<Component, Component>($"rest/api/2/component/{component.Id}", component, cancellationToken);
+        var res = await PutAsJsonAsync<ComponentModel, ComponentModel>($"rest/api/2/component/{component.Id}", component, cancellationToken);
         return res;
     }
 
@@ -415,11 +419,10 @@ internal class JiraService : JsonService
     /// <param name="componentId">Id of the component to delete.</param>
     /// <param name="moveIssuesTo">The new component applied to issues whose 'id' component will be deleted. If this value is null, then the 'id' component is simply removed from the related isues.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task DeleteComponentAsync(string componentId, string? moveIssuesTo, CancellationToken cancellationToken)
+    public async Task DeleteComponentAsync(int componentId, int moveIssuesTo, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNullOrEmpty(componentId, nameof(componentId));
-
-        await DeleteAsync($"rest/api/2/component/{componentId}?{moveIssuesTo ?? string.Empty}", cancellationToken);
+        string req = CombineUrl($"rest/api/2/component/{componentId}", ("moveIssuesTo", moveIssuesTo == 0 ? null : moveIssuesTo));
+        await DeleteAsync(req, cancellationToken);
     }
 
     /// <summary>
@@ -427,12 +430,10 @@ internal class JiraService : JsonService
     /// </summary>
     /// <param name="componentId">Id of the component.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<int> ComponentRelatedIssuesCountAsync(string componentId, CancellationToken cancellationToken)
+    public async Task<IssueCountModel> ComponentRelatedIssuesCountAsync(int componentId, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNullOrEmpty(componentId, nameof(componentId));
-
-        ComponentRelatedIssueCounts? res = await GetFromJsonAsync<ComponentRelatedIssueCounts>($"rest/api/2/component/{componentId}/relatedIssueCounts", cancellationToken);
-        return res?.IssueCount ?? 0;
+        var res = await GetFromJsonAsync<IssueCountModel>($"rest/api/2/component/{componentId}/relatedIssueCounts", cancellationToken);
+        return res;
     }
 
     #endregion

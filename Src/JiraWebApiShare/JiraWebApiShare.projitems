@@ -47,7 +47,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Jira.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\AssignPutRequest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\CommentGetResult.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\ComponentRelatedIssueCounts.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\IssueCountModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\ExceptionMessages.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\IssueModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\IssueLinkTypesResponse.cs" />

@@ -11,7 +11,7 @@ public sealed class Component
     /// </summary>
     internal Component(ComponentModel model)
     {
-        Self = model.Self;
+        Self = model.Self!;
         Id = model.Id;
         Name = model.Name;
 

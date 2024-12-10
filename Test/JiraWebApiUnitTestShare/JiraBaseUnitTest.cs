@@ -1,5 +1,4 @@
-﻿using System.Data;
-using WebServiceClient.Store;
+﻿using WebServiceClient.Store;
 
 namespace JiraWebApiUnitTest;
 
