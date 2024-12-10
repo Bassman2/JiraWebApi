@@ -181,7 +181,7 @@ public sealed class Issue
     /// <summary>
     /// Σ Progress
     /// </summary>
-    public Progress? AggregateProgress { get; private set; }
+    //public Progress? AggregateProgress { get; private set; }
 
     /// <summary>
     /// Σ Remaining Estimate
@@ -236,13 +236,13 @@ public sealed class Issue
     /// <summary>
     /// Attachments of the JIRA issue.
     /// </summary>
-    public List<Attachment>? Attachments { get;  }
+    //public List<Attachment>? Attachments { get;  }
         
 
     /// <summary>
     /// Comments of the JIRA issue.
     /// </summary>
-    public List<Comment>? Comments { get;  set; }
+    //public List<Comment>? Comments { get;  set; }
 
     /// <summary>
     /// Project component(s) to which this issue relates.
@@ -337,7 +337,7 @@ public sealed class Issue
     /// <summary>
     ///  A list of links to related issues.
     /// </summary>
-    public IEnumerable<IssueLink>? Links { get;  set; }
+    //public IEnumerable<IssueLink>? Links { get;  set; }
 
     /// <summary>
     /// The Original Estimate of the total amount of time required to resolve the issue, as estimated when the issue was created.
@@ -363,7 +363,7 @@ public sealed class Issue
     /// <summary>
     /// Progress of the issue.
     /// </summary>
-    public Progress? Progress { get; }
+    //public Progress? Progress { get; }
 
     /// <summary>
     /// The 'parent' project to which the issue belongs.
@@ -391,7 +391,7 @@ public sealed class Issue
     /// <summary>
     /// A record of the issue's resolution, if the issue has been resolved or closed.
     /// </summary>
-    public Resolution? Resolution { get; }
+    //public Resolution? Resolution { get; }
     
     /// <summary>
     /// The time and date on which this issue was resolved.

@@ -1,15 +1,11 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
 
 /// <summary>
 /// Rrepresentation of the visibility of a JIRA item. 
 /// </summary>
-public sealed class Visibility
+internal class VisibilityModel
 {
-    /// <summary>
-    /// Initializes a new instance of the Visibility class.
-    /// </summary>
-    public Visibility()
-    { }
+    
 
     /// <summary>
     /// Type of the JIRA visibility.

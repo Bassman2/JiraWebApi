@@ -14,6 +14,6 @@ public sealed class EditMeta
     /// <summary>
     /// Available fields for issue editing.
     /// </summary>
-    [JsonPropertyName("fields")]
-    public Fields? Fields { get; private set; }
+    //[JsonPropertyName("fields")]
+    //public Fields? Fields { get; private set; }
 }

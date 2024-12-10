@@ -1,9 +1,10 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
 
 /// <summary>
-/// Representation of a JIRA issue transition.
+/// Representation of a JIRA issue resolution. 
 /// </summary>
-public sealed class Transition
+[DebuggerDisplay("{Id}, {Name}, {Description}")]
+internal class ResolutionModel
 {
     /// <summary>
     /// Url of the JIRA REST item.
@@ -18,20 +19,14 @@ public sealed class Transition
     public string? Id { get; set; }
 
     /// <summary>
-    /// Name of the issue transition.
+    /// Name of the JIRA item.
     /// </summary>
     [JsonPropertyName("name")]
     public string? Name { get; set; }
 
     /// <summary>
-    /// Result status of this issue transition.
+    /// Description of the JIRA resolution.
     /// </summary>
-    [JsonPropertyName("to")]
-    public Status? To { get; set; }
-
-    /// <summary>
-    /// Fields which are editable during this transition.
-    /// </summary>
-    [JsonPropertyName("fields")]
-    public Fields? Fields { get; set; }
+    [JsonPropertyName("description")]
+    public string? Description { get; private set; }
 }

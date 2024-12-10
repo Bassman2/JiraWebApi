@@ -1,9 +1,9 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
 
 /// <summary>
 /// Representation of a JIRA issue comment. 
 /// </summary>
-public sealed class Comment 
+internal class CommentModel 
 {
     /// <summary>
     /// Url of the JIRA REST item.
@@ -51,5 +51,5 @@ public sealed class Comment
     /// Visibility of the JIRA comment.
     /// </summary>
     [JsonPropertyName("visibility")]
-    public Visibility? Visibility { get; set; }
+    public VisibilityModel? Visibility { get; set; }
 }

@@ -1,28 +1,25 @@
-﻿using System.Text.Json.Serialization;
+﻿namespace JiraWebApi;
 
-namespace JiraWebApi
+/// <summary>
+/// Representation of attachment meta information. 
+/// </summary>
+public sealed class AttachmentMeta
 {
     /// <summary>
-    /// Representation of attachment meta information. 
+    /// Initializes a new instance of the AttachmentMeta class.
     /// </summary>
-    public sealed class AttachmentMeta
-    {
-        /// <summary>
-        /// Initializes a new instance of the AttachmentMeta class.
-        /// </summary>
-        private AttachmentMeta()
-        { }
+    private AttachmentMeta()
+    { }
 
-        /// <summary>
-        /// Signals if attachments enabled on this JIRA server.
-        /// </summary>
-        [JsonPropertyName("enabled")]
-        public bool IsEnabled { get; private set; }
+    /// <summary>
+    /// Signals if attachments enabled on this JIRA server.
+    /// </summary>
+    [JsonPropertyName("enabled")]
+    public bool IsEnabled { get; private set; }
 
-        /// <summary>
-        /// Maximum allowed attachment size.
-        /// </summary>
-        [JsonPropertyName("uploadLimit")]
-        public long UploadLimit { get; private set; }
-    }
+    /// <summary>
+    /// Maximum allowed attachment size.
+    /// </summary>
+    [JsonPropertyName("uploadLimit")]
+    public long UploadLimit { get; private set; }
 }

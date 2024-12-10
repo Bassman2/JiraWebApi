@@ -12,5 +12,5 @@ internal class CommentListModel
     public int Total { get; set; }
 
     [JsonPropertyName("comments")]
-    public IEnumerable<Comment>? Comments { get; set; }
+    public IEnumerable<CommentModel>? Comments { get; set; }
 }

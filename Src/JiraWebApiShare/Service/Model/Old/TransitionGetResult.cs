@@ -9,5 +9,5 @@ internal class TransitionGetResult
     public string? Expand { get; set; }
 
     [JsonPropertyName("transitions")]
-    public IEnumerable<Transition>? Transitions { get; set; }
+    public IEnumerable<TransitionModel>? Transitions { get; set; }
 }

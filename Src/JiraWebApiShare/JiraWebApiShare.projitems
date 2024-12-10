@@ -12,10 +12,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)CreateMeta.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Enums\AdjustEstimate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\ApplicationModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Attachment.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\AttachmentModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\AttachmentMeta.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AvatarUrls.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Comment.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\CommentModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Linq\JiraQueryable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Linq\JiraQueryProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Linq\JqlExpressionVisitor.cs" />
@@ -24,8 +24,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Service\Linq\JqlFunctionAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\AvatarUrlsModel.cs" />
     <Compile Include="..\JiraWebApiShare\Service\Model\ErrorModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\ComparableElementModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\ComparableList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Linq\ComparableElementModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Linq\ComparableList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Component.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\ComponentModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\CreateIssueModel.cs" />
@@ -39,7 +39,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Service\Linq\Enumerable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Field.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\FieldMeta.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Fields.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Filter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\GroupModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Icon.cs" />
@@ -60,7 +59,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\ServerInfoModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\SourceGenerationContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\TransitionGetResult.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\TransitionPostReq.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\TransitionPostReqModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\UserModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\VersionMoveAfterPostRequest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\VersionMovePositionPostRequest.cs" />
@@ -68,7 +67,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\VersionUnresolvedIssueCount.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\WorklogListModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Issue.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\IssueLink.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\IssueLinkModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\IssueLinkType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IssueType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IssueVersion.cs" />
@@ -80,29 +79,29 @@
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Permission.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Enums\Position.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Priority.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Progress.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\ProgressModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Project.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\RemoteLinkModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Resolution.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\ResolutionModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\RestrictModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Roles.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Schema.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ServerInfo.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\SortableElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Linq\SortableElement.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Linq\SortableString.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Linq\Sprint.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Status.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Subscriptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\TimeTracking.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Transition.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\TransitionModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Session.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)User.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\UsersListModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Usings.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Visibility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\VisibilityModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Votes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Watchers.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\Old\Worklog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\WorklogModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Enums\" />

@@ -149,11 +149,11 @@ internal class JiraService : JsonService
     /// </summary>
     /// <param name="attachmentId">The id of the attachment to get.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<Attachment?> GetAttachmentAsync(string attachmentId, CancellationToken cancellationToken = default)
+    public async Task<AttachmentModel?> GetAttachmentAsync(string attachmentId, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(attachmentId, nameof(attachmentId));
 
-        Attachment? res = await GetFromJsonAsync<Attachment>($"rest/api/2/attachment/{attachmentId}", cancellationToken);
+        var res = await GetFromJsonAsync<AttachmentModel>($"rest/api/2/attachment/{attachmentId}", cancellationToken);
         return res;
     }
 
@@ -175,12 +175,12 @@ internal class JiraService : JsonService
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <param name="files">List with attachments to add.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IEnumerable<Attachment>?> AddAttachmentsAsync(string issueIdOrKey, IEnumerable<KeyValuePair<string, Stream>> files, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<AttachmentModel>?> AddAttachmentsAsync(string issueIdOrKey, IEnumerable<KeyValuePair<string, Stream>> files, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
         ArgumentNullException.ThrowIfNull(files, nameof(files));
 
-        IEnumerable<Attachment>? res = await PostFilesFromJsonAsync<IEnumerable<Attachment>>($"rest/api/2/issue/{issueIdOrKey}/attachments", files, cancellationToken);
+        var res = await PostFilesFromJsonAsync<IEnumerable<AttachmentModel>>($"rest/api/2/issue/{issueIdOrKey}/attachments", files, cancellationToken);
         return res;
     }
 
@@ -205,7 +205,7 @@ internal class JiraService : JsonService
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IEnumerable<Comment>?> GetCommentsAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<CommentModel>?> GetCommentsAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
 
@@ -219,12 +219,12 @@ internal class JiraService : JsonService
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <param name="comment">Comment class to add.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<Comment?> AddCommentAsync(string issueIdOrKey, Comment comment, CancellationToken cancellationToken = default)
+    public async Task<CommentModel?> AddCommentAsync(string issueIdOrKey, CommentModel comment, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
         ArgumentNullException.ThrowIfNull(comment, nameof(comment));
 
-        Comment? res = await PostAsJsonAsync<Comment, Comment>($"rest/api/2/issue/{issueIdOrKey}/comment", comment, cancellationToken);
+        var res = await PostAsJsonAsync<CommentModel, CommentModel>($"rest/api/2/issue/{issueIdOrKey}/comment", comment, cancellationToken);
         return res;
     }
 
@@ -234,12 +234,12 @@ internal class JiraService : JsonService
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <param name="commentId">Id of the comment.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<Comment?> GetCommentAsync(string issueIdOrKey, string commentId, CancellationToken cancellationToken = default)
+    public async Task<CommentModel?> GetCommentAsync(string issueIdOrKey, string commentId, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
         ArgumentNullException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
 
-        Comment? res = await GetFromJsonAsync<Comment>($"rest/api/2/issue/{issueIdOrKey}/comment/{commentId}", cancellationToken);
+        var res = await GetFromJsonAsync<CommentModel>($"rest/api/2/issue/{issueIdOrKey}/comment/{commentId}", cancellationToken);
         return res;
     }
 
@@ -250,7 +250,7 @@ internal class JiraService : JsonService
     /// <param name="comment">Class of the comment to update.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     /// <remarks>Json bug in JIRA 5.0.4</remarks>
-    public async Task<Comment?> UpdateCommentAsync(string issueIdOrKey, Comment comment, CancellationToken cancellationToken = default)
+    public async Task<CommentModel?> UpdateCommentAsync(string issueIdOrKey, CommentModel comment, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
         ArgumentNullException.ThrowIfNull(comment, nameof(comment));
@@ -260,7 +260,7 @@ internal class JiraService : JsonService
         DateTime? updated = comment.Updated;
         comment.Created = null;
         comment.Updated = null;
-        Comment? res = await PutAsJsonAsync<Comment, Comment>($"rest/api/2/issue/{issueIdOrKey}/comment/{comment.Id}", comment, cancellationToken);
+        CommentModel? res = await PutAsJsonAsync<CommentModel, CommentModel>($"rest/api/2/issue/{issueIdOrKey}/comment/{comment.Id}", comment, cancellationToken);
         comment.Created = created;
         comment.Updated = updated;
         return res;
@@ -625,11 +625,11 @@ return issueResult
     /// </summary>
     /// <param name="issueLink">IssueLink class to create.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task CreateIssueLinkAsync(IssueLink issueLink, CancellationToken cancellationToken = default)
+    public async Task CreateIssueLinkAsync(IssueLinkModel issueLink, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(issueLink, nameof(issueLink));
 
-        await PostAsJsonAsync<IssueLink, IssueLink>("rest/api/2/issueLink", issueLink, cancellationToken);
+        await PostAsJsonAsync<IssueLinkModel, IssueLinkModel>("rest/api/2/issueLink", issueLink, cancellationToken);
     }
 
     /// <summary>
@@ -637,11 +637,11 @@ return issueResult
     /// </summary>
     /// <param name="issueLinkId">Id of the link.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IssueLink?> GetIssueLinkAsync(string issueLinkId, CancellationToken cancellationToken = default)
+    public async Task<IssueLinkModel?> GetIssueLinkAsync(string issueLinkId, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueLinkId, nameof(issueLinkId));
 
-        IssueLink? res = await GetFromJsonAsync<IssueLink>($"rest/api/2/issueLink/{issueLinkId}", cancellationToken);
+        var res = await GetFromJsonAsync<IssueLinkModel>($"rest/api/2/issueLink/{issueLinkId}", cancellationToken);
         return res;
     }
 
@@ -834,11 +834,11 @@ return issueResult
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IEnumerable<Transition>?> GetTransitionsAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<TransitionModel>?> GetTransitionsAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
 
-        TransitionGetResult? res = await GetFromJsonAsync<TransitionGetResult>($"rest/api/2/issue/{issueIdOrKey}/transitions", cancellationToken);
+        var res = await GetFromJsonAsync<TransitionGetResult>($"rest/api/2/issue/{issueIdOrKey}/transitions", cancellationToken);
         return res?.Transitions;
     }
 
@@ -848,12 +848,12 @@ return issueResult
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <param name="transitionId">Id of the transition.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<Transition?> GetTransitionAsync(string issueIdOrKey, string transitionId, CancellationToken cancellationToken = default)
+    public async Task<TransitionModel?> GetTransitionAsync(string issueIdOrKey, string transitionId, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
         ArgumentNullException.ThrowIfNullOrEmpty(transitionId, nameof(transitionId));
 
-        TransitionGetResult? res = await GetFromJsonAsync<TransitionGetResult>($"rest/api/2/issue/{issueIdOrKey}/transitions?transitionId={transitionId}", cancellationToken);
+        var res = await GetFromJsonAsync<TransitionGetResult>($"rest/api/2/issue/{issueIdOrKey}/transitions?transitionId={transitionId}", cancellationToken);
         return res?.Transitions?.FirstOrDefault();
     }
 
@@ -863,13 +863,13 @@ return issueResult
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <param name="transition">Transition class.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<Transition?> TransitionAsync(string issueIdOrKey, Transition transition, CancellationToken cancellationToken = default)
+    public async Task<TransitionModel?> TransitionAsync(string issueIdOrKey, TransitionModel transition, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
         ArgumentNullException.ThrowIfNull(transition, nameof(transition));
 
-        var req = new TransitionPostReq() { Transition = transition };
-        Transition? res = await PostAsJsonAsync<TransitionPostReq, Transition>($"rest/api/2/issue/{issueIdOrKey}/transitions", req, cancellationToken);
+        var req = new TransitionPostReqModel() { Transition = transition };
+        var res = await PostAsJsonAsync<TransitionPostReqModel, TransitionModel>($"rest/api/2/issue/{issueIdOrKey}/transitions", req, cancellationToken);
         return res;
     }
 
@@ -1063,9 +1063,9 @@ return issueResult
     /// Returns a list of all resolutions.
     /// </summary>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IEnumerable<Resolution>?> GetResolutionsAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<ResolutionModel>?> GetResolutionsAsync(CancellationToken cancellationToken = default)
     {
-        IEnumerable<Resolution>? res = await GetFromJsonAsync<IEnumerable<Resolution>>("rest/api/2/resolution", cancellationToken);
+        var res = await GetFromJsonAsync<IEnumerable<ResolutionModel>>("rest/api/2/resolution", cancellationToken);
         return res;
     }
 
@@ -1074,11 +1074,11 @@ return issueResult
     /// </summary>
     /// <param name="resolutionId">Id of the resolution.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<Resolution?> GetResolutionAsync(string resolutionId, CancellationToken cancellationToken = default)
+    public async Task<ResolutionModel?> GetResolutionAsync(string resolutionId, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(resolutionId, nameof(resolutionId));
 
-        Resolution? res = await GetFromJsonAsync<Resolution>($"rest/api/2/resolution/{resolutionId}", cancellationToken);
+        var res = await GetFromJsonAsync<ResolutionModel>($"rest/api/2/resolution/{resolutionId}", cancellationToken);
         return res;
     }
 
@@ -1316,7 +1316,7 @@ return issueResult
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IEnumerable<Worklog>?> GetIssueWorklogsAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<WorklogModel>?> GetIssueWorklogsAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
 
@@ -1332,7 +1332,7 @@ return issueResult
     /// <param name="adjustEstimate">Adjust estimate flags.</param>
     /// <param name="value">Value for AdjustEstimate.New and AdjustEstimate.Manual.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task AddIssueWorklogAsync(string issueIdOrKey, Worklog worklog, AdjustEstimate adjustEstimate = AdjustEstimate.Auto, string? value = null, CancellationToken cancellationToken = default)
+    public async Task AddIssueWorklogAsync(string issueIdOrKey, WorklogModel worklog, AdjustEstimate adjustEstimate = AdjustEstimate.Auto, string? value = null, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
         ArgumentNullException.ThrowIfNull(worklog, nameof(worklog));
@@ -1345,7 +1345,7 @@ return issueResult
             _ => $"rest/api/2/issue/{issueIdOrKey}/worklog?adjustEstimate=auto"
         };
 
-        await PostAsJsonAsync<Worklog, Worklog>(uri, worklog, cancellationToken);
+        await PostAsJsonAsync<WorklogModel, WorklogModel>(uri, worklog, cancellationToken);
     }
 
     /// <summary>
@@ -1354,12 +1354,12 @@ return issueResult
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <param name="worklogId">Id of the worklog.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<Worklog?> GetIssueWorklogAsync(string issueIdOrKey, string worklogId, CancellationToken cancellationToken = default)
+    public async Task<WorklogModel?> GetIssueWorklogAsync(string issueIdOrKey, string worklogId, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
         ArgumentNullException.ThrowIfNullOrEmpty(worklogId, nameof(worklogId));
 
-        Worklog? res = await GetFromJsonAsync<Worklog>($"rest/api/2/issue/{issueIdOrKey}/worklog/{worklogId}", cancellationToken);
+        var res = await GetFromJsonAsync<WorklogModel>($"rest/api/2/issue/{issueIdOrKey}/worklog/{worklogId}", cancellationToken);
         return res;
     }
 
@@ -1369,7 +1369,7 @@ return issueResult
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <param name="worklog">Worklog class to update.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<Worklog?> UpdateIssueWorklogAsync(string issueIdOrKey, Worklog worklog, CancellationToken cancellationToken = default)
+    public async Task<WorklogModel?> UpdateIssueWorklogAsync(string issueIdOrKey, WorklogModel worklog, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
         ArgumentNullException.ThrowIfNull(worklog, nameof(worklog));
@@ -1378,7 +1378,7 @@ return issueResult
         int timeSpentSeconds = worklog.TimeSpentSeconds;
         worklog.TimeSpentSeconds = 0;
 
-        Worklog? res = await PutAsJsonAsync<Worklog, Worklog>($"rest/api/2/issue/{issueIdOrKey}/worklog/{worklog.Id}", worklog, cancellationToken);
+        var res = await PutAsJsonAsync<WorklogModel, WorklogModel>($"rest/api/2/issue/{issueIdOrKey}/worklog/{worklog.Id}", worklog, cancellationToken);
         worklog.TimeSpentSeconds = timeSpentSeconds;
         return res;
     }

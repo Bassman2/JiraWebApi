@@ -1,15 +1,11 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
 
 /// <summary>
 /// Progress of an issue.
 /// </summary>
-public sealed class Progress
+internal class ProgressModel
 {
-    /// <summary>
-    /// Initializes a new instance of the Progress class.
-    /// </summary>
-    private Progress()
-    { }
+    
 
     /// <summary>
     /// Progress values.

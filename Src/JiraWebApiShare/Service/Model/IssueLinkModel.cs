@@ -1,15 +1,11 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
 
 /// <summary>
 /// Representation of a JIRA issue link.
 /// </summary>
-public sealed class IssueLink
+internal sealed class IssueLinkModel
 {
-    /// <summary>
-    /// Initializes a new instance of the Link class.
-    /// </summary>
-    public IssueLink()
-    { }
+    
 
     /// <summary>
     /// Id of the issue link.
@@ -42,5 +38,5 @@ public sealed class IssueLink
     /// Writeonly: Not for getting the comment.
     /// </remarks>
     [JsonPropertyName("comment")]
-    public Comment? Comment { private get; set; }
+    public CommentModel? Comment { private get; set; }
 }

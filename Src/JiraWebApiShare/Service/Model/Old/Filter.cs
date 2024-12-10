@@ -3,13 +3,25 @@
 /// <summary>
 /// Representation of a JIRA filter.
 /// </summary>
-public sealed class Filter : ComparableElementModel
+public sealed class Filter 
 {
     /// <summary>
-    /// Initializes a new instance of the Filter class.
+    /// Url of the JIRA REST item.
     /// </summary>
-    public Filter()
-    { }
+    [JsonPropertyName("self")]
+    public string? Self { get; set; }
+
+    /// <summary>
+    /// Id of the JIRA item.
+    /// </summary>
+    [JsonPropertyName("id")]
+    public string? Id { get; set; }
+
+    /// <summary>
+    /// Name of the JIRA item.
+    /// </summary>
+    [JsonPropertyName("name")]
+    public string? Name { get; set; }
 
     /// <summary>
     /// Description of the JIRA filter.

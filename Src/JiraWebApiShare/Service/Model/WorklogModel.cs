@@ -1,9 +1,9 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
 
 /// <summary>
 /// Representation of a JIRA issue worklog. 
 /// </summary>
-public sealed class Worklog 
+internal class WorklogModel 
 {
     /// <summary>
     /// Url of the JIRA REST item.
@@ -39,7 +39,7 @@ public sealed class Worklog
     /// Visibility of the JIRA issue worklog.
     /// </summary>
     [JsonPropertyName("visibility")]
-    public Visibility? Visibility { get; set; }
+    public VisibilityModel? Visibility { get; set; }
 
     /// <summary>
     /// Start date of the JIRA issue worklog.

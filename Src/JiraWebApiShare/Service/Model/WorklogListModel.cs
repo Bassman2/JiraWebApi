@@ -12,5 +12,5 @@ internal class WorklogListModel
     public int Total { get; set; }
 
     [JsonPropertyName("worklogs")]
-    public IEnumerable<Worklog>? Worklogs { get; set; }
+    public IEnumerable<WorklogModel>? Worklogs { get; set; }
 }

@@ -6,13 +6,25 @@
 /// <remarks>
 /// IssueVersion has the prefix Issue to separate from System.Version.
 /// </remarks>
-public sealed class IssueVersion : SortableElement
+public sealed class IssueVersion 
 {
     /// <summary>
-    /// Initializes a new instance of the Version class.
+    /// Url of the JIRA REST item.
     /// </summary>
-    public IssueVersion()
-    { }
+    [JsonPropertyName("self")]
+    public string? Self { get; set; }
+
+    /// <summary>
+    /// Id of the JIRA item.
+    /// </summary>
+    [JsonPropertyName("id")]
+    public string? Id { get; set; }
+
+    /// <summary>
+    /// Name of the JIRA item.
+    /// </summary>
+    [JsonPropertyName("name")]
+    public string? Name { get; set; }
 
     /// <summary>
     /// Get released versions.

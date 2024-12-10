@@ -1,9 +1,9 @@
-﻿namespace JiraWebApi;
+﻿namespace JiraWebApi.Service.Model;
 
 /// <summary>
-/// Representation of a JIRA issue link type.
+/// Representation of a JIRA issue transition.
 /// </summary>
-public sealed class IssueLinkType 
+internal class TransitionModel
 {
     /// <summary>
     /// Url of the JIRA REST item.
@@ -18,20 +18,20 @@ public sealed class IssueLinkType
     public string? Id { get; set; }
 
     /// <summary>
-    /// Name of the JIRA item.
+    /// Name of the issue transition.
     /// </summary>
     [JsonPropertyName("name")]
     public string? Name { get; set; }
 
     /// <summary>
-    /// Name of the inward link.
+    /// Result status of this issue transition.
     /// </summary>
-    [JsonPropertyName("inward")]
-    public string? Inward { get; private set; }
+    [JsonPropertyName("to")]
+    public Status? To { get; set; }
 
     /// <summary>
-    /// Name od the outward link.
+    /// Fields which are editable during this transition.
     /// </summary>
-    [JsonPropertyName("outward")]
-    public string? Outward { get; private set; }
+    //[JsonPropertyName("fields")]
+    //public Fields? Fields { get; set; }
 }
