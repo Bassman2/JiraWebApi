@@ -159,6 +159,15 @@ public sealed class Jira : IDisposable
         return res.CastModel<Priority>();
     }
 
+    public async Task<IAsyncEnumerable<Priority>?> GetPrioritiesPagedAsync(CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        var res = await service.GetPrioritiesAsync(cancellationToken);
+        return res.CastModel<Priority>();
+    }
+
+
     #endregion
 
     #region Project
