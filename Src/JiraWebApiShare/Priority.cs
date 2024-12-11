@@ -1,44 +1,48 @@
-﻿namespace JiraWebApi.Service.Model;
+﻿namespace JiraWebApi;
 
 /// <summary>
 /// Representation of a JIRA issue priority. 
 /// </summary>
 [DebuggerDisplay("{Id}, {Name}, {Description}")]
-internal class PriorityModel
+public class Priority
 {
+    internal Priority(PriorityModel model)
+    {
+        Self = model.Self;
+        Id = model.Id;
+        Name = model.Name;
+        Description = model.Description;
+        IconUrl = model.IconUrl;
+        StatusColor = model.StatusColor;
+    }
+
     /// <summary>
     /// Url of the JIRA REST item.
     /// </summary>
-    [JsonPropertyName("self")]
-    public string? Self { get; set; }
+    public string? Self { get; }
 
     /// <summary>
     /// Id of the JIRA item.
     /// </summary>
-    [JsonPropertyName("id")]
-    public int Id { get; set; }
+    public int Id { get; }
 
     /// <summary>
     /// Name of the JIRA item.
     /// </summary>
-    [JsonPropertyName("name")]
-    public string? Name { get; set; }
+    public string? Name { get; }
 
     /// <summary>
     /// Description of the JIRA priority.
     /// </summary>
-    [JsonPropertyName("description")]
-    public string? Description { get; set; }
+    public string? Description { get; }
 
     /// <summary>
     /// Url of the icon of the JIRA priority.
     /// </summary>
-    [JsonPropertyName("iconUrl")]
-    public Uri? IconUrl { get; set; }
+    public Uri? IconUrl { get; }
 
     /// <summary>
     /// Status color of the JIRA priority.
     /// </summary>
-    [JsonPropertyName("statusColor")]
-    public string? StatusColor { get; set; }
+    public string? StatusColor { get; }
 }

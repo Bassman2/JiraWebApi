@@ -960,7 +960,7 @@ return issueResult
     /// Returns a list of all issue priorities.
     /// </summary>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IEnumerable<PriorityModel>?> GetPrioritiesAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<PriorityModel>?> GetPrioritiesAsync(CancellationToken cancellationToken)
     {
         var res = await GetFromJsonAsync<IEnumerable<PriorityModel>>("rest/api/2/priority", cancellationToken);
         return res;
@@ -971,9 +971,9 @@ return issueResult
     /// </summary>
     /// <param name="priorityId">Id of the priority.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<PriorityModel?> GetPriorityAsync(string priorityId, CancellationToken cancellationToken = default)
+    public async Task<PriorityModel?> GetPriorityAsync(int priorityId, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNullOrEmpty(priorityId, nameof(priorityId));
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(priorityId, nameof(priorityId));
 
         var res = await GetFromJsonAsync<PriorityModel>($"rest/api/2/priority/{priorityId}", cancellationToken);
         return res;

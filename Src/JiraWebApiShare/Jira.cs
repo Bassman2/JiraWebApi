@@ -33,18 +33,23 @@ public sealed class Jira : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    #region ServerInfo
+  
+    #region Component
 
-    /// <summary>
-    /// Returns general information about the current JIRA server.
-    /// </summary>
-    /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<ServerInfo?> GetServerInfoAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Component>?> GetComponentsAsync(Project project, CancellationToken cancellationToken = default)
     {
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
 
-        var res = await service.GetServerInfoAsync(cancellationToken);
-        return res;
+        var res = await service.GetComponentsAsync(project.Id, cancellationToken);
+        return res.CastModel<Component>();
+    }
+
+    public async Task<Component?> GetComponentAsync(long componentId, CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        var res = await service.GetComponentAsync(componentId, cancellationToken);
+        return res.CastModel<Component>();
     }
 
     #endregion
@@ -127,6 +132,35 @@ public sealed class Jira : IDisposable
 
     #endregion
 
+    #region Priority
+
+    /// <summary>
+    /// Returns a list of all issue priorities.
+    /// </summary>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<IEnumerable<Priority>?> GetPrioritiesAsync(CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        var res = await service.GetPrioritiesAsync(cancellationToken);
+        return res.CastModel<Priority>();
+    }
+
+    /// <summary>
+    /// Returns an issue priority.
+    /// </summary>
+    /// <param name="priorityId">Id of the priority.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<Priority?> GetPriorityAsync(int priorityId, CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        var res = await service.GetPriorityAsync(priorityId, cancellationToken);
+        return res.CastModel<Priority>();
+    }
+
+    #endregion
+
     #region Project
 
     /// <summary>
@@ -154,25 +188,7 @@ public sealed class Jira : IDisposable
 
 
 
-    #region Component
 
-    public async Task<IEnumerable<Component>?> GetComponentsAsync(Project project, CancellationToken cancellationToken = default)
-    {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
-
-        var res = await service.GetComponentsAsync(project.Id, cancellationToken);
-        return res.CastModel<Component>();
-    }
-
-    public async Task<Component?> GetComponentAsync(long componentId, CancellationToken cancellationToken = default)
-    {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
-
-        var res = await service.GetComponentAsync(componentId, cancellationToken);
-        return res.CastModel<Component>();
-    }
-
-    #endregion
 
     #region Meta
 
@@ -189,6 +205,22 @@ public sealed class Jira : IDisposable
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
 
         var res = await service.GetEditMetaAsync(issueIdOrKey, cancellationToken);
+        return res;
+    }
+
+    #endregion
+
+    #region ServerInfo
+
+    /// <summary>
+    /// Returns general information about the current JIRA server.
+    /// </summary>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<ServerInfo?> GetServerInfoAsync(CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        var res = await service.GetServerInfoAsync(cancellationToken);
         return res;
     }
 
