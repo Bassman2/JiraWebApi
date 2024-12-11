@@ -18,6 +18,5 @@ global using WebServiceClient;
 global using WebServiceClient.Authenticator;
 
 global using JiraWebApi.Service;
-global using JiraWebApi.Service.Linq;
 global using JiraWebApi.Service.Model;
 

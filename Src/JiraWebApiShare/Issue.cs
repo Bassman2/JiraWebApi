@@ -385,7 +385,6 @@ public sealed class Issue
     /// <summary>
     /// Reporter of the JIRA issue.
     /// </summary>
-    [JqlFieldAttribute("reporter", JqlFieldCompare.Comparable | JqlFieldCompare.Include | JqlFieldCompare.Was | JqlFieldCompare.WasInclude | JqlFieldCompare.Changed)]
     public User? Reporter { get; }
     
     /// <summary>

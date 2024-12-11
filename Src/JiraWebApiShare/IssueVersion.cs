@@ -26,61 +26,7 @@ public sealed class IssueVersion
     [JsonPropertyName("name")]
     public string? Name { get; set; }
 
-    /// <summary>
-    /// Get released versions.
-    /// </summary>
-    /// <returns>Not supported.</returns>
-    /// <remarks>For Linq use only.</remarks>
-    /// <example><code>
-    /// var r = from i in jira.Issues where i.AffectedVersions.In(IssueVersion.ReleasedVersions()) select i;
-    /// </code></example>
-    [JqlFunction("releasedVersions()")]
-    public static IssueVersion[] ReleasedVersions()
-    {
-        throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
-    }
-
-    /// <summary>
-    /// Get latest released version.
-    /// </summary>
-    /// <returns>Not supported.</returns>
-    /// <remarks>For Linq use only.</remarks>
-    /// <example><code>
-    /// var r = from i in jira.Issues where i.AffectedVersions.In(IssueVersion.ReleasedVersions()) select i;
-    /// </code></example>
-    [JqlFunction("latestReleasedVersion()")]
-    public static IssueVersion[] LatestReleasedVersion()
-    {
-        throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
-    }
-
-    /// <summary>
-    /// Get unreleased versions.
-    /// </summary>
-    /// <returns>Not supported.</returns>
-    /// <remarks>For Linq use only.</remarks>
-    /// <example><code>
-    /// var r = from i in jira.Issues where i.AffectedVersions.In(IssueVersion.ReleasedVersions()) select i;
-    /// </code></example>
-    [JqlFunction("unreleasedVersions()")]
-    public static IssueVersion[] UnreleasedVersions()
-    {
-        throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
-    }
-
-    /// <summary>
-    /// Get earliest unreleased version.
-    /// </summary>
-    /// <returns>Not supported.</returns>
-    /// <remarks>For Linq use only.</remarks>
-    /// <example><code>
-    /// var r = from i in jira.Issues where i.AffectedVersions.In(IssueVersion.ReleasedVersions()) select i;
-    /// </code></example>
-    [JqlFunction("earliestUnreleasedVersion()")]
-    public static IssueVersion[] EarliestUnreleasedVersion()
-    {
-        throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
-    }
+    
     
     /// <summary>
     /// Description of the JIRA version.

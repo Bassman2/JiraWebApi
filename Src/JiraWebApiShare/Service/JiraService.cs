@@ -87,51 +87,7 @@ internal class JiraService : JsonService
     //    }
 
     #endregion
-
-    #region Linq
-
-    //private IEnumerable<FieldModel?>? fields;
-    //internal async Task<IEnumerable<FieldModel?>?> GetCachedFieldsAsync()
-    //{
-    //    return this.FieldModel ??= await GetFieldsAsync();
-    //}
-
-
-    //internal bool jqlTest = false;
-    //internal string jqlQuery = "";
-    //internal int? jqlStartAt = null;
-    //internal int? jqlMaxResults = null;
-    //internal IEnumerable<Issue>? GetIssuesFromJql(string? jql, int? startAt, int? maxResults)
-    //{
-    //    ArgumentNullException.ThrowIfNullOrEmpty(jql, nameof(jql));
-
-    //    //{
-    //    //    this.jqlQuery = jql;
-    //    //    this.jqlStartAt = startAt;
-    //    //    this.jqlMaxResults = maxResults;
-    //    //    return new List<Issue>();
-    //    //}
-
-    //    return GetIssuesFromJqlAsync(jql, startAt.GetValueOrDefault(0), maxResults.GetValueOrDefault(500)).Result;
-    //}
-
-    /// <summary>
-    /// Performs a issue search using LINQ
-    /// </summary>
-    /// <remarks>
-    /// Methods: OrderBy, OrderByDescending, ThenBy, ThenByDescending, Skip, Take
-    /// 
-    /// </remarks>
-    /// <example>
-    /// var issues = (from issue in jira.Issues where issue.Priority == "Major" || issue.Priority == "Minor" select issue OrderBy issue.Version).Skip(5).Take(19);
-    /// </example>
-    //public IOrderedQueryable<Issue> Issues
-    //{
-    //    get { return new JiraQueryable<Issue>(this.provider); }
-    //}
-
-    #endregion
-
+    
     #region Attachments
 
     /// <summary>
