@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace JiraWebApi.Service;
@@ -1017,7 +1018,7 @@ return issueResult
     /// </summary>
     /// <returns>The task object representing the asynchronous operation.</returns>
     /// <remarks>Only the fields Self, Id, Key, Name and AvatarUrls will be filled by GetProjectsAsync. Call GetProjectAsync to get all fields. </remarks>
-    public async Task<IEnumerable<ProjectModel>?> GetProjectsAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<ProjectModel>?> GetProjectsAsync(CancellationToken cancellationToken)
     {
         var res = await GetFromJsonAsync<IEnumerable<ProjectModel>>("rest/api/2/project", cancellationToken);
         return res;
@@ -1039,6 +1040,28 @@ return issueResult
     #endregion
 
     #region ProjectType
+
+    public async Task<IEnumerable<ProjectTypeModel>?> GetProjectTypesAsync(CancellationToken cancellationToken)
+    {
+        var res = await GetFromJsonAsync<IEnumerable<ProjectTypeModel>>("rest/api/2/project/type", cancellationToken);
+        return res;
+    }
+
+    public async Task<ProjectTypeModel?> GetProjectTypeAsync(string projectTypeKey, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(projectTypeKey, nameof(projectTypeKey));
+
+        var res = await GetFromJsonAsync<ProjectTypeModel>($"rest/api/2/project/type/{projectTypeKey}", cancellationToken);
+        return res;
+    }
+
+    public async Task<ProjectTypeModel?> GetAccessibleProjectTypeAsync(string projectTypeKey, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(projectTypeKey, nameof(projectTypeKey));
+
+        var res = await GetFromJsonAsync<ProjectTypeModel>($"rest/api/2/project/type/{projectTypeKey}/accessible", cancellationToken);
+        return res;
+    }
 
     #endregion
 

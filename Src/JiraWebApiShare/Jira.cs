@@ -201,9 +201,33 @@ public sealed class Jira : IDisposable
 
     #endregion
 
+    #region ProjectType
 
+    public async Task<IEnumerable<ProjectType>?> GetProjectTypesAsync(CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
 
+        var res = await service.GetProjectTypesAsync(cancellationToken);
+        return res.CastModel<ProjectType>();
+    }
 
+    public async Task<ProjectType?> GetProjectTypeAsync(string projectTypeKey, CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        var res = await service.GetProjectTypeAsync(projectTypeKey, cancellationToken);
+        return res.CastModel<ProjectType>();
+    }
+
+    public async Task<ProjectType?> GetAccessibleProjectTypeAsync(string projectTypeKey, CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        var res = await service.GetAccessibleProjectTypeAsync(projectTypeKey, cancellationToken);
+        return res.CastModel<ProjectType>();
+    }
+
+    #endregion
 
     #region Meta
 

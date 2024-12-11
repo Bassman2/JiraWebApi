@@ -8,6 +8,7 @@
 [JsonSerializable(typeof(PriorityPageModel))]
 [JsonSerializable(typeof(ProjectModel))]
 [JsonSerializable(typeof(IEnumerable<ProjectModel>))]
+[JsonSerializable(typeof(IEnumerable<ProjectTypeModel>))]
 [JsonSerializable(typeof(IEnumerable<ComponentModel>))]
 [JsonSerializable(typeof(IssueModel))]
 [JsonSerializable(typeof(CreateMetaModel))]
