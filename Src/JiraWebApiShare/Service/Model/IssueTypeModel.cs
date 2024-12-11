@@ -19,7 +19,7 @@ internal class IssueTypeModel
     /// Id of the JIRA item.
     /// </summary>
     [JsonPropertyName("id")]
-    public string? Id { get; set; }
+    public int? Id { get; set; }
     
     /// <summary>
     /// Description of the JIRA issue type.

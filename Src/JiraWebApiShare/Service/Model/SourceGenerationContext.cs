@@ -5,6 +5,7 @@
 [JsonSerializable(typeof(IssueTypeModel))]
 [JsonSerializable(typeof(IEnumerable<IssueTypeModel>))]
 [JsonSerializable(typeof(IEnumerable<PriorityModel>))]
+[JsonSerializable(typeof(PriorityPageModel))]
 [JsonSerializable(typeof(ProjectModel))]
 [JsonSerializable(typeof(IEnumerable<ProjectModel>))]
 [JsonSerializable(typeof(IEnumerable<ComponentModel>))]

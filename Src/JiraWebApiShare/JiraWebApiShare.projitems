@@ -21,6 +21,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\FilterModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\NotifyToModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\PermissionModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\PriorityPageModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\SubscriptionsModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\TimeTrackingModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\VotesModel.cs" />

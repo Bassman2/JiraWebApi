@@ -8,8 +8,10 @@ public class JiraMetaUnitTest : JiraBaseUnitTest
     {
         using var jira = new Jira(storeKey);
 
-        var meta = await jira.GetCreateMetaAsync(testProjectKey, "bug");
+        var issueType = await jira.GetIssueTypeAsync("bug");
+        Assert.IsNotNull(issueType);
 
+        var meta = await jira.GetCreateMetaAsync(testProjectKey, issueType);
         Assert.IsNotNull(meta);
         //StringAssert.StartsWith("NAVSUITE-", issue.Key, nameof(issue.Key));
 
@@ -23,7 +25,10 @@ public class JiraMetaUnitTest : JiraBaseUnitTest
     {
         using var jira = new Jira(storeKey);
 
-        var meta = await jira.GetCreateMetaAsync(testProjectKey, "sub-task");
+        var issueType = await jira.GetIssueTypeAsync("sub-task");
+        Assert.IsNotNull(issueType);
+
+        var meta = await jira.GetCreateMetaAsync(testProjectKey, issueType);
 
         Assert.IsNotNull(meta);
         //StringAssert.StartsWith("NAVSUITE-", issue.Key, nameof(issue.Key));

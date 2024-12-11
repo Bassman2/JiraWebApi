@@ -27,7 +27,7 @@ public sealed class IssueType
     /// Id of the JIRA item.
     /// </summary>
     
-    public string? Id { get; }
+    public int? Id { get; }
 
     /// <summary>
     /// Name of the issue type.

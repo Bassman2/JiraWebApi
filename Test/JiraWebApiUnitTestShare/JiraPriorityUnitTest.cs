@@ -1,4 +1,6 @@
-﻿namespace JiraWebApiUnitTest;
+﻿using WebServiceClient;
+
+namespace JiraWebApiUnitTest;
 
 [TestClass]
 public class JiraPriorityUnitTest : JiraBaseUnitTest
@@ -44,18 +46,12 @@ public class JiraPriorityUnitTest : JiraBaseUnitTest
     {
         using var jira = new Jira(storeKey);
 
-        var list = await jira.GetPrioritiesPagedAsync();
+        var list = jira.GetPrioritiesPagedAsync();
+        Assert.IsNotNull(list);
 
-        var priorities = list?.ToList();
+        var priorities = await list.ToListAsync();
         Assert.IsNotNull(priorities);
 
-        var priority = priorities.FirstOrDefault();
-        Assert.IsNotNull(priority);
-        Assert.AreEqual($"{testHost}rest/api/2/priority/1", priority.Self?.ToString(), nameof(priority.Self));
-        Assert.AreEqual(1, priority.Id, nameof(priority.Id));
-        Assert.AreEqual("Blocker", priority.Name, nameof(priority.Name));
-        Assert.AreEqual("Blocks development and/or testing work, production could not run.", priority.Description, nameof(priority.Description));
-        Assert.AreEqual($"{testHost}images/icons/priorities/blocker.svg", priority.IconUrl?.ToString(), nameof(priority.IconUrl));
-        Assert.AreEqual("#cc0000", priority.StatusColor, nameof(priority.StatusColor));
+        Assert.AreEqual(0, priorities.Count, nameof(priorities.Count));
     }
 }

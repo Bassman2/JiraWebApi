@@ -3,21 +3,24 @@
 /// <summary>
 /// Representation of meta information for issue creation.
 /// </summary>
-public sealed class CreateMeta
+public  class CreateMeta
 {
     /// <summary>
     /// Initializes a new instance of the CreateMeta class.
     /// </summary>
-    internal CreateMeta()
-    { }
+    internal CreateMeta(CreateMetaModel model)
+    {
+        Expand = model.Expand;
+        Projects = model.Projects.CastModel<Project>();
+    }
 
     /// <summary>
     /// Name of the classes which should be expanded.
     /// </summary>
-    public string? Expand { get; init; }
+    public string? Expand { get; }
 
     /// <summary>
     /// Projects for which tickets can be created by the user.
     /// </summary>
-    public IEnumerable<Project>? Projects { get; init; }
+    public IEnumerable<Project>? Projects { get; }
 }

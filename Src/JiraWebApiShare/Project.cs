@@ -107,12 +107,12 @@ public sealed class Project
 
     #endregion
     
-    public async Task<CreateMeta?> GetCreateMetaAsync(string issueTypeId, CancellationToken cancellationToken = default)
+    public async Task<CreateMeta?> GetCreateMetaAsync(int issueTypeId, CancellationToken cancellationToken = default)
     {
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
 
         var res = await service.GetCreateMetaAsync(this.Key, issueTypeId, cancellationToken);
-        return res;
+        return res.CastModel<CreateMeta>();
     }
 
     public async Task<CreateMeta?> GetEditMetaAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
@@ -120,7 +120,7 @@ public sealed class Project
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
 
         var res = await service.GetEditMetaAsync(issueIdOrKey, cancellationToken);
-        return res;
+        return res.CastModel<CreateMeta>();
     }
 
     public async Task<Issue?> CreateIssueAsync(IssueType issueType, string reporter, string summary, string description, CancellationToken cancellationToken = default)
@@ -128,7 +128,7 @@ public sealed class Project
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
         
         ArgumentNullException.ThrowIfNull(issueType, nameof(issueType));
-        ArgumentNullException.ThrowIfNullOrWhiteSpace(issueType.Id, nameof(issueType.Id));
+        //ArgumentNullException.ThrowIfNullOrWhiteSpace(issueType.Id, nameof(issueType.Id));
 
         CreateIssueModel model = new() { Fields = [] };
         model.Fields.Add("project", new ProjectModel() { Id = this.Id });

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace JiraWebApi.Service;
 
@@ -48,8 +49,12 @@ internal class JiraService : JsonService
 
     protected override async Task ErrorHandlingAsync(HttpResponseMessage response, string memberName, CancellationToken cancellationToken)
     {
-        var error = await ReadFromJsonAsync<ErrorModel>(response, cancellationToken);
-        throw new WebServiceException(error?.ToString(), response.RequestMessage?.RequestUri, response.StatusCode, response.ReasonPhrase, memberName);
+        if (response.Content is JsonContent)
+        {
+            var error = await ReadFromJsonAsync<ErrorModel>(response, cancellationToken);
+            throw new WebServiceException(error?.ToString(), response.RequestMessage?.RequestUri, response.StatusCode, response.ReasonPhrase, memberName);
+        }
+        throw new WebServiceException("", response.RequestMessage?.RequestUri, response.StatusCode, response.ReasonPhrase, memberName);
     }
 
     //    private async IAsyncEnumerable<T> GetJsonAsyncEnumerableAsync<T, E>(string? requestUri, [EnumeratorCancellation] CancellationToken cancellationToken, [CallerMemberName] string memberName = "") where T : class where E : AsyncEnumerableModel 
@@ -652,7 +657,7 @@ return issueResult
     /// Projects will not be returned if the user does not have permission to create issues in that project. 
     /// </summary>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<CreateMetaModel?> GetCreateMetaAsync(string project, string issueType, CancellationToken cancellationToken = default)
+    public async Task<CreateMetaModel?> GetCreateMetaAsync(string project, int issueType, CancellationToken cancellationToken = default)
     {
         var res = await GetFromJsonAsync<CreateMetaModel>($"rest/api/2/issue/createmeta/{project}/issuetypes/{issueType}", cancellationToken);
         return res;
@@ -981,31 +986,25 @@ return issueResult
         return res;
     }
 
-    public IAsyncEnumerable<HardwareModel> GetHardwareListByCategoryAsync(int category, CancellationToken cancellationToken)
+    public async IAsyncEnumerable<PriorityModel> GetPrioritiesPagedAsync([EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        var res = GetListAsync<HardwareModel>($"api/v1/hardware?category_id={category}&", cancellationToken);
-        return res;
-    }
-
-    private async IAsyncEnumerable<T> GetListAsync<T>(string? requestUri, [EnumeratorCancellation] CancellationToken cancellationToken, [CallerMemberName] string memberName = "") //where T : class
-    {
-        ArgumentRequestUriException.ThrowIfNullOrWhiteSpace(requestUri, nameof(requestUri));
-        WebServiceException.ThrowIfNullOrNotConnected(this);
-
-        int count = 1;
-        int offset = 0;
-        while (count > offset)
+        long total = 0;
+        long startAt = 0;
+        int maxResults = 100;
+        while (startAt > total)
         {
-            var res = await GetFromJsonAsync<ListModel<T>>($"{requestUri}limit={limit}&offset={offset}", cancellationToken);
-            if (res != null && res.Rows != null)
+            string requestUri = CombineUrl("rest/api/2/priority/page", ("startAt", startAt), ("maxResults", maxResults));
+            var res = await GetFromJsonAsync<PriorityPageModel>(requestUri, cancellationToken);
+            if (res == null || res.Values == null)
             {
-                foreach (var item in res.Rows)
-                {
-                    yield return item;
-                }
+                yield break;
             }
-            count = res?.Total ?? 0;
-            offset += limit;
+            foreach (var item in res.Values)
+            {
+                yield return item;
+            }
+            total = res.Total;
+            startAt = res.Values.Count();
         }
     }
 

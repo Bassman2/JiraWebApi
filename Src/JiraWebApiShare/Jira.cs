@@ -76,7 +76,7 @@ public sealed class Jira : IDisposable
         ArgumentNullException.ThrowIfNull(project, nameof(project));
         ArgumentNullException.ThrowIfNullOrWhiteSpace(project.Id, nameof(project.Id));
         ArgumentNullException.ThrowIfNull(issueType, nameof(issueType));
-        ArgumentNullException.ThrowIfNullOrWhiteSpace(issueType.Id, nameof(issueType.Id));
+        //ArgumentNullException.ThrowIfNullOrWhiteSpace(issueType.Id, nameof(issueType.Id));
 
         CreateIssueModel model = new() { Fields = [] };
         model.Fields.Add("project", new ProjectModel() { Id = project.Id });
@@ -89,7 +89,7 @@ public sealed class Jira : IDisposable
         return res.CastModel<Issue>(service);
     }
 
-    public async Task<Issue?> CreateSubIssueAsync(string parentKey, string projectId, string issueTypeId, string reporter, string summary, string description, CancellationToken cancellationToken = default)
+    public async Task<Issue?> CreateSubIssueAsync(string parentKey, string projectId, int issueTypeId, string reporter, string summary, string description, CancellationToken cancellationToken = default)
     {
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
 
@@ -159,28 +159,20 @@ public sealed class Jira : IDisposable
         return res.CastModel<Priority>();
     }
 
-    public async Task<IAsyncEnumerable<Priority>?> GetPrioritiesPagedAsync(CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<Priority> GetPrioritiesPagedAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
 
-        var res = await service.GetPrioritiesAsync(cancellationToken);
-        return res.CastModel<Priority>();
-    }
-
-    public async IAsyncEnumerable<Hardware> GetHardwareListAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
-    {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
-
-        var res = service.GetHardwareListAsync(cancellationToken);
-        //if (res is not null)
+        var res = service.GetPrioritiesPagedAsync(cancellationToken);
+        //if (res == null)
+        //{
+        //    yield break;
+        //}
+        await foreach (var item in res)
         {
-            await foreach (var item in res)
-            {
-                yield return item!;
-            }
+            yield return item.CastModel<Priority>()!;
         }
     }
-
 
     #endregion
 
@@ -215,12 +207,12 @@ public sealed class Jira : IDisposable
 
     #region Meta
 
-    public async Task<CreateMeta?> GetCreateMetaAsync(string projectKey, string issueTypeId, CancellationToken cancellationToken = default)
+    public async Task<CreateMeta?> GetCreateMetaAsync(string projectKey, IssueType issueType, CancellationToken cancellationToken = default)
     {
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
 
-        var res = await service.GetCreateMetaAsync(projectKey, issueTypeId, cancellationToken);
-        return res;
+        var res = await service.GetCreateMetaAsync(projectKey, issueType.Id ?? 0, cancellationToken);
+        return res.CastModel<CreateMeta>();
     }
 
     public async Task<CreateMeta?> GetEditMetaAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
@@ -228,7 +220,7 @@ public sealed class Jira : IDisposable
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
 
         var res = await service.GetEditMetaAsync(issueIdOrKey, cancellationToken);
-        return res;
+        return res.CastModel<CreateMeta>();
     }
 
     #endregion
