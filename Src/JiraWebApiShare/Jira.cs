@@ -167,6 +167,20 @@ public sealed class Jira : IDisposable
         return res.CastModel<Priority>();
     }
 
+    public async IAsyncEnumerable<Hardware> GetHardwareListAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        var res = service.GetHardwareListAsync(cancellationToken);
+        //if (res is not null)
+        {
+            await foreach (var item in res)
+            {
+                yield return item!;
+            }
+        }
+    }
+
 
     #endregion
 
