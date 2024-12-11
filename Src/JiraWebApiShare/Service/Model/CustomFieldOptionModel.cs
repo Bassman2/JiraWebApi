@@ -5,8 +5,6 @@
 /// </summary>
 internal sealed class CustomFieldOptionModel
 {
-    
-
     /// <summary>
     /// Url of the JIRA REST item.
     /// </summary>
@@ -29,6 +27,5 @@ internal sealed class CustomFieldOptionModel
     /// Child custom field option.
     /// </summary>
     [JsonPropertyName("child")]
-    public CustomFieldOption? Child { get; private set; }
+    public CustomFieldOptionModel? Child { get; private set; }
 }
-

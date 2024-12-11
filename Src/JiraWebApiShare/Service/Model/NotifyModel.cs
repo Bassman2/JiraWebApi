@@ -27,7 +27,7 @@ internal sealed class NotifyModel
     /// Addresses of the notification e-mail.
     /// </summary>
     [JsonPropertyName("to")]
-    public NotifyTo? To { get; set; }
+    public NotifyToModel? To { get; set; }
 
     /// <summary>
     /// Restriction of the notification.

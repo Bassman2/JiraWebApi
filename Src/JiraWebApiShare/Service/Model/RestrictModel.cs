@@ -3,7 +3,7 @@
 /// <summary>
 /// Representation of a restrict.
 /// </summary>
-internal sealed class RestrictModel
+internal class RestrictModel
 {
     
 
@@ -17,5 +17,5 @@ internal sealed class RestrictModel
     /// Permissions of the restriction.
     /// </summary>
     [JsonPropertyName("permissions")]
-    public IEnumerable<Permission>? Permission { get; set; }
+    public IEnumerable<PermissionModel>? Permission { get; set; }
 }

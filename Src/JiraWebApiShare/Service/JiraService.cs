@@ -90,30 +90,30 @@ internal class JiraService : JsonService
 
     #region Linq
 
-    private IEnumerable<Field?>? fields;
-    internal async Task<IEnumerable<Field?>?> GetCachedFieldsAsync()
-    {
-        return this.fields ??= await GetFieldsAsync();
-    }
+    //private IEnumerable<FieldModel?>? fields;
+    //internal async Task<IEnumerable<FieldModel?>?> GetCachedFieldsAsync()
+    //{
+    //    return this.FieldModel ??= await GetFieldsAsync();
+    //}
 
 
-    internal bool jqlTest = false;
-    internal string jqlQuery = "";
-    internal int? jqlStartAt = null;
-    internal int? jqlMaxResults = null;
-    internal IEnumerable<Issue>? GetIssuesFromJql(string? jql, int? startAt, int? maxResults)
-    {
-        ArgumentNullException.ThrowIfNullOrEmpty(jql, nameof(jql));
+    //internal bool jqlTest = false;
+    //internal string jqlQuery = "";
+    //internal int? jqlStartAt = null;
+    //internal int? jqlMaxResults = null;
+    //internal IEnumerable<Issue>? GetIssuesFromJql(string? jql, int? startAt, int? maxResults)
+    //{
+    //    ArgumentNullException.ThrowIfNullOrEmpty(jql, nameof(jql));
 
-        //{
-        //    this.jqlQuery = jql;
-        //    this.jqlStartAt = startAt;
-        //    this.jqlMaxResults = maxResults;
-        //    return new List<Issue>();
-        //}
+    //    //{
+    //    //    this.jqlQuery = jql;
+    //    //    this.jqlStartAt = startAt;
+    //    //    this.jqlMaxResults = maxResults;
+    //    //    return new List<Issue>();
+    //    //}
 
-        return GetIssuesFromJqlAsync(jql, startAt.GetValueOrDefault(0), maxResults.GetValueOrDefault(500)).Result;
-    }
+    //    return GetIssuesFromJqlAsync(jql, startAt.GetValueOrDefault(0), maxResults.GetValueOrDefault(500)).Result;
+    //}
 
     /// <summary>
     /// Performs a issue search using LINQ
@@ -367,9 +367,9 @@ internal class JiraService : JsonService
     /// Returns a list of all fields, both System and Custom.
     /// </summary>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IEnumerable<Field>?> GetFieldsAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<FieldModel>?> GetFieldsAsync(CancellationToken cancellationToken = default)
     {
-        IEnumerable<Field>? res = await GetFromJsonAsync<IEnumerable<Field>>("rest/api/2/field", cancellationToken);
+        var res = await GetFromJsonAsync<IEnumerable<FieldModel>>("rest/api/2/field", cancellationToken);
         return res;
     }
 
@@ -378,11 +378,11 @@ internal class JiraService : JsonService
     /// </summary>
     /// <param name="customFieldOptionId">Id of the custom field option.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<CustomFieldOption?> GetCustomFieldOptionAsync(string customFieldOptionId, CancellationToken cancellationToken = default)
+    public async Task<CustomFieldOptionModel?> GetCustomFieldOptionAsync(string customFieldOptionId, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(customFieldOptionId, nameof(customFieldOptionId));
 
-        CustomFieldOption? res = await GetFromJsonAsync<CustomFieldOption>($"rest/api/2/customFieldOption/{customFieldOptionId}", cancellationToken);
+        var res = await GetFromJsonAsync<CustomFieldOptionModel>($"rest/api/2/customFieldOption/{customFieldOptionId}", cancellationToken);
         return res;
     }
 
@@ -396,11 +396,11 @@ internal class JiraService : JsonService
     /// <param name="filter">Filter class to create.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     /// <remarks>Only for JIRA 5.2.1 or later.</remarks>
-    public async Task<Filter?> CreateFilterAsync(Filter filter, CancellationToken cancellationToken = default)
+    public async Task<FilterModel?> CreateFilterAsync(FilterModel filter, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(filter, nameof(filter));
 
-        Filter? res = await PostAsJsonAsync<Filter, Filter>("rest/api/2/filter", filter, cancellationToken);
+        var res = await PostAsJsonAsync<FilterModel, FilterModel>("rest/api/2/filter", filter, cancellationToken);
         return res;
     }
 
@@ -408,9 +408,9 @@ internal class JiraService : JsonService
     /// Returns the favourite filters of the logged-in user.
     /// </summary>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IEnumerable<Filter>?> GetFilterFavouritesAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<FilterModel>?> GetFilterFavouritesAsync(CancellationToken cancellationToken = default)
     {
-        IEnumerable<Filter>? res = await GetFromJsonAsync<IEnumerable<Filter>>("rest/api/2/filter/favourite", cancellationToken);
+        var res = await GetFromJsonAsync<IEnumerable<FilterModel>>("rest/api/2/filter/favourite", cancellationToken);
         return res;
     }
 
@@ -419,11 +419,11 @@ internal class JiraService : JsonService
     /// </summary>
     /// <param name="filterId">Id of the filter.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<Filter?> GetFilterAsync(string filterId, CancellationToken cancellationToken = default)
+    public async Task<FilterModel?> GetFilterAsync(string filterId, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(filterId, nameof(filterId));
 
-        Filter? res = await GetFromJsonAsync<Filter>($"rest/api/2/filter/{filterId}", cancellationToken);
+        var res = await GetFromJsonAsync<FilterModel>($"rest/api/2/filter/{filterId}", cancellationToken);
         return res;
     }
 
@@ -433,11 +433,11 @@ internal class JiraService : JsonService
     /// <param name="filter">Filter class to update.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     /// <remarks>Only for JIRA 5.2.1 or later.</remarks>
-    public async Task<Filter?> UpdateFilterAsync(Filter filter, CancellationToken cancellationToken = default)
+    public async Task<FilterModel?> UpdateFilterAsync(FilterModel filter, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(filter, nameof(filter));
 
-        Filter? res = await PutAsJsonAsync<Filter, Filter>($"rest/api/2/filter/{filter.Id}", filter, cancellationToken);
+        var res = await PutAsJsonAsync<FilterModel, FilterModel>($"rest/api/2/filter/{filter.Id}", filter, cancellationToken);
         return res;
     }
 
@@ -909,11 +909,11 @@ return issueResult
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<Votes?> GetIssueVotesAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
+    public async Task<VotesModel?> GetIssueVotesAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
 
-        Votes? res = await GetFromJsonAsync<Votes>($"rest/api/2/issue/{issueIdOrKey}/votes", cancellationToken);
+        var res = await GetFromJsonAsync<VotesModel>($"rest/api/2/issue/{issueIdOrKey}/votes", cancellationToken);
         return res;
     }
 
@@ -1104,7 +1104,7 @@ return issueResult
         {
             var res = await PostAsJsonAsync<SearchRequestModel, SearchListModel>("rest/api/2/search", req, cancellationToken);
 
-            IEnumerable<Field?>? fieldInfo = await GetCachedFieldsAsync();
+            //IEnumerable<FieldModel?>? fieldInfo = await GetCachedFieldsAsync();
             //foreach (Issue issue in res!.Issues)
             //{
             //    issue.UpdateCustomFields(fieldInfo!);

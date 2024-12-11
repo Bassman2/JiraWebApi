@@ -64,11 +64,11 @@ internal class FilterModel
     /// Share permissions of the JIRA filter
     /// </summary>
     [JsonPropertyName("sharePermissions")]
-    public IEnumerable<Permission>? SharePermissions { get; set; }
+    public IEnumerable<PermissionModel>? SharePermissions { get; set; }
 
     /// <summary>
     /// Subscriptions of the JIRA filter.
     /// </summary>
     [JsonPropertyName("subscriptions")]
-    public Subscriptions? Subscriptions { get; set; }
+    public SubscriptionsModel? Subscriptions { get; set; }
 }

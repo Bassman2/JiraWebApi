@@ -1,6 +1,5 @@
 ﻿namespace JiraWebApi.Service.Model;
 
-
 /// <summary>
 /// Meta infromatins for the fields.
 /// </summary>
@@ -17,7 +16,7 @@ internal sealed class FieldMetaModel
     /// Schema of the field.
     /// </summary>
     [JsonPropertyName("schema")]
-    public Schema? Schema { get; private set; }
+    public SchemaModel? Schema { get; private set; }
 
     /// <summary>
     /// Name of the field.

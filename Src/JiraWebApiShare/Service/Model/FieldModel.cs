@@ -8,12 +8,6 @@
 internal sealed class FieldModel
 {
     /// <summary>
-    /// Initializes a new instance of the Field class.
-    /// </summary>
-    private Field()
-    { }
-
-    /// <summary>
     /// Id of the JIRA field.
     /// </summary>
     [JsonPropertyName("id")]
@@ -53,5 +47,5 @@ internal sealed class FieldModel
     /// Schema of the JIRA field.
     /// </summary>
     [JsonPropertyName("schema")]
-    public Schema? Schema { get; set; }
+    public SchemaModel? Schema { get; set; }
 }
