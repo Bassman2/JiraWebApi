@@ -1082,9 +1082,9 @@ return issueResult
     /// </summary>
     /// <param name="resolutionId">Id of the resolution.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<ResolutionModel?> GetResolutionAsync(string resolutionId, CancellationToken cancellationToken = default)
+    public async Task<ResolutionModel?> GetResolutionAsync(int resolutionId, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNullOrEmpty(resolutionId, nameof(resolutionId));
+        //ArgumentNullException.ThrowIfNullOrEmpty(resolutionId, nameof(resolutionId));
 
         var res = await GetFromJsonAsync<ResolutionModel>($"rest/api/2/resolution/{resolutionId}", cancellationToken);
         return res;

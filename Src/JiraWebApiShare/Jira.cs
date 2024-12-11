@@ -249,6 +249,26 @@ public sealed class Jira : IDisposable
 
     #endregion
 
+    #region Resolution
+
+    public async Task<IEnumerable<Resolution>?> GetResolutionsAsync(CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        var res = await service.GetResolutionsAsync(cancellationToken);
+        return res.CastModel<Resolution>();
+    }
+
+    public async Task<Resolution?> GetResolutionAsync(int resolutionId, CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        var res = await service.GetResolutionAsync(resolutionId, cancellationToken);
+        return res.CastModel<Resolution>();
+    }
+
+    #endregion
+
     #region ServerInfo
 
     /// <summary>

@@ -10,13 +10,13 @@ internal class ResolutionModel
     /// Url of the JIRA REST item.
     /// </summary>
     [JsonPropertyName("self")]
-    public string? Self { get; set; }
+    public Uri? Self { get; set; }
 
     /// <summary>
     /// Id of the JIRA item.
     /// </summary>
     [JsonPropertyName("id")]
-    public string? Id { get; set; }
+    public int? Id { get; set; }
 
     /// <summary>
     /// Name of the JIRA item.
@@ -28,5 +28,11 @@ internal class ResolutionModel
     /// Description of the JIRA resolution.
     /// </summary>
     [JsonPropertyName("description")]
-    public string? Description { get; private set; }
+    public string? Description { get; set; }
+
+    /// <summary>
+    /// Description of the JIRA resolution.
+    /// </summary>
+    [JsonPropertyName("iconUrl")]
+    public Uri? IconUrl { get; set; }
 }

@@ -1,6 +1,4 @@
-﻿using WebServiceClient;
-
-namespace JiraWebApiUnitTest;
+﻿namespace JiraWebApiUnitTest;
 
 [TestClass]
 public class JiraPriorityUnitTest : JiraBaseUnitTest

@@ -16,6 +16,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)JiraPriorityUnitTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JiraProjectTypeUnitTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JiraProjectUnitTest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JiraResolutionUnitTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JiraServerInfoUnitTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JiraIssueUnitTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JiraUserUnitTest.cs" />

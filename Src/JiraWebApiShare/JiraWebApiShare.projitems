@@ -13,6 +13,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Enums\AdjustEstimate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Priority.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ProjectType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolution.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\ApplicationModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\AttachmentModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\AttachmentMetaModel.cs" />
