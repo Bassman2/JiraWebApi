@@ -33,7 +33,7 @@ public sealed class Project
     /// <summary>
     /// Url of the JIRA REST item.
     /// </summary>
-    public string? Self { get; }
+    public Uri? Self { get; }
 
     /// <summary>
     /// Id of the JIRA item.

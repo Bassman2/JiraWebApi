@@ -9,7 +9,7 @@ internal class ProjectModel
     /// Url of the JIRA REST project.
     /// </summary>
     [JsonPropertyName("self")]
-    public string? Self { get; set; }
+    public Uri? Self { get; set; }
 
     /// <summary>
     /// Id of the JIRA project.

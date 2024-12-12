@@ -15,11 +15,11 @@ public class JiraResolutionUnitTest : JiraBaseUnitTest
 
         var resolution = resolutions.FirstOrDefault();
         Assert.IsNotNull(resolution);
-        Assert.AreEqual($"{testHost}rest/api/2/resolution/1", resolution.Self?.ToString(), nameof(resolution.Self));
+        Assert.AreEqual(new Uri(apiUri, "resolution/1"), resolution.Self, nameof(resolution.Self));
         Assert.AreEqual(1, resolution.Id, nameof(resolution.Id));
         Assert.AreEqual("Fixed", resolution.Name, nameof(resolution.Name));
         Assert.AreEqual("A fix for this issue is checked into the tree and tested.", resolution.Description, nameof(resolution.Description));
-        Assert.AreEqual(null, resolution.IconUrl?.ToString(), nameof(resolution.IconUrl));
+        Assert.AreEqual(null, resolution.IconUrl, nameof(resolution.IconUrl));
     }
 
     [TestMethod]
@@ -30,10 +30,10 @@ public class JiraResolutionUnitTest : JiraBaseUnitTest
         var resolution = await jira.GetResolutionAsync(1);
 
         Assert.IsNotNull(resolution);
-        Assert.AreEqual($"{testHost}rest/api/2/resolution/1", resolution.Self?.ToString(), nameof(resolution.Self));
+        Assert.AreEqual(new Uri(apiUri, "resolution/1"), resolution.Self, nameof(resolution.Self));
         Assert.AreEqual(1, resolution.Id, nameof(resolution.Id));
         Assert.AreEqual("Fixed", resolution.Name, nameof(resolution.Name));
         Assert.AreEqual("A fix for this issue is checked into the tree and tested.", resolution.Description, nameof(resolution.Description));
-        Assert.AreEqual(null, resolution.IconUrl?.ToString(), nameof(resolution.IconUrl));
+        Assert.AreEqual(null, resolution.IconUrl, nameof(resolution.IconUrl));
     }
 }

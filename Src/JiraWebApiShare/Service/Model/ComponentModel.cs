@@ -3,7 +3,7 @@
 internal class ComponentModel
 {
     [JsonPropertyName("self")]
-    public string? Self { get; set; }
+    public Uri? Self { get; set; }
 
     [JsonPropertyName("id")]
     public int Id { get; set; }

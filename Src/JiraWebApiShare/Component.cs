@@ -27,7 +27,7 @@ public class Component
         Deleted = model.Deleted;
     }
 
-    public string Self { get; }
+    public Uri? Self { get; }
 
     public int Id { get; }
 

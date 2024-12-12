@@ -9,7 +9,7 @@ internal class GroupModel
     /// Url of the JIRA REST item.
     /// </summary>
     [JsonPropertyName("self")]
-    public string? Self { get; set; }
+    public Uri? Self { get; set; }
 
     /// <summary>
     /// Name of the JIRA group.

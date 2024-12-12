@@ -21,7 +21,7 @@ public class IssueType
        //Fields = model.Fields
     }
 
-    public string? Self { get; }
+    public Uri? Self { get; }
 
     /// <summary>
     /// Id of the JIRA item.

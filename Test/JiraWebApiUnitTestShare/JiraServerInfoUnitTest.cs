@@ -14,8 +14,8 @@ public class JiraServerInfoUnitTest : JiraBaseUnitTest
         Assert.IsNotNull(serverInfo.BuildDate);
         Assert.IsNotNull(serverInfo.ServerTime);
 
-        Assert.AreEqual(testHost, serverInfo.BaseUrl.ToString(), nameof(serverInfo.BaseUrl));
-        Assert.AreEqual("9.12.16", serverInfo.Version.ToString(), nameof(serverInfo.Version));
+        Assert.AreEqual(baseUri, serverInfo.BaseUrl, nameof(serverInfo.BaseUrl));
+        Assert.AreEqual(new Version(9,12,16), serverInfo.Version, nameof(serverInfo.Version));
         Assert.AreEqual("Server", serverInfo.DeploymentType, nameof(serverInfo.DeploymentType));
         Assert.AreEqual(new DateTime(2024, 12, 4), serverInfo.BuildDate, nameof(serverInfo.BuildDate));
         Assert.AreEqual(DateTime.Now.Date, serverInfo.ServerTime?.Date, nameof(serverInfo.ServerTime));
