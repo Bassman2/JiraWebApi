@@ -12,27 +12,19 @@ namespace JiraWebApi.Service;
 /// <summary>
 /// JIRA Wep Api main class.
 /// </summary>
-internal class JiraService : JsonService
+/// <remarks>
+/// Initializes a new instance of the Jira class.
+/// </remarks>
+/// <param name="host">Host URL of the JIRA server.</param>
+/// <param name="apikey">API key.</param>
+/// <example>
+/// <code>
+/// using var jira = new Jira(new Uri("https://jira.atlassian.com"), "pokjfnlkfdskgkljgipooksdlksgölgklösg");
+/// </code>
+/// </example>
+/// <exception cref="System.Security.Authentication.AuthenticationException">Thrown if authentication failed.</exception> 
+internal class JiraService(Uri host, string apikey) : JsonService(host, SourceGenerationContext.Default, new BearerAuthenticator(apikey))
 {
-    //private readonly JiraQueryProvider provider;
-    //this.provider = new JiraQueryProvider(this);
-
-    /// <summary>
-    /// Initializes a new instance of the Jira class.
-    /// </summary>
-    /// <param name="host">Host URL of the JIRA server.</param>
-    /// <param name="apikey">API key.</param>
-    /// <example>
-    /// <code>
-    /// using var jira = new Jira(new Uri("https://jira.atlassian.com"), "pokjfnlkfdskgkljgipooksdlksgölgklösg");
-    /// </code>
-    /// </example>
-    /// <exception cref="System.Security.Authentication.AuthenticationException">Thrown if authentication failed.</exception> 
-    public JiraService(Uri host, string apikey)
-    : base(host, SourceGenerationContext.Default, new BearerAuthenticator(apikey))
-    {
-        //provider = new(this);
-    }
 
     #region Private
 
@@ -1151,7 +1143,7 @@ return issueResult
     /// Returns a list of all statuses.
     /// </summary>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IEnumerable<StatusModel>?> GetStatusesAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<StatusModel>?> GetStatusesAsync(CancellationToken cancellationToken)
     {
         var res = await GetFromJsonAsync<IEnumerable<StatusModel>>("rest/api/2/status", cancellationToken);
         return res;
@@ -1162,11 +1154,38 @@ return issueResult
     /// </summary>
     /// <param name="statusIdOrName">Id or name of the status.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<StatusModel?> GetStatusAsync(string statusIdOrName, CancellationToken cancellationToken = default)
+    public async Task<StatusModel?> GetStatusAsync(string statusIdOrName, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(statusIdOrName, nameof(statusIdOrName));
 
         var res = await GetFromJsonAsync<StatusModel>($"rest/api/2/status/{statusIdOrName}", cancellationToken);
+        return res;
+    }
+
+    #endregion
+
+    #region StatusCategory
+
+    /// <summary>
+    /// Returns a list of all statuses.
+    /// </summary>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<IEnumerable<StatusCategoryModel>?> GetStatusCategoriesAsync(CancellationToken cancellationToken)
+    {
+        var res = await GetFromJsonAsync<IEnumerable<StatusCategoryModel>>("rest/api/2/statuscategory", cancellationToken);
+        return res;
+    }
+
+    /// <summary>
+    /// Returns a full representation of the Status having the given id or name.
+    /// </summary>
+    /// <param name="statusIdOrName">Id or name of the status.</param>
+    /// <returns>The task object representing the asynchronous operation.</returns>
+    public async Task<StatusCategoryModel?> GetStatusCategoryAsync(string statusCategoryIdOrName, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNullOrEmpty(statusCategoryIdOrName, nameof(statusCategoryIdOrName));
+
+        var res = await GetFromJsonAsync<StatusCategoryModel>($"rest/api/2/statuscategory/{statusCategoryIdOrName}", cancellationToken);
         return res;
     }
 

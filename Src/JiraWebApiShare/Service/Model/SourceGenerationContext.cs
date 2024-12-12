@@ -16,6 +16,8 @@
 [JsonSerializable(typeof(CreateMetaModel))]
 [JsonSerializable(typeof(CreateIssueModel))]
 [JsonSerializable(typeof(ServerInfoModel))]
+[JsonSerializable(typeof(IEnumerable<StatusModel>))]
+[JsonSerializable(typeof(IEnumerable<StatusCategoryModel>))]
 
 [JsonSerializable(typeof(ErrorModel))]
 internal partial class SourceGenerationContext : JsonSerializerContext

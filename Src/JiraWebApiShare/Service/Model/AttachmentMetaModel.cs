@@ -3,19 +3,17 @@
 /// <summary>
 /// Representation of attachment meta information. 
 /// </summary>
-internal sealed class AttachmentMetaModel
+internal class AttachmentMetaModel
 {
-    
-
     /// <summary>
     /// Signals if attachments enabled on this JIRA server.
     /// </summary>
     [JsonPropertyName("enabled")]
-    public bool IsEnabled { get; private set; }
+    public bool IsEnabled { get; set; }
 
     /// <summary>
     /// Maximum allowed attachment size.
     /// </summary>
     [JsonPropertyName("uploadLimit")]
-    public long UploadLimit { get; private set; }
+    public long UploadLimit { get; set; }
 }

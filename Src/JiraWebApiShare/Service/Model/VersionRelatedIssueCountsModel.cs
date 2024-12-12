@@ -6,7 +6,7 @@ internal class VersionRelatedIssueCountsModel
     /// Url of the JIRA REST item.
     /// </summary>
     [JsonPropertyName("self")]
-    public string? Self { get; set; }
+    public Uri? Self { get; set; }
 
     [JsonPropertyName("issuesFixedCount")]
     public int IssuesFixedCount { get; set; }

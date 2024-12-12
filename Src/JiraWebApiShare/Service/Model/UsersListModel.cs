@@ -5,36 +5,33 @@
 /// </summary>
 internal sealed class UsersListModel
 {
-    internal UsersListModel()
-    { }
-
     /// <summary>
     /// Number of users
     /// </summary>
     [JsonPropertyName("size")]
-    public int Size { get; private set; }
+    public int Size { get; set; }
 
     /// <summary>
     /// List of users.
     /// </summary>
     [JsonPropertyName("items")]
-    public List<User>? Items { get; private set; }
+    public List<User>? Items { get; set; }
 
     /// <summary>
     /// Max number of users to get.
     /// </summary>
     [JsonPropertyName("max-results")]
-    public int MaxResults { get; private set; }
+    public int MaxResults { get; set; }
 
     /// <summary>
     /// Start index of user get window.
     /// </summary>
     [JsonPropertyName("start-index")]
-    public int StartIndex { get; private set; }
+    public int StartIndex { get; set; }
 
     /// <summary>
     /// End index of user get window.
     /// </summary>
     [JsonPropertyName("end-index")]
-    public int EndIndex { get; private set; }
+    public int EndIndex { get; set; }
 }

@@ -5,9 +5,6 @@
 /// </summary>
 internal class ProjectModel 
 {
-    public ProjectModel()
-    { }
-
     /// <summary>
     /// Url of the JIRA REST project.
     /// </summary>

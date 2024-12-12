@@ -9,25 +9,25 @@ internal class WorklogModel
     /// Url of the JIRA REST item.
     /// </summary>
     [JsonPropertyName("self")]
-    public string? Self { get; set; }
+    public Uri? Self { get; set; }
 
     /// <summary>
     /// Id of the JIRA item.
     /// </summary>
     [JsonPropertyName("id")]
-    public string? Id { get; set; }
+    public int? Id { get; set; }
 
     /// <summary>
     /// Author of the JIRA issue worklog.
     /// </summary>
     [JsonPropertyName("author")]
-    public User? Author { get; set; }
+    public UserModel? Author { get; set; }
 
     /// <summary>
     /// Update author of the JIRA issue worklog.
     /// </summary>
     [JsonPropertyName("updateAuthor")]
-    public User? UpdateAuthor { get; set; }
+    public UserModel? UpdateAuthor { get; set; }
 
     /// <summary>
     /// Comment of the JIRA issue worklog.

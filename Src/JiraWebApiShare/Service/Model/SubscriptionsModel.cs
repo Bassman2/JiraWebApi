@@ -1,13 +1,10 @@
 ﻿namespace JiraWebApi.Service.Model;
 
-
 /// <summary>
 /// Users who has subscribed to an issue.
 /// </summary>
 internal class SubscriptionsModel
 {
-    
-
     /// <summary>
     /// Number of the subscriptions.
     /// </summary>

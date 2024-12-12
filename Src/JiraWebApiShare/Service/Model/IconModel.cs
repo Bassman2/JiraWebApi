@@ -5,23 +5,21 @@
 /// </summary>
 internal class IconModel
 {
-    
-
     /// <summary>
     /// Url of the JIRA icon.
     /// </summary>
     [JsonPropertyName("url16x16")]
-    public Uri? Url16x16 { get; private set; }
+    public Uri? Url16x16 { get; set; }
 
     /// <summary>
     /// Title of the JIRA icon.
     /// </summary>
     [JsonPropertyName("title")]
-    public string? Title { get; private set; }
+    public string? Title { get; set; }
 
     /// <summary>
     /// Url of the JIRA icon.
     /// </summary>
     [JsonPropertyName("link")]
-    public Uri? Link { get; private set; }
+    public Uri? Link { get; set; }
 }

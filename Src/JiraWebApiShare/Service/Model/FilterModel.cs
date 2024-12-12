@@ -46,13 +46,13 @@ internal class FilterModel
     /// Url of the filters view web page.
     /// </summary>
     [JsonPropertyName("viewUrl")]
-    public Uri? ViewUrl { get; private set; }
+    public Uri? ViewUrl { get; set; }
 
     /// <summary>
     /// Url of the filters search web page.
     /// </summary>
     [JsonPropertyName("searchUrl")]
-    public Uri? SearchUrl { get; private set; }
+    public Uri? SearchUrl { get; set; }
 
     /// <summary>
     /// Signals if the filter is marked as favourite.

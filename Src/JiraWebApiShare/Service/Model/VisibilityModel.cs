@@ -5,8 +5,6 @@
 /// </summary>
 internal class VisibilityModel
 {
-    
-
     /// <summary>
     /// Type of the JIRA visibility.
     /// </summary>

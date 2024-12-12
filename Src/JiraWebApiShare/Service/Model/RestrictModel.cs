@@ -5,8 +5,6 @@
 /// </summary>
 internal class RestrictModel
 {
-    
-
     /// <summary>
     /// Groups of the restriction.
     /// </summary>

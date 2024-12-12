@@ -27,11 +27,11 @@ internal class IssueLinkTypeModel
     /// Name of the inward link.
     /// </summary>
     [JsonPropertyName("inward")]
-    public string? Inward { get; private set; }
+    public string? Inward { get; set; }
 
     /// <summary>
     /// Name od the outward link.
     /// </summary>
     [JsonPropertyName("outward")]
-    public string? Outward { get; private set; }
+    public string? Outward { get; set; }
 }

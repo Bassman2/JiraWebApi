@@ -3,7 +3,7 @@
 /// <summary>
 /// Representatiojn of a JIRA notification e-mail.
 /// </summary>
-internal sealed class NotifyModel
+internal class NotifyModel
 {
     /// <summary>
     /// Subject of the notification e-mail.

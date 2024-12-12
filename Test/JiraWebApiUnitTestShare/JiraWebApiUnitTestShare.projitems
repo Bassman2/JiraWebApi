@@ -19,6 +19,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)JiraResolutionUnitTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JiraServerInfoUnitTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JiraIssueUnitTest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JiraStatusCategoryUnitTest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JiraStatusUnitTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JiraUserUnitTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Usings.cs" />
   </ItemGroup>

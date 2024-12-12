@@ -4,6 +4,7 @@
 /// <summary>
 /// Rrepresentation of a JIRA schema. 
 /// </summary>
+[DebuggerDisplay("Schema: {Type}, {Items}, {System}, {Custom}, {CustomId}")]
 internal class SchemaModel
 {
     
@@ -37,13 +38,4 @@ internal class SchemaModel
     /// </summary>
     [JsonPropertyName("customId")]
     public int CustomId { get; set; }
-
-    /// <summary>
-    /// Returns a string that represents the Schema.
-    /// </summary>
-    /// <returns>A string element.</returns>
-    public override string ToString()
-    {
-        return string.Format("Schema: {0}, {1}, {2}, {3}, {4}", this.Type, this.Items, this.System, this.Custom, this.CustomId);
-    }
 }

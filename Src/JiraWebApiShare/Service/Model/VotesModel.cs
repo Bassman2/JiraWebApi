@@ -28,5 +28,5 @@ public class VotesModel
     /// </summary>
     /// <remarks>Only filled by GetIssueVotesAsync.</remarks>
     [JsonPropertyName("voters")]
-    public IEnumerable<User>? Voters { get; private set; }
+    public IEnumerable<UserModel>? Voters { get; private set; }
 }

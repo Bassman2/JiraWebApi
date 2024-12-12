@@ -5,7 +5,7 @@
 /// Rrepresentation of a JIRA field. 
 /// </summary>
 [DebuggerDisplay("{Id}, {Name}, {this.IsCustom}{this.IsOrderable}{IsNavigable}{IsSearchable}, {Schema}")]
-internal sealed class FieldModel
+internal class FieldModel
 {
     /// <summary>
     /// Id of the JIRA field.

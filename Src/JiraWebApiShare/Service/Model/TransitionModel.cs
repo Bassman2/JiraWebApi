@@ -9,13 +9,13 @@ internal class TransitionModel
     /// Url of the JIRA REST item.
     /// </summary>
     [JsonPropertyName("self")]
-    public string? Self { get; set; }
+    public Uri? Self { get; set; }
 
     /// <summary>
     /// Id of the JIRA item.
     /// </summary>
     [JsonPropertyName("id")]
-    public string? Id { get; set; }
+    public int? Id { get; set; }
 
     /// <summary>
     /// Name of the issue transition.

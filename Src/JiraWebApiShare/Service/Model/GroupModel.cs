@@ -5,8 +5,6 @@
 /// </summary>
 internal class GroupModel
 {
-    
-
     /// <summary>
     /// Url of the JIRA REST item.
     /// </summary>

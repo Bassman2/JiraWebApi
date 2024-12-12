@@ -25,9 +25,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\PermissionModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\PriorityPageModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\ProjectTypeModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Service\Model\StatusCategoryModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\SubscriptionsModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\TimeTrackingModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\VotesModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Status.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StatusCategory.cs" />
     <Compile Include="..\JiraWebApiShare\Service\Model\ErrorModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Component.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Service\Model\ComponentModel.cs" />

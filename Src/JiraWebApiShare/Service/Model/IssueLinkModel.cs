@@ -3,15 +3,13 @@
 /// <summary>
 /// Representation of a JIRA issue link.
 /// </summary>
-internal sealed class IssueLinkModel
+internal class IssueLinkModel
 {
-    
-
     /// <summary>
     /// Id of the issue link.
     /// </summary>
     [JsonPropertyName("id")]
-    public string? Id { get; private set; }
+    public string? Id { get; set; }
 
     /// <summary>
     /// Type of the issue link.
@@ -38,5 +36,5 @@ internal sealed class IssueLinkModel
     /// Writeonly: Not for getting the comment.
     /// </remarks>
     [JsonPropertyName("comment")]
-    public CommentModel? Comment { private get; set; }
+    public CommentModel? Comment { get; set; }
 }

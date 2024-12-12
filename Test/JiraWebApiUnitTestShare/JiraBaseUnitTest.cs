@@ -11,6 +11,9 @@ public abstract class JiraBaseUnitTest
     protected static readonly string testUserDisplayName = KeyStore.Key(storeKey)!.Name!;
     protected static readonly string testUserEmail = KeyStore.Key(storeKey)!.Email!;
 
+    protected static readonly Uri baseUri = new(testHost);
+    protected static readonly Uri apiUri = new(baseUri, "rest/api/2/");
+
     protected const string testProjectKey = "NAVSUITE";
     protected const int testProjectId = 25411;
 

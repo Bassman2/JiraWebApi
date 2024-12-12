@@ -21,7 +21,7 @@ internal class CommentModel
     /// Author of the JIRA comment.
     /// </summary>
     [JsonPropertyName("author")]
-    public User? Author { get; private set; }
+    public User? Author { get; set; }
 
     /// <summary>
     /// Body of the JIRA comment.
@@ -33,19 +33,19 @@ internal class CommentModel
     /// Update author of the JIRA comment.
     /// </summary>
     [JsonPropertyName("updateAuthor")]
-    public User? UpdateAuthor { get; private set; }
+    public User? UpdateAuthor { get; set; }
 
     /// <summary>
     /// Creation data of the JIRA comment.
     /// </summary>
     [JsonPropertyName("created")]
-    public DateTime? Created { get; internal set; }
+    public DateTime? Created { get; set; }
 
     /// <summary>
     /// Update data of the JIRA comment.
     /// </summary>
     [JsonPropertyName("updated")]
-    public DateTime? Updated { get; internal set; }
+    public DateTime? Updated { get; set; }
 
     /// <summary>
     /// Visibility of the JIRA comment.

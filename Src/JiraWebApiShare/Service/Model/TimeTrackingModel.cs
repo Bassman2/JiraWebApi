@@ -5,7 +5,6 @@
 /// </summary>
 internal class TimeTrackingModel
 {
-   
     /// <summary>
     /// Time original estimate.
     /// </summary>
@@ -28,17 +27,17 @@ internal class TimeTrackingModel
     /// Time original estimate in seconds.
     /// </summary>
     [JsonPropertyName("originalEstimateSeconds")]
-    public long OriginalEstimateSeconds { get; private set; }
+    public long OriginalEstimateSeconds { get; set; }
 
     /// <summary>
     /// Time remaining estimate in seconds.
     /// </summary>
     [JsonPropertyName("remainingEstimateSeconds")]
-    public long RemainingEstimateSeconds { get; private set; }
+    public long RemainingEstimateSeconds { get; set; }
 
     /// <summary>
     /// Time spent in seconds.
     /// </summary>
     [JsonPropertyName("timeSpentSeconds")]
-    public long TimeSpentSeconds { get; private set; }
+    public long TimeSpentSeconds { get; set; }
 }

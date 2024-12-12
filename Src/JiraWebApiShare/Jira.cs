@@ -285,6 +285,62 @@ public sealed class Jira : IDisposable
 
     #endregion
 
+    #region Status
+
+    public async Task<IEnumerable<Status>?> GetStatusesAsync(CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        var res = await service.GetStatusesAsync(cancellationToken);
+        return res.CastModel<Status>();
+    }
+
+    public async Task<Status?> GetStatusAsync(int statusId, CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        var res = await service.GetStatusAsync(statusId.ToString(), cancellationToken);
+        return res.CastModel<Status>();
+    }
+
+    public async Task<Status?> GetStatusAsync(string statusName, CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        var res = await service.GetStatusAsync(statusName, cancellationToken);
+        return res.CastModel<Status>();
+    }
+
+    #endregion
+
+    #region StatusCategory
+
+    public async Task<IEnumerable<StatusCategory>?> GetStatusCategoriesAsync(CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        var res = await service.GetStatusCategoriesAsync(cancellationToken);
+        return res.CastModel<StatusCategory>();
+    }
+
+    public async Task<StatusCategory?> GetStatusCategoryAsync(int statusCategoryId, CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        var res = await service.GetStatusCategoryAsync(statusCategoryId.ToString(), cancellationToken);
+        return res.CastModel<StatusCategory>();
+    }
+
+    public async Task<StatusCategory?> GetStatusCategoryAsync(string statusCategoryName, CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        var res = await service.GetStatusCategoryAsync(statusCategoryName, cancellationToken);
+        return res.CastModel<StatusCategory>();
+    }
+
+    #endregion
+
     #region User
 
     public async Task<User?> GetUserAsync(string username, CancellationToken cancellationToken = default)
