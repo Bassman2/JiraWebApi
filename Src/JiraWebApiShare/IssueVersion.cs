@@ -6,7 +6,7 @@
 /// <remarks>
 /// IssueVersion has the prefix Issue to separate from System.Version.
 /// </remarks>
-public sealed class IssueVersion 
+public class IssueVersion 
 {
     /// <summary>
     /// Url of the JIRA REST item.

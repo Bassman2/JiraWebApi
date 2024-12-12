@@ -12,19 +12,20 @@ public class JiraComponentUnitTest : JiraBaseUnitTest
         Assert.IsNotNull(project);
 
         var res = await jira.GetComponentsAsync(project);
+        Assert.IsNotNull(res);
+
         var components = res?.ToList();
         Assert.IsNotNull(components);
+        
+        var component = components.FirstOrDefault();
+        Assert.IsNotNull(component);
 
-
-
-        //Assert.AreEqual($"{testHost}rest/api/2/project/25411", project.Self, nameof(project.Self));
-        //Assert.AreEqual("25411", project.Id, nameof(project.Id));
-        //Assert.AreEqual("Navigation Suite", project.Name, nameof(project.Name));
-        //Assert.AreEqual("NAVSUITE", project.Key, nameof(project.Key));
-        //Assert.AreEqual("Test Project", project.Description, nameof(project.Description));
-        //Assert.AreEqual($"{testHost}projects/NAVSUITE/issues", project.Url?.ToString(), nameof(project.Url));
-        //Assert.AreEqual(null, project.Email, nameof(project.Email));
-        //Assert.AreEqual("PROJECT_LEAD", project.AssigneeType, nameof(project.AssigneeType));
+        Assert.AreEqual($"{testHost}rest/api/2/component/{testComponentId}", component.Self, nameof(component.Self));
+        Assert.AreEqual(testComponentId, component.Id, nameof(component.Id));
+        Assert.AreEqual(testComponentName, component.Name, nameof(component.Name));
+        Assert.AreEqual("Application Description", component.Description, nameof(component.Description));
+        Assert.AreEqual(testProjectKey, component.ProjectKey, nameof(component.ProjectKey));
+        Assert.AreEqual(testProjectId, component.ProjectId, nameof(component.ProjectId));
     }
 
     [TestMethod]
@@ -36,19 +37,20 @@ public class JiraComponentUnitTest : JiraBaseUnitTest
         Assert.IsNotNull(project);
 
         var res = await project.GetComponentsAsync();
+        Assert.IsNotNull(res);
+
         var components = res?.ToList();
         Assert.IsNotNull(components);
 
+        var component = components.FirstOrDefault();
+        Assert.IsNotNull(component);
 
-
-        //Assert.AreEqual($"{testHost}rest/api/2/project/25411", project.Self, nameof(project.Self));
-        //Assert.AreEqual("25411", project.Id, nameof(project.Id));
-        //Assert.AreEqual("Navigation Suite", project.Name, nameof(project.Name));
-        //Assert.AreEqual("NAVSUITE", project.Key, nameof(project.Key));
-        //Assert.AreEqual("Test Project", project.Description, nameof(project.Description));
-        //Assert.AreEqual($"{testHost}projects/NAVSUITE/issues", project.Url?.ToString(), nameof(project.Url));
-        //Assert.AreEqual(null, project.Email, nameof(project.Email));
-        //Assert.AreEqual("PROJECT_LEAD", project.AssigneeType, nameof(project.AssigneeType));
+        Assert.AreEqual($"{testHost}rest/api/2/component/{testComponentId}", component.Self, nameof(component.Self));
+        Assert.AreEqual(testComponentId, component.Id, nameof(component.Id));
+        Assert.AreEqual(testComponentName, component.Name, nameof(component.Name));
+        Assert.AreEqual("Application Description", component.Description, nameof(component.Description));
+        Assert.AreEqual(testProjectKey, component.ProjectKey, nameof(component.ProjectKey));
+        Assert.AreEqual(testProjectId, component.ProjectId, nameof(component.ProjectId));
     }
 
     [TestMethod]
@@ -58,8 +60,6 @@ public class JiraComponentUnitTest : JiraBaseUnitTest
 
         var component = await jira.GetComponentAsync(testComponentId);
         Assert.IsNotNull(component);
-
-
 
         Assert.AreEqual($"{testHost}rest/api/2/component/{testComponentId}", component.Self, nameof(component.Self));
         Assert.AreEqual(testComponentId, component.Id, nameof(component.Id));

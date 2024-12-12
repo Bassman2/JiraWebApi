@@ -4,7 +4,7 @@
 /// Representation of a JIRA component. 
 /// </summary>
 [DebuggerDisplay("{Name}")]
-public sealed class Component 
+public class Component 
 {
     /// <summary>
     /// Initializes a new instance of the Component class.

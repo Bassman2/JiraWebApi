@@ -280,7 +280,7 @@ public sealed class Jira : IDisposable
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
 
         var res = await service.GetServerInfoAsync(cancellationToken);
-        return res;
+        return res.CastModel<ServerInfo>();
     }
 
     #endregion

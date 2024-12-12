@@ -11,7 +11,7 @@ public class User
         Key = model.Key;
         Name = model.Name;
         EmailAddress = model.EmailAddress;
-        AvatarUrls = model.AvatarUrls;
+        AvatarUrls = model.AvatarUrls.CastModel<AvatarUrls>(); 
         DisplayName = model.DisplayName;
         IsActive = model.IsActive;
         IsDeleted = model.IsDeleted;

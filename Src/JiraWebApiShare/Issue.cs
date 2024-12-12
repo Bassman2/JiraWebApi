@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization.Metadata;
-
-namespace JiraWebApi;
+﻿namespace JiraWebApi;
 
 /// <summary>
 /// Representation of an JIRA issue.
@@ -166,17 +164,17 @@ public sealed class Issue
     /// Url of the JIRA REST item.
     /// </summary>
     /// <remarks>Not useable by LINQ.</remarks>
-    public Uri? Self { get; internal set; }
+    public Uri? Self { get; }
 
     /// <summary>
     /// Id of the JIRA issue.
     /// </summary>
-    public string? Id { get; internal  set; }
+    public string? Id { get; }
 
     /// <summary>
     /// Summary of the JIRA issue.
     /// </summary>
-    public string? Key { get; internal set; }
+    public string? Key { get; }
 
     /// <summary>
     /// Σ Progress
@@ -324,26 +322,11 @@ public sealed class Issue
     /// </summary>
     public DateTime? LastViewed { get; set; }
 
-    /// <summary>
-    /// Issue level for LINQ filtering.
-    /// </summary>
-    /// <remarks>For LINQ use only.</remarks>
-    //[JqlFieldAttribute("level", JqlFieldCompare.Comparable | JqlFieldCompare.Include)]
-    //public string Level
-    //{
-    //    get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); }
-    //}
 
     /// <summary>
     ///  A list of links to related issues.
     /// </summary>
     //public IEnumerable<IssueLink>? Links { get;  set; }
-
-    /// <summary>
-    /// The Original Estimate of the total amount of time required to resolve the issue, as estimated when the issue was created.
-    /// </summary>
-    //[JqlFieldAttribute("originalEstimate", JqlFieldCompare.Comparable | JqlFieldCompare.Sortable | JqlFieldCompare.Include)]
-    //public string? OriginalEstimate { get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); } }
 
     /// <summary>
     /// Original estimate in seconds,
@@ -369,14 +352,7 @@ public sealed class Issue
     /// The 'parent' project to which the issue belongs.
     /// </summary>
     public Project? Project { get; }
-
-    /// <summary>
-    /// Remaining estimate as string ('4w', '2d', '5h').
-    /// </summary>
-    /// <remarks>For LINQ use only.</remarks>
-    //[JqlFieldAttribute("remainingEstimate", JqlFieldCompare.Comparable | JqlFieldCompare.Sortable | JqlFieldCompare.Include)]
-    //public SortableString RemainingEstimate { get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); } }
-
+       
     /// <summary>
     /// Remaining estimate in seconds.
     /// </summary>
@@ -396,24 +372,6 @@ public sealed class Issue
     /// The time and date on which this issue was resolved.
     /// </summary>
     public DateTime? ResolutionDate { get; }
-
-    
-    /// <summary>
-    /// The security level of the issue.
-    /// </summary>
-    /// <remarks>For LINQ use only.</remarks>
-    //public string SecurityLevel { get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); } }
-    
-
-    /// <summary>
-    /// Sprint to wich the ticket belongs.
-    /// </summary>
-    /// <remarks>For LINQ use only and only with Greenhopper.</remarks>
-    //[JqlFieldAttribute("sprint", JqlFieldCompare.Comparable | JqlFieldCompare.Include)]
-    //public string Sprint
-    //{
-    //    get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); }
-    //}
 
     /// <summary>
     /// The stage the issue is currently at in its lifecycle ('workflow'). 

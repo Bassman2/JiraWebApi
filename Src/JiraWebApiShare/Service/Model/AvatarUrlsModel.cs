@@ -3,7 +3,7 @@
 /// <summary>
 /// Urls to the JIRA avatar icons.
 /// </summary>
-public sealed class AvatarUrlsModel
+public class AvatarUrlsModel
 {
     /// <summary>
     /// Url of the small avatar with 16x16 pixel.
@@ -28,15 +28,4 @@ public sealed class AvatarUrlsModel
     /// </summary>
     [JsonPropertyName("48x48")]
     public Uri? AvatarUrl48 { get; set; }
-
-    public static implicit operator AvatarUrls?(AvatarUrlsModel? model)
-    {
-        return model is null ? null : new AvatarUrls()
-        {
-            AvatarUrl16 = model.AvatarUrl16,
-            AvatarUrl24 = model.AvatarUrl24,
-            AvatarUrl32 = model.AvatarUrl32,
-            AvatarUrl48 = model.AvatarUrl48
-        };
-    }
 }

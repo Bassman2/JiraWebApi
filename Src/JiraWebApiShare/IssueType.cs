@@ -4,7 +4,7 @@
 /// Representation of a JIRA issue type. 
 /// </summary>
 [DebuggerDisplay("{Id} {Name}")]
-public sealed class IssueType 
+public class IssueType 
 {
     ///// <summary>
     ///// Initializes a new instance of the IssueType class.

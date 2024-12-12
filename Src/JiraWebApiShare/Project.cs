@@ -25,7 +25,7 @@ public sealed class Project
         AssigneeType = model.AssigneeType;
         Versions = model.Versions;
         //Roles = model.Roles;
-        AvatarUrls = model.AvatarUrls;
+        AvatarUrls = model.AvatarUrls.CastModel<AvatarUrls>();
     }
 
     #region Properties
@@ -33,12 +33,12 @@ public sealed class Project
     /// <summary>
     /// Url of the JIRA REST item.
     /// </summary>
-    public string? Self { get; set; }
+    public string? Self { get; }
 
     /// <summary>
     /// Id of the JIRA item.
     /// </summary>
-    public string Id { get; set; }
+    public string Id { get; }
      
     /// <summary>
     /// Key of the JIRY project.
@@ -48,52 +48,52 @@ public sealed class Project
     /// <summary>
     /// Name of the JIRA item.
     /// </summary>
-    public string? Name { get; set; }
+    public string? Name { get; }
 
     /// <summary>
     /// Description of the JIRY project.
     /// </summary>
-    public string? Description { get; set; }
+    public string? Description { get; }
 
     /// <summary>
     /// Icon URL of the JIRY project.
     /// </summary>
-    public Uri? IconUrl { get; set; }
+    public Uri? IconUrl { get; }
 
     /// <summary>
     /// Lead of the JIRY project.
     /// </summary>
-    public User? Lead { get; set; }
+    public User? Lead { get; }
 
     /// <summary>
     /// Components of the JIRY project.
     /// </summary>
-    public IEnumerable<Component>? Components { get; set; }
+    public IEnumerable<Component>? Components { get; }
 
     /// <summary>
     /// Issue types of the JIRY project.
     /// </summary>
-    public IEnumerable<IssueType>? IssueTypes { get; set; }
+    public IEnumerable<IssueType>? IssueTypes { get; }
 
     /// <summary>
     /// URL of the JIRY project.
     /// </summary>
-    public Uri? Url { get; set; }
+    public Uri? Url { get; }
 
     /// <summary>
     /// E-mail of the JIRY project.
     /// </summary>
-    public string? Email { get; set; }
+    public string? Email { get; }
 
     /// <summary>
     /// Assignee type of the JIRY project.
     /// </summary>
-    public string? AssigneeType { get; set; }
+    public string? AssigneeType { get; }
 
     /// <summary>
     /// Versions of the JIRY project.
     /// </summary>
-    public IEnumerable<IssueVersion>? Versions { get; set; }
+    public IEnumerable<IssueVersion>? Versions { get; }
 
     /// <summary>
     /// Roles of the JIRY project.
@@ -103,7 +103,7 @@ public sealed class Project
     /// <summary>
     /// Avatar URLs of the JIRY project.
     /// </summary>
-    public AvatarUrls? AvatarUrls { get; set; }
+    public AvatarUrls? AvatarUrls { get; }
 
     #endregion
     

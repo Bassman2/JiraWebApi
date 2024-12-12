@@ -54,18 +54,4 @@ internal class ServerInfoModel
     /// </summary>
     [JsonPropertyName("serverTitle")]
     public string? ServerTitle { get; set; }
-
-    public static implicit operator ServerInfo?(ServerInfoModel? model)
-    {
-        return model is null ? null : new ServerInfo()
-        {
-            BaseUrl = model.BaseUrl!,
-            Version = new Version(model.Version ?? "0.0.0"),
-            DeploymentType = model.DeploymentType ?? "",
-            BuildDate = model.BuildDate ?? default,
-            ServerTime = model.ServerTime ?? default,
-            ScmInfo = model.ScmInfo ?? "",
-            ServerTitle = model.ServerTitle!,
-        };
-    }
 }
