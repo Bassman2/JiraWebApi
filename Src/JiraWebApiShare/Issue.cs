@@ -15,10 +15,14 @@ public sealed class Issue
     internal Issue(JiraService service, IssueModel model)
     {
         this.service = service;
-        Id = model.Id!;
+        Id = int.Parse(model.Id!);
         Key = model.Key!;
         Self = model.Self;
 
+        if (model.Fields == null)
+        {
+            return;
+        }
         // string
         Summary = model.GetFieldString("summary");
         Description = model.GetFieldString("description");
@@ -52,6 +56,7 @@ public sealed class Issue
 
         //    Project = xx.CastModel<Project>(service);
         //}
+        
     }
 
     #region fields

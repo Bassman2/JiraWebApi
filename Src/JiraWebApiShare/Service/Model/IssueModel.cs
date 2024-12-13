@@ -15,8 +15,10 @@ internal class IssueModel
     /// <summary>
     /// Id of the JIRA issue.
     /// </summary>
+    
+    // must be string for create 
     [JsonPropertyName("id")]
-    public int Id { get; set; }
+    public string? Id { get; set; }
 
     /// <summary>
     /// Summary of the JIRA issue.
