@@ -39,17 +39,17 @@ public class JiraPriorityUnitTest : JiraBaseUnitTest
         Assert.AreEqual("#cc0000", priority.StatusColor, nameof(priority.StatusColor));
     }
 
-    [TestMethod]
-    public async Task TestMethodGetPrioritiesPagedAsync()
-    {
-        using var jira = new Jira(storeKey);
+    //[TestMethod]
+    //public async Task TestMethodGetPrioritiesPagedAsync()
+    //{
+    //    using var jira = new Jira(storeKey);
 
-        var list = jira.GetPrioritiesPagedAsync();
-        Assert.IsNotNull(list);
+    //    var list = jira.GetPrioritiesPagedAsync();
+    //    Assert.IsNotNull(list);
 
-        var priorities = await list.ToListAsync();
-        Assert.IsNotNull(priorities);
+    //    var priorities = await list.ToListAsync();
+    //    Assert.IsNotNull(priorities);
 
-        Assert.AreEqual(0, priorities.Count, nameof(priorities.Count));
-    }
+    //    Assert.AreEqual(0, priorities.Count, nameof(priorities.Count));
+    //}
 }

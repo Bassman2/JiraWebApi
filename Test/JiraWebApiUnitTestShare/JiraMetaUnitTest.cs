@@ -43,7 +43,7 @@ public class JiraMetaUnitTest : JiraBaseUnitTest
     {
         using var jira = new Jira(storeKey);
 
-        var meta = await jira.GetEditMetaAsync(mainIssue);
+        var meta = await jira.GetEditMetaAsync(mainGroupIssue);
 
         Assert.IsNotNull(meta);
         //StringAssert.StartsWith("NAVSUITE-", issue.Key, nameof(issue.Key));

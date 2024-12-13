@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
-namespace JiraWebApi.Service;
+﻿namespace JiraWebApi.Service;
 
 // https://developer.atlassian.com/server/jira/platform/rest/v10002/api-group-serverinfo/#api-group-serverinfo
 // https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-projects/#api-group-projects

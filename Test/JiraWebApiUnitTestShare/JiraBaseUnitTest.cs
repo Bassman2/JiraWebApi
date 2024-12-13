@@ -20,7 +20,8 @@ public abstract class JiraBaseUnitTest
     protected const int testComponentId = 37767;
     protected const string testComponentName = "Application";
 
-    protected const string mainIssue = "NAVSUITE-13";
+    protected const string mainGroupIssue = "NAVSUITE-13";
+    protected const string mainGetIssue = "NAVSUITE-14";
 
-    
+
 }

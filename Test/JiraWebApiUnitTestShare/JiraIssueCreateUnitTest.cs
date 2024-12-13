@@ -1,7 +1,7 @@
 ﻿namespace JiraWebApiUnitTest;
 
 [TestClass]
-public class JiraIssueUnitTest : JiraBaseUnitTest
+public class JiraIssueCreateUnitTest : JiraBaseUnitTest
 {
     [TestMethod]
     public async Task TestMethodCreateIssueAsync()
@@ -50,7 +50,7 @@ public class JiraIssueUnitTest : JiraBaseUnitTest
     {
         using var jira = new Jira(storeKey);
 
-        var main = await jira.GetIssueAsync(mainIssue);
+        var main = await jira.GetIssueAsync(mainGroupIssue);
         Assert.IsNotNull(main);
 
         var issueType = await jira.GetIssueTypeAsync("sub-task");

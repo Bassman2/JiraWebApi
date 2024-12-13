@@ -11,6 +11,7 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)JiraBaseUnitTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JiraComponentUnitTest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JiraIssueGetUnitTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JiraIssueTypeUnitTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JiraMetaUnitTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JiraPriorityUnitTest.cs" />
@@ -18,7 +19,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)JiraProjectUnitTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JiraResolutionUnitTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JiraServerInfoUnitTest.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)JiraIssueUnitTest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JiraIssueCreateUnitTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JiraStatusCategoryUnitTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JiraStatusUnitTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JiraUserUnitTest.cs" />

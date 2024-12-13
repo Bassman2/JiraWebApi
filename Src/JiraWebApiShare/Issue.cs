@@ -10,128 +10,6 @@
 [DebuggerDisplay("{Id}, {Key}")]
 public sealed class Issue 
 {
-    #region old
-
-    //[DebuggerDisplay("{Id}, {Name}")]
-    //private class CustomField
-    //{
-    //    public CustomField()
-    //    { }
-
-    //    public CustomField(Field field, CustomFieldValue value)
-    //    {
-    //        this.Id = field.Id;
-    //        this.Name = field.Name;
-    //        this.Value = value;
-    //    }
-
-    //    public string? Name { get; set; }
-    //    public string? Id { get; set; }
-    //    //public string Type { get; set; }
-    //    public CustomFieldValue? Value { get; set; }
-    //    public bool Changed { get; set; }
-
-    //    ///// <summary>
-    //    ///// Returns a string that represents the current object.
-    //    ///// </summary>
-    //    ///// <returns>A string that represents the current object.</returns>
-    //    //public override string ToString()
-    //    //{
-    //    //    return string.Format("{0}, {1}", this.Id, this.Name);
-    //    //}
-    //}
-
-    /// <summary>
-    /// Initializes a new instance of the Issue class.
-    /// </summary>
-    //public Issue()
-    //{
-    //    //this.SerializeMode = SerializeMode.Link;
-    //    this.customFields = new List<CustomField>();
-    //}
-
-    ///// <summary>
-    ///// Initializes a new instance of the Issue class to create an issue link.
-    ///// </summary>
-    ///// <param name="issueKey">Key of the issue to link to.</param>
-    //public Issue(string issueKey)
-    //{
-    //    //this.SerializeMode = SerializeMode.Link;
-    //    this.Key = issueKey;
-    //    this.customFields = new List<CustomField>();
-    //}
-
-
-
-    //private void AddCustomField<T>(Field fieldInfo, JToken value, CustomFieldType type)
-    //{
-    //    if (value.HasValues)
-    //    {
-    //        var val = value.ToObject<T>();
-    //        this.customFields.Add(new CustomField(fieldInfo, new CustomFieldValue(type, val)));
-    //    }
-    //    else
-    //    {
-    //        this.customFields.Add(new CustomField(fieldInfo, new CustomFieldValue(type)));
-    //    }
-    //}
-
-    //private void AddCustomFieldArray<T>(Field fieldInfo, JToken value, CustomFieldType type)
-    //{
-    //    if (value.HasValues)
-    //    {
-    //        var val = ((JArray)value).Select(v => ((JObject)v).ToObject<T>() ).ToArray();
-    //        this.customFields.Add(new CustomField(fieldInfo, new CustomFieldValue(type, val)));
-    //    }
-    //    else
-    //    {
-    //        this.customFields.Add(new CustomField(fieldInfo, new CustomFieldValue(type)));
-    //    }
-    //}
-
-
-    ///// <summary>
-    ///// Support of the JQL 'issueHistory()' function in LINQ.
-    ///// </summary>
-    ///// <returns>Not used.</returns>
-    //[JqlFunction("issueHistory")]
-    //public static Issue[] IssueHistory()
-    //{
-    //    throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
-    //}
-
-    ///// <summary>
-    ///// Support of the JQL 'linkedIssues()' function in LINQ.
-    ///// </summary>
-    ///// <returns>Not used.</returns>
-    //[JqlFunction("linkedIssues")]
-    //public static Issue[] LinkedIssues()
-    //{
-    //    throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
-    //}
-
-    ///// <summary>
-    ///// Support of the JQL 'votedIssues()' function in LINQ.
-    ///// </summary>
-    ///// <returns>Not used.</returns>
-    //[JqlFunction("votedIssues")]
-    //public static Issue[] VotedIssues()
-    //{
-    //    throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
-    //}
-
-    ///// <summary>
-    ///// Support of the JQL 'watchedIssues()' function in LINQ.
-    ///// </summary>
-    ///// <returns>Not used.</returns>
-    //[JqlFunction("watchedIssues")]
-    //public static Issue[] WatchedIssues()
-    //{
-    //    throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly);
-    //}
-
-    #endregion
-
     private readonly JiraService? service;
 
     internal Issue(JiraService service, IssueModel model)
@@ -141,15 +19,39 @@ public sealed class Issue
         Key = model.Key!;
         Self = model.Self;
 
-        if (model.Fields?.TryGetValue("project", out object? res) ?? false && res != null)
-        {
-            JsonElement element = (JsonElement)res!;
+        // string
+        Summary = model.GetFieldString("summary");
+        Description = model.GetFieldString("description");
 
-            ProjectModel? pm = JsonSerializer.Deserialize<ProjectModel>(element, SourceGenerationContext.Default.ProjectModel);
+        // DateTime
+        LastViewed = model.GetFieldDateTime("lastViewed");
+
+        // class
+        Priority = model.GetField<Priority, PriorityModel>("priority");
+
+        // class
+        Project = model.GetField<Project, ProjectModel>("project", service);
+
+        Resolution = model.GetField<Resolution, ResolutionModel>("resolution");
+
+        //if (model.Fields?.TryGetValue("project", out JsonElement? res) ?? false && res != null)
+        //{
+        //    JsonElement element = (JsonElement)res!;
+
+        //    ProjectModel? pm = JsonSerializer.Deserialize<ProjectModel>(element, SourceGenerationContext.Default.ProjectModel);
 
 
-            Project = pm.CastModel<Project>(service);
-        }                
+        //    Project = pm.CastModel<Project>(service);
+        //}
+
+        //if (model.Fields?.TryGetValue("resolution", out JsonElement? resolution) ?? false && resolution != null)
+        //{
+
+        //    ProjectModel? xx = JsonSerializer.Deserialize<ProjectModel>((JsonElement)resolution!, SourceGenerationContext.Default.ProjectModel);
+
+
+        //    Project = xx.CastModel<Project>(service);
+        //}
     }
 
     #region fields
@@ -169,7 +71,7 @@ public sealed class Issue
     /// <summary>
     /// Id of the JIRA issue.
     /// </summary>
-    public string? Id { get; }
+    public int Id { get; }
 
     /// <summary>
     /// Summary of the JIRA issue.
@@ -341,8 +243,8 @@ public sealed class Issue
     /// <summary>
     /// The importance of the issue in relation to other issues.
     /// </summary>
-    //public Priority? Priority { get; }
-    
+    public Priority? Priority { get; }
+
     /// <summary>
     /// Progress of the issue.
     /// </summary>
@@ -366,7 +268,7 @@ public sealed class Issue
     /// <summary>
     /// A record of the issue's resolution, if the issue has been resolved or closed.
     /// </summary>
-    //public Resolution? Resolution { get; }
+    public Resolution? Resolution { get; }
     
     /// <summary>
     /// The time and date on which this issue was resolved.

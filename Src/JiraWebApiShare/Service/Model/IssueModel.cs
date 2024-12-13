@@ -9,11 +9,14 @@
 /// </remarks>
 internal class IssueModel
 {
+    [JsonPropertyName("self")]
+    public Uri? Self { get; set; }
+
     /// <summary>
     /// Id of the JIRA issue.
     /// </summary>
     [JsonPropertyName("id")]
-    public string? Id { get; set; }
+    public int Id { get; set; }
 
     /// <summary>
     /// Summary of the JIRA issue.
@@ -24,14 +27,9 @@ internal class IssueModel
     /// <summary>
     /// Url of the JIRA REST item.
     /// </summary>
-    [JsonPropertyName("self")]
-    public Uri? Self { get; set; }
 
     [JsonPropertyName("fields")]
-    public Dictionary<string, object?>? Fields { get; set; }
-
-
-
+    public Dictionary<string, JsonElement?>? Fields { get; set; }
 }
 
 
