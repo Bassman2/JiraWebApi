@@ -435,36 +435,13 @@ internal class JiraService(Uri host, string apikey) : JsonService(host, SourceGe
     /// </summary>
     /// <param name="issue">Issue class to create.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    //public async Task<IssueModel?> CreateIssueAsync(IssueModel issue, CancellationToken cancellationToken = default)
-    //{
-    //    ArgumentNullException.ThrowIfNull(issue, nameof(issue));
-
-    //    IssueModel? res = await PostAsJsonAsync<IssueModel, IssueModel>("rest/api/2/issue", issue, cancellationToken);
-    //    //issue.ResetAllChanged();
-    //    //res?.UpdateCustomFields(await GetCachedFieldsAsync());
-    //    return res;
-    //}
-
-    public async Task<IssueModel?> CreateIssueAsync(CreateIssueModel createIssue, CancellationToken cancellationToken = default)
+    public async Task<IssueModel?> CreateIssueAsync(IssueModel createIssue, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(createIssue, nameof(createIssue));
 
-        IssueModel? res = await PostAsJsonAsync<CreateIssueModel, IssueModel>("rest/api/2/issue", createIssue, cancellationToken);
-        //issue.ResetAllChanged();
-        //res?.UpdateCustomFields(await GetCachedFieldsAsync());
+        IssueModel? res = await PostAsJsonAsync<IssueModel, IssueModel>("rest/api/2/issue", createIssue, cancellationToken);
         return res;
     }
-
-    //public async Task<IssueModel?> CreateIssueAsync(CreateIssueModel createIssue, CancellationToken cancellationToken = default)
-    //{
-    //    IssueModel? res = await PostAsJsonAsync<CreateIssueModel, IssueModel>("rest/api/2/issue", createIssue, cancellationToken);
-    //    //issue.ResetAllChanged();
-    //    //res?.UpdateCustomFields(await GetCachedFieldsAsync());
-    //    return res;
-    //}
-
-
-
 
     /// <summary>
     /// Returns a full representation of the issue for the given issue key. 

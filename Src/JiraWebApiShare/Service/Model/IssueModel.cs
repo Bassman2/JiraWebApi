@@ -31,7 +31,11 @@ internal class IssueModel
     /// </summary>
 
     [JsonPropertyName("fields")]
-    public Dictionary<string, JsonElement?>? Fields { get; set; }
+    public Dictionary<string, object?>? Fields { get; set; }
+
+
+    [JsonPropertyName("update")]
+    public Dictionary<string, object?>? Update { get; set; }
 }
 
 

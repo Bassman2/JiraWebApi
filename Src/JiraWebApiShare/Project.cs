@@ -130,7 +130,7 @@ public sealed class Project
         ArgumentNullException.ThrowIfNull(issueType, nameof(issueType));
         //ArgumentNullException.ThrowIfNullOrWhiteSpace(issueType.Id, nameof(issueType.Id));
 
-        CreateIssueModel model = new() { Fields = [] };
+        IssueModel model = new() { Fields = [] };
         model.Fields.Add("project", new ProjectModel() { Id = this.Id });
         model.Fields.Add("issuetype", new IssueTypeModel() { Id = issueType.Id });
         model.Fields.Add("reporter", new UserModel() { Name = reporter });

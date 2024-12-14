@@ -78,7 +78,7 @@ public sealed class Jira : IDisposable
         ArgumentNullException.ThrowIfNull(issueType, nameof(issueType));
         //ArgumentNullException.ThrowIfNullOrWhiteSpace(issueType.Id, nameof(issueType.Id));
 
-        CreateIssueModel model = new() { Fields = [] };
+        IssueModel model = new() { Fields = [] };
         model.Fields.Add("project", new ProjectModel() { Id = project.Id });
         model.Fields.Add("issuetype", new IssueTypeModel() { Id = issueType.Id });
         model.Fields.Add("reporter", new UserModel() { Name = reporter });
@@ -93,7 +93,7 @@ public sealed class Jira : IDisposable
     {
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
 
-        CreateIssueModel model = new() { Fields = [] };
+        IssueModel model = new() { Fields = [] };
         model.Fields.Add("parent", new IssueModel() { Key = parentKey });
         model.Fields.Add("project", new ProjectModel() { Id = projectId });
         model.Fields.Add("issuetype", new IssueTypeModel() { Id = issueTypeId });

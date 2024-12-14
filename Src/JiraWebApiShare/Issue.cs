@@ -24,38 +24,20 @@ public sealed class Issue
             return;
         }
         // string
-        Summary = model.GetFieldString("summary");
-        Description = model.GetFieldString("description");
+        Summary = model.Fields.GetJsonValueString("summary");
+        Description = model.Fields.GetJsonValueString("description");
 
         // DateTime
-        LastViewed = model.GetFieldDateTime("lastViewed");
+        LastViewed = model.Fields.GetJsonValueDateTime("lastViewed");
 
         // class
-        Priority = model.GetField<Priority, PriorityModel>("priority");
+        Priority = model.Fields.GetJsonValue<Priority, PriorityModel>("priority");
+        Resolution = model.Fields.GetJsonValue<Resolution, ResolutionModel>("resolution");
 
-        // class
-        Project = model.GetField<Project, ProjectModel>("project", service);
+        // class with service
+        Project = model.Fields.GetJsonValue<Project, ProjectModel>("project", service);
 
-        Resolution = model.GetField<Resolution, ResolutionModel>("resolution");
-
-        //if (model.Fields?.TryGetValue("project", out JsonElement? res) ?? false && res != null)
-        //{
-        //    JsonElement element = (JsonElement)res!;
-
-        //    ProjectModel? pm = JsonSerializer.Deserialize<ProjectModel>(element, SourceGenerationContext.Default.ProjectModel);
-
-
-        //    Project = pm.CastModel<Project>(service);
-        //}
-
-        //if (model.Fields?.TryGetValue("resolution", out JsonElement? resolution) ?? false && resolution != null)
-        //{
-
-        //    ProjectModel? xx = JsonSerializer.Deserialize<ProjectModel>((JsonElement)resolution!, SourceGenerationContext.Default.ProjectModel);
-
-
-        //    Project = xx.CastModel<Project>(service);
-        //}
+        
         
     }
 
@@ -346,7 +328,7 @@ public sealed class Issue
     {
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
 
-        CreateIssueModel model = new() { Fields = [] };
+        IssueModel model = new() { Fields = [] };
         model.Fields.Add("parent", new IssueModel() { Key = this.Key });
         model.Fields.Add("project", new ProjectModel() { Id = this.Project!.Id });
         model.Fields.Add("issuetype", new IssueTypeModel() { Id = issueType.Id });
