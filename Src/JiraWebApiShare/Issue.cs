@@ -11,7 +11,8 @@
 public sealed class Issue 
 {
     private readonly JiraService? service;
-
+    private readonly JsonSerializerContext context = SourceGenerationContext.Default;
+    
     internal Issue(JiraService service, IssueModel model)
     {
         this.service = service;
@@ -31,11 +32,11 @@ public sealed class Issue
         LastViewed = model.Fields.GetJsonValueDateTime("lastViewed");
 
         // class
-        Priority = model.Fields.GetJsonValue<Priority, PriorityModel>("priority");
-        Resolution = model.Fields.GetJsonValue<Resolution, ResolutionModel>("resolution");
+        Priority = model.Fields.GetJsonValue<Priority, PriorityModel>("priority", context);
+        Resolution = model.Fields.GetJsonValue<Resolution, ResolutionModel>("resolution", context);
 
         // class with service
-        Project = model.Fields.GetJsonValue<Project, ProjectModel>("project", service);
+        Project = model.Fields.GetJsonValue<Project, ProjectModel>("project", service, context);
 
         
         
