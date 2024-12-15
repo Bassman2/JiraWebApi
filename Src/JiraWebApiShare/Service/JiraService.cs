@@ -90,7 +90,7 @@ internal class JiraService(Uri host, string apikey) : JsonService(host, SourceGe
     /// Returns the meta informations for an attachments, specifically if they are enabled and the maximum upload size allowed.
     /// </summary>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<AttachmentMetaModel?> GetAttachmentMetaAsync(CancellationToken cancellationToken = default)
+    public async Task<AttachmentMetaModel?> GetAttachmentMetaAsync(CancellationToken cancellationToken)
     {
         var res = await GetFromJsonAsync<AttachmentMetaModel>("rest/api/2/attachment/meta", cancellationToken);
         return res;
@@ -101,7 +101,7 @@ internal class JiraService(Uri host, string apikey) : JsonService(host, SourceGe
     /// </summary>
     /// <param name="attachmentId">The id of the attachment to get.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<AttachmentModel?> GetAttachmentAsync(string attachmentId, CancellationToken cancellationToken = default)
+    public async Task<AttachmentModel?> GetAttachmentAsync(string attachmentId, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(attachmentId, nameof(attachmentId));
 
@@ -114,7 +114,7 @@ internal class JiraService(Uri host, string apikey) : JsonService(host, SourceGe
     /// </summary>
     /// <param name="attachmentId">The id of the attachment to delete.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task DeleteAttachmentAsync(string attachmentId, CancellationToken cancellationToken = default)
+    public async Task DeleteAttachmentAsync(string attachmentId, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(attachmentId, nameof(attachmentId));
 
