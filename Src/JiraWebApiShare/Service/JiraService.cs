@@ -21,21 +21,10 @@
 /// <exception cref="System.Security.Authentication.AuthenticationException">Thrown if authentication failed.</exception> 
 internal class JiraService(Uri host, string apikey) : JsonService(host, SourceGenerationContext.Default, new BearerAuthenticator(apikey))
 {
-
     #region Private
 
-    protected override void TestAutentication()
-    {
-        try
-        {
-            var _ = GetStringAsync("/rest/api/2/serverInfo", default).Result;
-        }
-        catch (Exception ex)
-        {
-            throw new AuthenticationException(ex.Message, ex);
-        }
-    }
-
+    protected override string? AuthenticationTestUrl => "/rest/api/2/serverInfo";
+   
     protected override async Task ErrorHandlingAsync(HttpResponseMessage response, string memberName, CancellationToken cancellationToken)
     {
         if (response.Content is JsonContent)
