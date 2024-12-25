@@ -8,7 +8,7 @@ public abstract class JiraBaseUnitTest
 
     protected static readonly string testHost = KeyStore.Key(storeKey)!.Host!;
     protected static readonly string testUserKey = KeyStore.Key(storeKey)!.Login!;
-    protected static readonly string testUserDisplayName = KeyStore.Key(storeKey)!.Name!;
+    protected static readonly string testUserDisplayName = KeyStore.Key(storeKey)!.User!;
     protected static readonly string testUserEmail = KeyStore.Key(storeKey)!.Email!;
 
     protected static readonly Uri baseUri = new(testHost);
