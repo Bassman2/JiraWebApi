@@ -24,17 +24,7 @@ internal class JiraService(Uri host, string apikey) : JsonService(host, SourceGe
 
     #region Private
 
-    protected override void TestAutentication()
-    {
-        try
-        {
-            var _ = GetStringAsync("/rest/api/2/serverInfo", default).Result;
-        }
-        catch (Exception ex)
-        {
-            throw new AuthenticationException(ex.Message, ex);
-        }
-    }
+    protected override string? AuthenticationTestUrl => "/rest/api/2/serverInfo";
 
     protected override async Task ErrorHandlingAsync(HttpResponseMessage response, string memberName, CancellationToken cancellationToken)
     {
@@ -45,42 +35,6 @@ internal class JiraService(Uri host, string apikey) : JsonService(host, SourceGe
         }
         throw new WebServiceException("", response.RequestMessage?.RequestUri, response.StatusCode, response.ReasonPhrase, memberName);
     }
-
-    //    private async IAsyncEnumerable<T> GetJsonAsyncEnumerableAsync<T, E>(string? requestUri, [EnumeratorCancellation] CancellationToken cancellationToken, [CallerMemberName] string memberName = "") where T : class where E : AsyncEnumerableModel 
-    //    {
-    //        ArgumentRequestUriException.ThrowIfNullOrWhiteSpace(requestUri, nameof(requestUri));
-
-
-
-    //        while (requestUri != null)
-    //        {
-    //            var res = await GetFromJsonAsync<E>(requestUri, cancellationToken);
-
-    //            foreach (var item in res)
-
-
-
-    //            using HttpResponseMessage response = await client!.GetAsync(requestUri, cancellationToken);
-
-    //#if DEBUG
-    //            string str = await response.Content.ReadAsStringAsync(cancellationToken);
-    //#endif
-    //            if (!response.IsSuccessStatusCode)
-    //            {
-    //                await ErrorHandlingAsync(response, memberName, cancellationToken);
-    //            }
-
-    //            var res = await ReadFromJsonAsync<IEnumerable<T>?>(response, cancellationToken);
-    //            if (res != null)
-    //            {
-    //                foreach (var item in res)
-    //                {
-    //                    yield return item;
-    //                }
-    //            }
-    //            requestUri = NextLink(response);
-    //        }
-    //    }
 
     #endregion
     
