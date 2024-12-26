@@ -7,48 +7,38 @@ jobs:
     runs-on: windows-2022
     strategy:
       fail-fast: false
-      max-parallel: 2
       matrix:
         build_configuration: [Release, Debug]
     env:
-      SHFBROOT: C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\
+      Solution: JiraWebApi.sln
+      NugetSpc: JiraWebApi.nuspec
 
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.3.1
+      uses: microsoft/setup-msbuild@v2
 
     - name: Setup NuGet
-      uses: nuget/setup-nuget@v1
-      
+      uses: nuget/setup-nuget@v2
+
     - name: Show VS Version
       run: |
-           "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property displayName 
-           "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property catalog_productDisplayVersion 
+           "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property displayName
+           "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property catalog_productDisplayVersion
       shell: cmd
 
-    - name: "Download and install sandcastle"
-      run: |
-           $url = "https://github.com/EWSoftware/SHFB/releases/download/v2022.12.30.0/SHFBInstaller_2022.12.30.0.zip"
-           $output = "$env:GITHUB_WORKSPACE\SHFBInstaller_2022.12.30.0.zip"
-           (New-Object System.Net.WebClient).DownloadFile($url, $output)
-           7z x -y SHFBInstaller_2022.12.30.0.zip | Out-Null
-           Write-Host "Installing MSI..."
-           cmd /c start /wait msiexec /i InstallResources\SandcastleHelpFileBuilder.msi /quiet
-           Write-Host "Installing VSIX..."
-           . "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\VSIXInstaller.exe" /q /a InstallResources\SHFBVisualStudioPackage_VS2022AndLater.vsix
-           Write-Host "Sandcastle installed" -ForegroundColor Green
-      shell: pwsh
+    - name: Install SHFB
+      uses: Bassman2/setup-SHFB@v1
 
     - name: Nuget restore solution
-      run: nuget restore JiraWebApi.sln
+      run: nuget restore $env:Solution
 
     - name: MSBuild of solution
-      run: msbuild JiraWebApi.sln /p:configuration="${{ matrix.build_configuration }}" /m /verbosity:minimal
+      run: msbuild $env:Solution /p:configuration="${{ matrix.build_configuration }}" /m /verbosity:minimal
 
 #    - name: Nuget pack nuspec
 #      if: matrix.build_configuration == 'Release'
 #      working-directory: .\Nuget\
-#      run: nuget pack JenkinsWebApi.nuspec -properties Configuration="${{ matrix.build_configuration }}"
+#      run: nuget pack $env:NugetSpc -properties Configuration="${{ matrix.build_configuration }}"
