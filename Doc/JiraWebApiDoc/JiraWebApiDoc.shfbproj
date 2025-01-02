@@ -21,7 +21,7 @@
     <ApiFilter />
     <ComponentConfigurations />
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\..\Src\JiraWenApi70\JiraWenApi70.csproj" />
+      <DocumentationSource sourceFile="..\..\Src\JiraWebApi90\JiraWebApi90.csproj" />
     </DocumentationSources>
     <HelpAttributes />
     <NamespaceSummaries>
