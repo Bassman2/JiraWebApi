@@ -19,7 +19,8 @@
 /// </code>
 /// </example>
 /// <exception cref="System.Security.Authentication.AuthenticationException">Thrown if authentication failed.</exception> 
-internal class JiraService(Uri host, string apikey) : JsonService(host, SourceGenerationContext.Default, new BearerAuthenticator(apikey))
+internal class JiraService(Uri host, IAuthenticator? authenticator, string appName)
+    : JsonService(host, authenticator, appName, SourceGenerationContext.Default)
 {
     #region Private
 

@@ -4,23 +4,13 @@ public sealed class Jira : IDisposable
 {
     private JiraService? service;
 
-    public Jira(string storeKey)
-    {
-        var key = WebServiceClient.Store.KeyStore.Key(storeKey)!;
-        string host = key.Host!;
-        string token = key.Token!;
-        service = new JiraService(new Uri(host), token);
-    }
+    public Jira(string storeKey, string appName)
+        : this(new Uri(KeyStore.Key(storeKey)?.Host!), KeyStore.Key(storeKey)!.Token!, appName)
+    { }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="host"></param>
-    /// <param name="apikey"></param>    
-    /// <exception cref="System.Security.Authentication.AuthenticationException">Thrown if authentication failed.</exception> 
-    public Jira(Uri host, string apikey)
+    public Jira(Uri host, string token, string appName)
     {
-        service = new JiraService(host, apikey);
+        service = new(host, new BearerAuthenticator(token), appName);
     }
 
     public void Dispose()
