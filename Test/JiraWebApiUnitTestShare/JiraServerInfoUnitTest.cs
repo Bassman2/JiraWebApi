@@ -6,7 +6,7 @@ public class JiraServerInfoUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodGetServerInfoAsync()
     {
-        using var jira = new Jira(storeKey);
+        using var jira = new Jira(storeKey, appName);
 
         var serverInfo = await jira.GetServerInfoAsync();
 

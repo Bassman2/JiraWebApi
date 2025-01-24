@@ -6,7 +6,7 @@ public class JiraUserUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodGetUserAsync()
     {
-        using var jira = new Jira(storeKey);
+        using var jira = new Jira(storeKey, appName);
 
         var user = await jira.GetUserAsync(testUserKey);
 
@@ -29,7 +29,7 @@ public class JiraUserUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodGetCurrentUserAsync()
     {
-        using var jira = new Jira(storeKey);
+        using var jira = new Jira(storeKey, appName);
 
         var user = await jira.GetCurrentUserAsync();
 

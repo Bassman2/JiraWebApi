@@ -6,7 +6,7 @@ public class JiraProjectUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodGetProjectsAsync()
     {
-        using var jira = new Jira(storeKey);
+        using var jira = new Jira(storeKey, appName);
 
         var res = await jira.GetProjectsAsync();
 
@@ -28,7 +28,7 @@ public class JiraProjectUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodGetProjectAsync()
     {
-        using var jira = new Jira(storeKey);
+        using var jira = new Jira(storeKey, appName);
 
         var project = await jira.GetProjectByKeyAsync(testProjectKey);
 

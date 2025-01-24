@@ -6,7 +6,7 @@ public class JiraResolutionUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodGetResolutionsAsync()
     {
-        using var jira = new Jira(storeKey);
+        using var jira = new Jira(storeKey, appName);
 
         var list = await jira.GetResolutionsAsync();
 
@@ -25,7 +25,7 @@ public class JiraResolutionUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodGetResolutionAsync()
     {
-        using var jira = new Jira(storeKey);
+        using var jira = new Jira(storeKey, appName);
 
         var resolution = await jira.GetResolutionAsync(1);
 

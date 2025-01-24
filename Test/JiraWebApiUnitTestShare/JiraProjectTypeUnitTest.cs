@@ -6,7 +6,7 @@ public class JiraProjectTypeUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodGetProjectTypesAsync()
     {
-        using var jira = new Jira(storeKey);
+        using var jira = new Jira(storeKey, appName);
 
         var list = await jira.GetProjectTypesAsync();
 
@@ -25,7 +25,7 @@ public class JiraProjectTypeUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodGetProjectTypeAsync()
     {
-        using var jira = new Jira(storeKey);
+        using var jira = new Jira(storeKey, appName);
 
         var projectType = await jira.GetProjectTypeAsync("software");
 
@@ -40,7 +40,7 @@ public class JiraProjectTypeUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodGetAccessibleProjectTypeAsync()
     {
-        using var jira = new Jira(storeKey);
+        using var jira = new Jira(storeKey, appName);
 
         var projectType = await jira.GetAccessibleProjectTypeAsync("software");
 

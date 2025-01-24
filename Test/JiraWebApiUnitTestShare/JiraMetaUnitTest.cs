@@ -6,7 +6,7 @@ public class JiraMetaUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodGetCreateMetaAsync()
     {
-        using var jira = new Jira(storeKey);
+        using var jira = new Jira(storeKey, appName);
 
         var issueType = await jira.GetIssueTypeAsync("bug");
         Assert.IsNotNull(issueType);
@@ -23,7 +23,7 @@ public class JiraMetaUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodGetCreateSubMetaAsync()
     {
-        using var jira = new Jira(storeKey);
+        using var jira = new Jira(storeKey, appName); 
 
         var issueType = await jira.GetIssueTypeAsync("sub-task");
         Assert.IsNotNull(issueType);
@@ -41,7 +41,7 @@ public class JiraMetaUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodGetEditMetaAsync()
     {
-        using var jira = new Jira(storeKey);
+        using var jira = new Jira(storeKey, appName);
 
         var meta = await jira.GetEditMetaAsync(mainGroupIssue);
 

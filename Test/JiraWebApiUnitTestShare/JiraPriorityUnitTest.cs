@@ -6,7 +6,7 @@ public class JiraPriorityUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodGetPrioritiesAsync()
     {
-        using var jira = new Jira(storeKey);
+        using var jira = new Jira(storeKey, appName);
 
         var list = await jira.GetPrioritiesAsync();
 
@@ -26,7 +26,7 @@ public class JiraPriorityUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodGetPriorityAsync()
     {
-        using var jira = new Jira(storeKey);
+        using var jira = new Jira(storeKey, appName);
 
         var priority = await jira.GetPriorityAsync(1);
 
@@ -42,7 +42,7 @@ public class JiraPriorityUnitTest : JiraBaseUnitTest
     //[TestMethod]
     //public async Task TestMethodGetPrioritiesPagedAsync()
     //{
-    //    using var jira = new Jira(storeKey);
+    //    using var jira = new Jira(storeKey, appName);
 
     //    var list = jira.GetPrioritiesPagedAsync();
     //    Assert.IsNotNull(list);

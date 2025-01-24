@@ -6,7 +6,7 @@ public class JiraIssueTypeUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodGetIssueTypesAsync()
     {
-        using var jira = new Jira(storeKey);
+        using var jira = new Jira(storeKey, appName); 
 
         var res = await jira.GetIssueTypesAsync();
 

@@ -6,7 +6,7 @@ public class JiraStatusCategoryUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodGetStatusCategoriesAsync()
     {
-        using var jira = new Jira(storeKey);
+        using var jira = new Jira(storeKey, appName);
 
         var list = await jira.GetStatusCategoriesAsync();
 
@@ -26,7 +26,7 @@ public class JiraStatusCategoryUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodGetStatusCategoryAsync()
     {
-        using var jira = new Jira(storeKey);
+        using var jira = new Jira(storeKey, appName);
 
         var statusCategory = await jira.GetStatusCategoryAsync(1);
 

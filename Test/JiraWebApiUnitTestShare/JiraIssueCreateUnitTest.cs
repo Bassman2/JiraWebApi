@@ -6,7 +6,7 @@ public class JiraIssueCreateUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodCreateIssueAsync()
     {
-        using var jira = new Jira(storeKey);
+        using var jira = new Jira(storeKey, appName);
 
         var project = await jira.GetProjectByKeyAsync(testProjectKey);
         Assert.IsNotNull(project);
@@ -27,7 +27,7 @@ public class JiraIssueCreateUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodCreateProjectIssueAsync()
     {
-        using var jira = new Jira(storeKey);
+        using var jira = new Jira(storeKey, appName);
 
         var project = await jira.GetProjectByKeyAsync(testProjectKey);
         Assert.IsNotNull(project);
@@ -48,7 +48,7 @@ public class JiraIssueCreateUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodCreateSubIssueAsync()
     {
-        using var jira = new Jira(storeKey);
+        using var jira = new Jira(storeKey, appName);
 
         var main = await jira.GetIssueAsync(mainGroupIssue);
         Assert.IsNotNull(main);

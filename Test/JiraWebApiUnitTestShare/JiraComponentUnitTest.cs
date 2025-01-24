@@ -6,7 +6,7 @@ public class JiraComponentUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodGetComponentsAsync()
     {
-        using var jira = new Jira(storeKey);
+        using var jira = new Jira(storeKey, appName);
 
         var project = await jira.GetProjectByKeyAsync(testProjectKey);
         Assert.IsNotNull(project);
@@ -31,7 +31,7 @@ public class JiraComponentUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodGetProjectComponentsAsync()
     {
-        using var jira = new Jira(storeKey);
+        using var jira = new Jira(storeKey, appName);
 
         var project = await jira.GetProjectByKeyAsync(testProjectKey);
         Assert.IsNotNull(project);
@@ -56,7 +56,7 @@ public class JiraComponentUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodGetComponentAsync()
     {
-        using var jira = new Jira(storeKey);
+        using var jira = new Jira(storeKey, appName);
 
         var component = await jira.GetComponentAsync(testComponentId);
         Assert.IsNotNull(component);

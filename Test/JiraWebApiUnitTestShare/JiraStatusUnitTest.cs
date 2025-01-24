@@ -6,7 +6,7 @@ public class JiraStatusUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodGetStatusesAsync()
     {
-        using var jira = new Jira(storeKey);
+        using var jira = new Jira(storeKey, appName);
 
         var list = await jira.GetStatusesAsync();
 
@@ -33,7 +33,7 @@ public class JiraStatusUnitTest : JiraBaseUnitTest
     [TestMethod]
     public async Task TestMethodGetStatusAsync()
     {
-        using var jira = new Jira(storeKey);
+        using var jira = new Jira(storeKey, appName);
 
         var status = await jira.GetStatusAsync(1);
 
@@ -57,7 +57,7 @@ public class JiraStatusUnitTest : JiraBaseUnitTest
     //[TestMethod]
     //public async Task TestMethodGetStatusesPagedAsync()
     //{
-    //    using var jira = new Jira(storeKey);
+    //    using var jira = new Jira(storeKey, appName);
 
     //    var list = jira.GetStatusesPagedAsync();
     //    Assert.IsNotNull(list);
