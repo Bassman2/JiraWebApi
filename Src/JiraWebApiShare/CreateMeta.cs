@@ -22,5 +22,5 @@ public  class CreateMeta
     /// <summary>
     /// Projects for which tickets can be created by the user.
     /// </summary>
-    public IEnumerable<Project>? Projects { get; }
+    public List<Project>? Projects { get; }
 }

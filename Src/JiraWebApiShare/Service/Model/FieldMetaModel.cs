@@ -34,5 +34,5 @@ internal class FieldMetaModel
     /// Operations.
     /// </summary>
     [JsonPropertyName("operations")]
-    public IEnumerable<string>? Operations { get; set; }
+    public List<string>? Operations { get; set; }
 }
