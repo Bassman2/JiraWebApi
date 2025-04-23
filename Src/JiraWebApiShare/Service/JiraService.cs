@@ -30,7 +30,11 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     {
         if (response.Content is JsonContent)
         {
-            var error = await ReadFromJsonAsync<ErrorModel>(response, cancellationToken);
+            //var error = await ReadFromJsonAsync<ErrorModel>(response, cancellationToken);
+
+            JsonTypeInfo<ErrorModel> jsonTypeInfoOut = (JsonTypeInfo<ErrorModel>)context.GetTypeInfo(typeof(ErrorModel))!;
+            var error = await response.Content.ReadFromJsonAsync<ErrorModel>(jsonTypeInfoOut, cancellationToken);
+
             throw new WebServiceException(error?.ToString(), response.RequestMessage?.RequestUri, response.StatusCode, response.ReasonPhrase, memberName);
         }
         throw new WebServiceException("", response.RequestMessage?.RequestUri, response.StatusCode, response.ReasonPhrase, memberName);
