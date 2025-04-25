@@ -3,7 +3,7 @@
 /// <summary>
 /// Urls to the JIRA avatar icons.
 /// </summary>
-public class AvatarUrlsModel
+internal class AvatarUrlsModel
 {
     /// <summary>
     /// Url of the small avatar with 16x16 pixel.

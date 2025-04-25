@@ -3,7 +3,7 @@
 /// <summary>
 /// Representation of JIRA issue watchers.
 /// </summary>
-public sealed class WatchersModel
+internal sealed class WatchersModel
 {
     
 

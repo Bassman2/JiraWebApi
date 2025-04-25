@@ -4,7 +4,7 @@
 /// Representation of a JIRA user. 
 /// </summary>
 [DebuggerDisplay("{Name}")]
-public sealed class UserModel
+internal sealed class UserModel
 {
     /// <summary>
     /// Url of the REST item.

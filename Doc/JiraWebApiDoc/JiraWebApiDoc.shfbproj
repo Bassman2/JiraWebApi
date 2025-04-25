@@ -26,8 +26,12 @@
     <HelpAttributes />
     <NamespaceSummaries>
       <NamespaceSummaryItem name="(global)" isDocumented="False" />
-      <NamespaceSummaryItem name="JiraWebApi" isDocumented="True">JIRA Web API</NamespaceSummaryItem>
-    </NamespaceSummaries>
+<NamespaceSummaryItem name="JiraWebApi" isDocumented="True">JIRA Web API</NamespaceSummaryItem>
+<NamespaceSummaryItem name="WebServiceClient" isDocumented="False" />
+<NamespaceSummaryItem name="WebServiceClient.Authenticator" isDocumented="False" />
+<NamespaceSummaryItem name="WebServiceClient.JsonConverters" isDocumented="False" />
+<NamespaceSummaryItem name="WebServiceClient.Store" isDocumented="False" />
+<NamespaceSummaryItem name="WebServiceClient.XSerializer" isDocumented="False" /></NamespaceSummaries>
     <PlugInConfigurations />
     <BuildLogFile />
     <HtmlHelp1xCompilerPath />

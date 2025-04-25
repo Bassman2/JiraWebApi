@@ -3,7 +3,7 @@
 /// <summary>
 /// Representation of JIRA issue votes.
 /// </summary>
-public class VotesModel
+internal class VotesModel
 {
     /// <summary>
     /// Url of the JIRA REST item.
