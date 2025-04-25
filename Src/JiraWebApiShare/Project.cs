@@ -95,9 +95,9 @@ public sealed class Project
     /// </summary>
     public IEnumerable<IssueVersion>? Versions { get; }
 
-    /// <summary>
-    /// Roles of the JIRY project.
-    /// </summary>
+    // /// <summary>
+    // /// Roles of the JIRY project.
+    // /// </summary>
     //public Roles? Roles { get; set; }
 
     /// <summary>

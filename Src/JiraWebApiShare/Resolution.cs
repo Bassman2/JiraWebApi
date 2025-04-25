@@ -1,5 +1,8 @@
 ﻿namespace JiraWebApi;
 
+/// <summary>
+/// Represents a JIRA issue resolution, which defines how an issue was resolved.
+/// </summary>
 public class Resolution
 {
     internal Resolution(ResolutionModel model)

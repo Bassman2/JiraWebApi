@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <AssemblyName>JiraWebApi</AssemblyName>
     <RootNamespace>JiraWebApi</RootNamespace>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

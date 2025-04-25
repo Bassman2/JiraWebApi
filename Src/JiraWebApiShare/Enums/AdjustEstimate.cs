@@ -5,7 +5,6 @@
 /// </summary>
 /// <remarks>Used by AddIssueWorklogsAsync.
 /// </remarks>
-/// <see cref="JiraWebApi.Jira.AddIssueWorklogAsync"/>
 public enum AdjustEstimate
 {
     /// <summary>

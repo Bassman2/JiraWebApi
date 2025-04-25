@@ -51,16 +51,16 @@ internal class IssueTypeModel
     [JsonPropertyName("avatarId")]
     public int? AvatarId { get; set; }
 
-    ///// <summary>
-    ///// Name of the classes which should be expanded.
-    ///// </summary>
+    // /// <summary>
+    // /// Name of the classes which should be expanded.
+    // /// </summary>
     //[JsonPropertyName("expand")]
     //public string? Expand { get; set; }
 
-    /// <summary>
-    /// Fields which are editable for this issue type. Used by meta information.
-    /// </summary>
-    /// <remarks>Only filled by <see cref="Jira.GetCreateMetaAsync">GetCreateMetaAsync</see> and <see cref="Jira.GetEditMetaAsync">GetEditMetaAsync</see>.</remarks>
+    // /// <summary>
+    // /// Fields which are editable for this issue type. Used by meta information.
+    // /// </summary>
+    // /// <remarks>Only filled by <see cref="Jira.GetCreateMetaAsync">GetCreateMetaAsync</see> and <see cref="Jira.GetEditMetaAsync">GetEditMetaAsync</see>.</remarks>
     //[JsonPropertyName("fields")]
     //public Fields? Fields { get; set; }
 }

@@ -1,18 +1,35 @@
 ﻿namespace JiraWebApi;
 
+/// <summary>
+/// Represents a JIRA client that provides access to various JIRA resources and operations.
+/// </summary>
 public sealed class Jira : IDisposable
 {
     private JiraService? service;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Jira"/> class using a store key and application name.
+    /// </summary>
+    /// <param name="storeKey">The key to retrieve the host and token from the key store.</param>
+    /// <param name="appName">The name of the application using the JIRA client.</param>
     public Jira(string storeKey, string appName)
         : this(new Uri(KeyStore.Key(storeKey)?.Host!), KeyStore.Key(storeKey)!.Token!, appName)
     { }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Jira"/> class using a host URI, token, and application name.
+    /// </summary>
+    /// <param name="host">The URI of the JIRA host.</param>
+    /// <param name="token">The authentication token for accessing the JIRA API.</param>
+    /// <param name="appName">The name of the application using the JIRA client.</param>
     public Jira(Uri host, string token, string appName)
     {
         service = new(host, new BearerAuthenticator(token), appName);
     }
 
+    /// <summary>
+    /// Disposes the resources used by the <see cref="Jira"/> instance.
+    /// </summary>
     public void Dispose()
     {
         if (this.service != null)
@@ -23,9 +40,17 @@ public sealed class Jira : IDisposable
         GC.SuppressFinalize(this);
     }
 
-  
+
     #region Component
 
+    /// <summary>
+    /// Retrieves a list of components for the specified project.
+    /// </summary>
+    /// <param name="project">The project for which to retrieve components.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation. The task result contains a collection of 
+    /// <see cref="Component"/> objects representing the components of the project, or <c>null</c> if no components are found.
     public async Task<IEnumerable<Component>?> GetComponentsAsync(Project project, CancellationToken cancellationToken = default)
     {
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
@@ -34,6 +59,14 @@ public sealed class Jira : IDisposable
         return res.CastModel<Component>();
     }
 
+    /// <summary>
+    /// Retrieves a specific component by its ID.
+    /// </summary>
+    /// <param name="componentId">The ID of the component to retrieve.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation. The task result contains the <see cref="Component"/> object, or <c>null</c> if the component is not found.
+    /// </returns>
     public async Task<Component?> GetComponentAsync(long componentId, CancellationToken cancellationToken = default)
     {
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
@@ -46,6 +79,15 @@ public sealed class Jira : IDisposable
 
     #region Issues
 
+    /// <summary>
+    /// Retrieves a specific issue by its key.
+    /// </summary>
+    /// <param name="issueKey">The key of the issue to retrieve.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation. The task result contains the <see cref="Issue"/> object, or <c>null</c> if the issue is not found.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="issueKey"/> is <c>null</c> or empty.</exception>
     public async Task<Issue?> GetIssueAsync(string issueKey, CancellationToken cancellationToken = default)
     {
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
@@ -56,10 +98,24 @@ public sealed class Jira : IDisposable
     }
 
     /// <summary>
-    /// Creates an issue or a sub-task.
+    /// Creates a new issue or sub-task in the specified project.
     /// </summary>
-    /// <param name="issue">Issue class to create.</param>
-    /// <returns>The task object representing the asynchronous operation.</returns>
+    /// <param name="project">The project where the issue will be created.</param>
+    /// <param name="issueType">The type of the issue to create (e.g., Bug, Task, Sub-task).</param>
+    /// <param name="reporter">The username of the reporter for the issue.</param>
+    /// <param name="summary">A brief one-line summary of the issue.</param>
+    /// <param name="description">A detailed description of the issue.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation. The task result contains the created issue
+    /// as an <see cref="Issue"/>, or <c>null</c> if the creation failed.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="project"/>, <paramref name="issueType"/>, or <paramref name="summary"/> is <c>null</c>.
+    /// </exception>
+    /// <exception cref="WebServiceException">
+    /// Thrown if the JIRA service is not connected or is <c>null</c>.
+    /// </exception>
     public async Task<Issue?> CreateIssueAsync(Project project, IssueType issueType, string reporter, string summary, string description, CancellationToken cancellationToken = default)
     {
         WebServiceException.ThrowIfNullOrNotConnected(this.service);

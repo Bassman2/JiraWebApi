@@ -21,12 +21,14 @@ public class IssueType
        //Fields = model.Fields
     }
 
+    /// <summary>
+    /// Gets the URL of the JIRA REST resource for this issue type.
+    /// </summary>
     public Uri? Self { get; }
 
     /// <summary>
     /// Id of the JIRA item.
-    /// </summary>
-    
+    /// </summary>    
     public int? Id { get; }
 
     /// <summary>
@@ -49,6 +51,9 @@ public class IssueType
     /// </summary>
     public bool? IsSubtask { get; }
 
+    /// <summary>
+    /// Gets the ID of the avatar associated with this issue type.
+    /// </summary>
     public int? AvatarId { get; }
 
     ///// <summary>

@@ -10,6 +10,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{A60222DF-8DE8-458A-BCCB-E7B59B04C377}"
 EndProject
 Project("{7CF6DF6D-3B04-46F8-A40B-537D21BCA0B4}") = "JiraWebApiDoc", "Doc\JiraWebApiDoc\JiraWebApiDoc.shfbproj", "{1383FAF4-AF5A-4016-ACC8-902FC6C31AD7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3B67AB44-EF78-42FD-A869-0A653894022E} = {3B67AB44-EF78-42FD-A869-0A653894022E}
+		{65FEEEA7-C653-471D-9A4F-0E58F96B94A4} = {65FEEEA7-C653-471D-9A4F-0E58F96B94A4}
+	EndProjectSection
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "WebServiceClientShare", "..\WebServiceClient\Src\WebServiceClientShare\WebServiceClientShare.shproj", "{8CAACB04-9656-4B7C-A692-422FCA51474B}"
 EndProject

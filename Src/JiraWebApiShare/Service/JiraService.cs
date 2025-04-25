@@ -5,20 +5,6 @@
 
 // https://docs.atlassian.com/software/jira/docs/api/REST/9.12.0/
 
-/// <summary>
-/// JIRA Wep Api main class.
-/// </summary>
-/// <remarks>
-/// Initializes a new instance of the Jira class.
-/// </remarks>
-/// <param name="host">Host URL of the JIRA server.</param>
-/// <param name="apikey">API key.</param>
-/// <example>
-/// <code>
-/// using var jira = new Jira(new Uri("https://jira.atlassian.com"), "pokjfnlkfdskgkljgipooksdlksgölgklösg");
-/// </code>
-/// </example>
-/// <exception cref="System.Security.Authentication.AuthenticationException">Thrown if authentication failed.</exception> 
 internal class JiraService(Uri host, IAuthenticator? authenticator, string appName)
     : JsonService(host, authenticator, appName, SourceGenerationContext.Default)
 {
@@ -41,12 +27,13 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     }
 
     #endregion
-    
+
     #region Attachments
 
     /// <summary>
     /// Returns the meta informations for an attachments, specifically if they are enabled and the maximum upload size allowed.
     /// </summary>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     public async Task<AttachmentMetaModel?> GetAttachmentMetaAsync(CancellationToken cancellationToken)
     {
@@ -58,6 +45,7 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     /// Returns the meta-data for an attachment, including the URI of the actual attached file.
     /// </summary>
     /// <param name="attachmentId">The id of the attachment to get.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     public async Task<AttachmentModel?> GetAttachmentAsync(string attachmentId, CancellationToken cancellationToken)
     {
@@ -71,6 +59,7 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     /// Remove an attachment from an issue.
     /// </summary>
     /// <param name="attachmentId">The id of the attachment to delete.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     public async Task DeleteAttachmentAsync(string attachmentId, CancellationToken cancellationToken)
     {
@@ -84,8 +73,9 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <param name="files">List with attachments to add.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IEnumerable<AttachmentModel>?> AddAttachmentsAsync(string issueIdOrKey, IEnumerable<KeyValuePair<string, Stream>> files, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<AttachmentModel>?> AddAttachmentsAsync(string issueIdOrKey, IEnumerable<KeyValuePair<string, Stream>> files, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
         ArgumentNullException.ThrowIfNull(files, nameof(files));
@@ -98,8 +88,9 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     /// Get the date stream of an attachment.
     /// </summary>
     /// <param name="attachmentUrl">Url of the attachment.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<Stream> GetAttachmentStreamAsync(Uri attachmentUrl, CancellationToken cancellationToken = default)
+    public async Task<Stream> GetAttachmentStreamAsync(Uri attachmentUrl, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(attachmentUrl, nameof(attachmentUrl));
 
@@ -114,8 +105,9 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     /// Returns all comments for an issue.
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IEnumerable<CommentModel>?> GetCommentsAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<CommentModel>?> GetCommentsAsync(string issueIdOrKey, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
 
@@ -128,8 +120,9 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <param name="comment">Comment class to add.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<CommentModel?> AddCommentAsync(string issueIdOrKey, CommentModel comment, CancellationToken cancellationToken = default)
+    public async Task<CommentModel?> AddCommentAsync(string issueIdOrKey, CommentModel comment, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
         ArgumentNullException.ThrowIfNull(comment, nameof(comment));
@@ -143,8 +136,9 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <param name="commentId">Id of the comment.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<CommentModel?> GetCommentAsync(string issueIdOrKey, string commentId, CancellationToken cancellationToken = default)
+    public async Task<CommentModel?> GetCommentAsync(string issueIdOrKey, string commentId, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
         ArgumentNullException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
@@ -158,9 +152,10 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <param name="comment">Class of the comment to update.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     /// <remarks>Json bug in JIRA 5.0.4</remarks>
-    public async Task<CommentModel?> UpdateCommentAsync(string issueIdOrKey, CommentModel comment, CancellationToken cancellationToken = default)
+    public async Task<CommentModel?> UpdateCommentAsync(string issueIdOrKey, CommentModel comment, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
         ArgumentNullException.ThrowIfNull(comment, nameof(comment));
@@ -181,8 +176,9 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <param name="commentId">Id of the comment.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task DeleteCommentAsync(string issueIdOrKey, string commentId, CancellationToken cancellationToken = default)
+    public async Task DeleteCommentAsync(string issueIdOrKey, string commentId, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
         ArgumentNullException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
@@ -195,10 +191,17 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     #region Component
 
     /// <summary>
-    /// Contains a full representation of a the specified project's components.
+    /// Retrieves a list of all components for the specified project.
     /// </summary>
-    /// <param name="projectKey">Key of the project.</param>
-    /// <returns>The task object representing the asynchronous operation.</returns>
+    /// <param name="projectIdOrKey">The ID or key of the project to retrieve components for.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation. The task result contains a collection of 
+    /// <see cref="ComponentModel"/> objects representing the components of the project, or <c>null</c> if no components are found.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="projectIdOrKey"/> is <c>null</c> or empty.
+    /// </exception>
     public async Task<IEnumerable<ComponentModel>?> GetComponentsAsync(string projectIdOrKey, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(projectIdOrKey, nameof(projectIdOrKey));
@@ -211,6 +214,7 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     /// Returns a project component.
     /// </summary>
     /// <param name="componentId">Id of the component to get.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     public async Task<ComponentModel?> GetComponentAsync(long componentId, CancellationToken cancellationToken)
     {
@@ -222,6 +226,7 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     /// Create a component.
     /// </summary>
     /// <param name="component">Component class to create.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     public async Task<ComponentModel?> CreateComponentAsync(ComponentModel component, CancellationToken cancellationToken)
     {
@@ -237,6 +242,7 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     /// Modify a component.
     /// </summary>
     /// <param name="component">Component class to update.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     public async Task<ComponentModel?> UpdateComponentAsync(ComponentModel component, CancellationToken cancellationToken)
     {
@@ -251,6 +257,7 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     /// </summary>
     /// <param name="componentId">Id of the component to delete.</param>
     /// <param name="moveIssuesTo">The new component applied to issues whose 'id' component will be deleted. If this value is null, then the 'id' component is simply removed from the related isues.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     public async Task DeleteComponentAsync(int componentId, int moveIssuesTo, CancellationToken cancellationToken)
     {
@@ -262,6 +269,7 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     /// Returns counts of issues related to this component.
     /// </summary>
     /// <param name="componentId">Id of the component.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     public async Task<IssueCountModel?> ComponentRelatedIssuesCountAsync(int componentId, CancellationToken cancellationToken)
     {
@@ -276,8 +284,9 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     /// <summary>
     /// Returns a list of all fields, both System and Custom.
     /// </summary>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IEnumerable<FieldModel>?> GetFieldsAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<FieldModel>?> GetFieldsAsync(CancellationToken cancellationToken)
     {
         var res = await GetFromJsonAsync<IEnumerable<FieldModel>>("rest/api/2/field", cancellationToken);
         return res;
@@ -287,8 +296,9 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     /// Returns a full representation of the Custom Field Option that has the given id.
     /// </summary>
     /// <param name="customFieldOptionId">Id of the custom field option.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<CustomFieldOptionModel?> GetCustomFieldOptionAsync(string customFieldOptionId, CancellationToken cancellationToken = default)
+    public async Task<CustomFieldOptionModel?> GetCustomFieldOptionAsync(string customFieldOptionId, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(customFieldOptionId, nameof(customFieldOptionId));
 
@@ -304,9 +314,10 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     /// Creates a new filter, and returns newly created filter Currently sets permissions just using the users default sharing permissions.
     /// </summary>
     /// <param name="filter">Filter class to create.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     /// <remarks>Only for JIRA 5.2.1 or later.</remarks>
-    public async Task<FilterModel?> CreateFilterAsync(FilterModel filter, CancellationToken cancellationToken = default)
+    public async Task<FilterModel?> CreateFilterAsync(FilterModel filter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(filter, nameof(filter));
 
@@ -317,8 +328,9 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     /// <summary>
     /// Returns the favourite filters of the logged-in user.
     /// </summary>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IEnumerable<FilterModel>?> GetFilterFavouritesAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<FilterModel>?> GetFilterFavouritesAsync(CancellationToken cancellationToken)
     {
         var res = await GetFromJsonAsync<IEnumerable<FilterModel>>("rest/api/2/filter/favourite", cancellationToken);
         return res;
@@ -328,8 +340,9 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     /// Returns a filter given an id.
     /// </summary>
     /// <param name="filterId">Id of the filter.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<FilterModel?> GetFilterAsync(string filterId, CancellationToken cancellationToken = default)
+    public async Task<FilterModel?> GetFilterAsync(string filterId, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(filterId, nameof(filterId));
 
@@ -341,9 +354,10 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     /// Updates an existing filter, and returns its new value.
     /// </summary>
     /// <param name="filter">Filter class to update.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     /// <remarks>Only for JIRA 5.2.1 or later.</remarks>
-    public async Task<FilterModel?> UpdateFilterAsync(FilterModel filter, CancellationToken cancellationToken = default)
+    public async Task<FilterModel?> UpdateFilterAsync(FilterModel filter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(filter, nameof(filter));
 
@@ -355,9 +369,10 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     /// Delete a filter.
     /// </summary>
     /// <param name="filterId">Id of the filter to delete.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     /// <remarks>Only for JIRA 5.2.1 or later.</remarks>
-    public async Task DeleteFilterAsync(string filterId, CancellationToken cancellationToken = default)
+    public async Task DeleteFilterAsync(string filterId, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(filterId, nameof(filterId));
 
@@ -373,6 +388,7 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     /// </summary>
     /// <param name="groupName">Name of the group</param>
     /// <param name="expandGroup">Expand group parameter.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>Jira group.</returns>
     /// <remarks>Only supported with JIRA 6.0 or later</remarks>
     public async Task<GroupModel?> GetGroupAsync(string groupName, string? expandGroup = null, CancellationToken cancellationToken = default)
@@ -389,10 +405,17 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     #region Issue
 
     /// <summary>
-    /// Creates an issue or a sub-task.
+    /// Creates a new issue or sub-task in JIRA.
     /// </summary>
-    /// <param name="issue">Issue class to create.</param>
-    /// <returns>The task object representing the asynchronous operation.</returns>
+    /// <param name="createIssue">The <see cref="IssueModel"/> object containing the details of the issue to create.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation. The task result contains the created issue
+    /// as an <see cref="IssueModel"/>, or <c>null</c> if the creation failed.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="createIssue"/> is <c>null</c>.
+    /// </exception>
     public async Task<IssueModel?> CreateIssueAsync(IssueModel createIssue, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(createIssue, nameof(createIssue));
@@ -407,6 +430,7 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <param name="fields">Fields which should be filled.</param>
     /// <param name="expand">Objects which should be expanded.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     public async Task<IssueModel?> GetIssueAsync(string issueIdOrKey, string? fields, string? expand, CancellationToken cancellationToken)
     {
@@ -435,8 +459,9 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     /// Edits an issue.
     /// </summary>
     /// <param name="issue">Issue class to update.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task UpdateIssueAsync(Issue issue, CancellationToken cancellationToken = default)
+    public async Task UpdateIssueAsync(Issue issue, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(issue, nameof(issue));
 
@@ -455,6 +480,7 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <param name="deleteSubtasks">A String of true or false indicating that any subtasks should also be deleted. If the issue has no subtasks this parameter is ignored. If the issue has subtasks and this parameter is missing or false, then the issue will not be deleted and an error will be returned.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     public async Task DeleteIssueAsync(string issueIdOrKey, bool deleteSubtasks = false, CancellationToken cancellationToken = default)
     {
@@ -467,12 +493,12 @@ internal class JiraService(Uri host, IAuthenticator? authenticator, string appNa
     /// <summary>
     /// Assigns an issue to a user. 
     /// You can use this resource to assign issues when the user submitting the request has the assign permission but not the edit issue permission. 
-    /// If the user is <see cref="User.AutomaticAssignee">User.AutomaticAssignee</see> automatic assignee is used. <see cref="User.EmptyAssignee">User.EmptyAssignee</see> will remove the assignee.
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <param name="userName">User name to assign issue to.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task AssignIssueAsync(string issueIdOrKey, string userName, CancellationToken cancellationToken = default)
+    public async Task AssignIssueAsync(string issueIdOrKey, string userName, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
         ArgumentNullException.ThrowIfNullOrEmpty(userName, nameof(userName));
@@ -511,8 +537,9 @@ return issueResult
     /// Creates or updates a remote issue link. If a globalId is provided and a remote issue link exists with that globalId, the remote issue link is updated. Otherwise, the remote issue link is created.
     /// </summary>
     /// <param name="issueLink">IssueLink class to create.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task CreateIssueLinkAsync(IssueLinkModel issueLink, CancellationToken cancellationToken = default)
+    public async Task CreateIssueLinkAsync(IssueLinkModel issueLink, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(issueLink, nameof(issueLink));
 
@@ -523,8 +550,9 @@ return issueResult
     /// Get the remote issue link with the given id on the issue.
     /// </summary>
     /// <param name="issueLinkId">Id of the link.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IssueLinkModel?> GetIssueLinkAsync(string issueLinkId, CancellationToken cancellationToken = default)
+    public async Task<IssueLinkModel?> GetIssueLinkAsync(string issueLinkId, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueLinkId, nameof(issueLinkId));
 
@@ -536,8 +564,9 @@ return issueResult
     /// Delete the remote issue link with the given global id on the issue.
     /// </summary>
     /// <param name="linkId">Id of the link to delete.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task DeleteIssueLinkAsync(string linkId, CancellationToken cancellationToken = default)
+    public async Task DeleteIssueLinkAsync(string linkId, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(linkId, nameof(linkId));
 
@@ -551,8 +580,9 @@ return issueResult
     /// <summary>
     /// Returns a list of available issue link types, if issue linking is enabled. Each issue link type has an id, a name and a label for the outward and inward link relationship.
     /// </summary>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IEnumerable<IssueLinkTypeModel>?> GetIssueLinkTypesAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<IssueLinkTypeModel>?> GetIssueLinkTypesAsync(CancellationToken cancellationToken)
     {
         var res = await GetFromJsonAsync<IssueLinkTypesRespnseModel>("rest/api/2/issueLinkType", cancellationToken);
         return res?.IssueLinkTypes;
@@ -562,8 +592,9 @@ return issueResult
     /// Returns for a given issue link type id all information about this issue link type.
     /// </summary>
     /// <param name="issueLinkTypeId">Id of the link type.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IssueLinkTypeModel?> GetIssueLinkTypeAsync(string issueLinkTypeId, CancellationToken cancellationToken = default)
+    public async Task<IssueLinkTypeModel?> GetIssueLinkTypeAsync(string issueLinkTypeId, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueLinkTypeId, nameof(issueLinkTypeId));
 
@@ -575,13 +606,8 @@ return issueResult
 
     #region IssueMeta
 
-    /// <summary>
-    /// Returns the meta data for creating issues. This includes the available projects, issue types and fields, 
-    /// including field types and whether or not those fields are required. 
-    /// Projects will not be returned if the user does not have permission to create issues in that project. 
-    /// </summary>
-    /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<CreateMetaModel?> GetCreateMetaAsync(string project, int issueType, CancellationToken cancellationToken = default)
+   
+    public async Task<CreateMetaModel?> GetCreateMetaAsync(string project, int issueType, CancellationToken cancellationToken)
     {
         var res = await GetFromJsonAsync<CreateMetaModel>($"rest/api/2/issue/createmeta/{project}/issuetypes/{issueType}", cancellationToken);
         return res;
@@ -591,8 +617,9 @@ return issueResult
     /// Returns the meta data for editing an issue. 
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<CreateMetaModel?> GetEditMetaAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
+    public async Task<CreateMetaModel?> GetEditMetaAsync(string issueIdOrKey, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
 
@@ -609,9 +636,10 @@ return issueResult
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <param name="notify">Class with the notify nformations.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     /// <remarks>Only for JIRA 5.2.1 or later.</remarks>
-    public async Task<NotifyModel?> SendNotifyAsync(string issueIdOrKey, NotifyModel notify, CancellationToken cancellationToken = default)
+    public async Task<NotifyModel?> SendNotifyAsync(string issueIdOrKey, NotifyModel notify, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
         ArgumentNullException.ThrowIfNull(notify, nameof(notify));
@@ -629,8 +657,9 @@ return issueResult
     /// A representing the remote issue links on the issue.
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IEnumerable<RemoteLinkModel>?> GetIssueRemoteLinksAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<RemoteLinkModel>?> GetIssueRemoteLinksAsync(string issueIdOrKey, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
 
@@ -649,9 +678,10 @@ return issueResult
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <param name="remoteLink">Class of the remote link to create.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     /// <remarks>If a globalId is provided and a remote issue link exists with that globalId, the remote issue link is updated. Otherwise, the remote issue link is created.</remarks>
-    public async Task<RemoteLinkModel?> CreateIssueRemoteLinkAsync(string issueIdOrKey, RemoteLinkModel remoteLink, CancellationToken cancellationToken = default)
+    public async Task<RemoteLinkModel?> CreateIssueRemoteLinkAsync(string issueIdOrKey, RemoteLinkModel remoteLink, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
         ArgumentNullException.ThrowIfNull(remoteLink, nameof(remoteLink));
@@ -660,7 +690,7 @@ return issueResult
         return res;
     }
 
-    //public async Task DeleteIssueRemoteLinkAsync(string issueIdOrKey, string globalId, CancellationToken cancellationToken = default)
+    //public async Task DeleteIssueRemoteLinkAsync(string issueIdOrKey, string globalId, CancellationToken cancellationToken)
     //{
     //    using (HttpResponseMessage response = await this.client.DeleteAsync($"rest/api/2/issue/{issueIdOrKey}/remotelink?globalId={globalId}", cancellationToken))
     //    {
@@ -673,8 +703,9 @@ return issueResult
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <param name="remoteLinkId">Id of the remote link.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<RemoteLinkModel?> GetIssueRemoteLinkAsync(string issueIdOrKey, string remoteLinkId, CancellationToken cancellationToken = default)
+    public async Task<RemoteLinkModel?> GetIssueRemoteLinkAsync(string issueIdOrKey, string remoteLinkId, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
         ArgumentNullException.ThrowIfNullOrEmpty(remoteLinkId, nameof(remoteLinkId));
@@ -688,8 +719,9 @@ return issueResult
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <param name="remoteLink">Remote link to update.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<RemoteLinkModel?> UpdateIssueRemoteLinkAsync(string issueIdOrKey, RemoteLinkModel remoteLink, CancellationToken cancellationToken = default)
+    public async Task<RemoteLinkModel?> UpdateIssueRemoteLinkAsync(string issueIdOrKey, RemoteLinkModel remoteLink, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
         ArgumentNullException.ThrowIfNull(remoteLink, nameof(remoteLink));
@@ -703,8 +735,9 @@ return issueResult
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <param name="remoteLinkId">Id of the remote link.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task DeleteIssueRemoteLinkAsync(string issueIdOrKey, string remoteLinkId, CancellationToken cancellationToken = default)
+    public async Task DeleteIssueRemoteLinkAsync(string issueIdOrKey, string remoteLinkId, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
         ArgumentNullException.ThrowIfNullOrEmpty(remoteLinkId, nameof(remoteLinkId));
@@ -720,8 +753,9 @@ return issueResult
     /// Get a list of the transitions possible for this issue by the current user, along with fields that are required and their types. 
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IEnumerable<TransitionModel>?> GetTransitionsAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<TransitionModel>?> GetTransitionsAsync(string issueIdOrKey, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
 
@@ -734,8 +768,9 @@ return issueResult
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <param name="transitionId">Id of the transition.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<TransitionModel?> GetTransitionAsync(string issueIdOrKey, string transitionId, CancellationToken cancellationToken = default)
+    public async Task<TransitionModel?> GetTransitionAsync(string issueIdOrKey, string transitionId, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
         ArgumentNullException.ThrowIfNullOrEmpty(transitionId, nameof(transitionId));
@@ -749,8 +784,9 @@ return issueResult
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <param name="transition">Transition class.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<TransitionModel?> TransitionAsync(string issueIdOrKey, TransitionModel transition, CancellationToken cancellationToken = default)
+    public async Task<TransitionModel?> TransitionAsync(string issueIdOrKey, TransitionModel transition, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
         ArgumentNullException.ThrowIfNull(transition, nameof(transition));
@@ -767,8 +803,9 @@ return issueResult
     /// <summary>
     /// Returns a list of all issue types visible to the user.
     /// </summary>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IEnumerable<IssueTypeModel>?> GetIssueTypesAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<IssueTypeModel>?> GetIssueTypesAsync(CancellationToken cancellationToken)
     {
         IEnumerable<IssueTypeModel>? res = await GetFromJsonAsync<IEnumerable<IssueTypeModel>>("rest/api/2/issuetype", cancellationToken);
         return res;
@@ -778,8 +815,9 @@ return issueResult
     /// Returns a full representation of the issue type that has the given id.
     /// </summary>
     /// <param name="issueTypeId">Id of the issue type.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IssueTypeModel?> GetIssueTypeAsync(string issueTypeId, CancellationToken cancellationToken = default)
+    public async Task<IssueTypeModel?> GetIssueTypeAsync(string issueTypeId, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueTypeId, nameof(issueTypeId));
 
@@ -795,8 +833,9 @@ return issueResult
     /// A resource representing the voters on the issue.
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<VotesModel?> GetIssueVotesAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
+    public async Task<VotesModel?> GetIssueVotesAsync(string issueIdOrKey, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
 
@@ -808,8 +847,9 @@ return issueResult
     /// CastModel your vote in favour of an issue.
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task AddIssueVoteAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
+    public async Task AddIssueVoteAsync(string issueIdOrKey, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
 
@@ -820,8 +860,9 @@ return issueResult
     /// Remove your vote from an issue.
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task DeleteIssueVoteAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
+    public async Task DeleteIssueVoteAsync(string issueIdOrKey, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
 
@@ -836,8 +877,9 @@ return issueResult
     /// Returns the list of watchers for the issue with the given key.
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<WatchersModel?> GetIssueWatchersAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
+    public async Task<WatchersModel?> GetIssueWatchersAsync(string issueIdOrKey, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
 
@@ -850,8 +892,9 @@ return issueResult
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <param name="username">Username of the new watcher.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task AddIssueWatcherAsync(string issueIdOrKey, string username, CancellationToken cancellationToken = default)
+    public async Task AddIssueWatcherAsync(string issueIdOrKey, string username, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
         ArgumentNullException.ThrowIfNullOrEmpty(username, nameof(username));
@@ -864,8 +907,9 @@ return issueResult
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <param name="username">Username of the watcher to delete.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task DeleteIssueWatcherAsync(string issueIdOrKey, string username, CancellationToken cancellationToken = default)
+    public async Task DeleteIssueWatcherAsync(string issueIdOrKey, string username, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
         ArgumentNullException.ThrowIfNullOrEmpty(username, nameof(username));
@@ -877,6 +921,17 @@ return issueResult
 
     #region Myself
 
+    /// <summary>
+    /// Retrieves information about the currently authenticated user.
+    /// </summary>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation. The task result contains the current user
+    /// as a <see cref="UserModel"/>, or <c>null</c> if the user is not authenticated.
+    /// </returns>
+    /// <remarks>
+    /// This method uses the JIRA REST API to fetch details about the currently logged-in user.
+    /// </remarks>
     public async Task<UserModel?> GetCurrentUserAsync(CancellationToken cancellationToken)
     {
         var res = await GetFromJsonAsync<UserModel>("rest/api/2/myself", cancellationToken);
@@ -890,6 +945,7 @@ return issueResult
     /// <summary>
     /// Returns a list of all issue priorities.
     /// </summary>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     public async Task<IEnumerable<PriorityModel>?> GetPrioritiesAsync(CancellationToken cancellationToken)
     {
@@ -901,6 +957,7 @@ return issueResult
     /// Returns an issue priority.
     /// </summary>
     /// <param name="priorityId">Id of the priority.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     public async Task<PriorityModel?> GetPriorityAsync(int priorityId, CancellationToken cancellationToken)
     {
@@ -910,6 +967,17 @@ return issueResult
         return res;
     }
 
+    /// <summary>
+    /// Retrieves a paginated list of issue priorities from the JIRA server.
+    /// </summary>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>
+    /// An asynchronous enumerable of <see cref="PriorityModel"/> objects representing the issue priorities.
+    /// </returns>
+    /// <remarks>
+    /// This method fetches priorities in pages, iterating through all available pages until all priorities are retrieved.
+    /// Each page contains a subset of the total priorities, determined by the server's pagination settings.
+    /// </remarks>
     public async IAsyncEnumerable<PriorityModel> GetPrioritiesPagedAsync([EnumeratorCancellation] CancellationToken cancellationToken)
     {
         long total = 0;
@@ -939,6 +1007,7 @@ return issueResult
     /// <summary>
     /// Returns all projects which are visible for the currently logged in user. If no user is logged in, it returns the list of projects that are visible when using anonymous access.
     /// </summary>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     /// <remarks>Only the fields Self, Id, Key, Name and AvatarUrls will be filled by GetProjectsAsync. Call GetProjectAsync to get all fields. </remarks>
     public async Task<IEnumerable<ProjectModel>?> GetProjectsAsync(CancellationToken cancellationToken)
@@ -948,11 +1017,18 @@ return issueResult
     }
 
     /// <summary>
-    /// Contains a full representation of a project in JSON format.
+    /// Retrieves a full representation of a project in JSON format.
     /// </summary>
-    /// <param name="projectKey">Key of the project.</param>
-    /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<ProjectModel?> GetProjectAsync(string projectIdOrKey, CancellationToken cancellationToken = default)
+    /// <param name="projectIdOrKey">The ID or key of the project to retrieve.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation. The task result contains the project as a 
+    /// <see cref="ProjectModel"/>, or <c>null</c> if the project is not found.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="projectIdOrKey"/> is <c>null</c> or empty.
+    /// </exception>
+    public async Task<ProjectModel?> GetProjectAsync(string projectIdOrKey, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(projectIdOrKey, nameof(projectIdOrKey));
 
@@ -993,8 +1069,9 @@ return issueResult
     /// <summary>
     /// Returns a list of all resolutions.
     /// </summary>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IEnumerable<ResolutionModel>?> GetResolutionsAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<ResolutionModel>?> GetResolutionsAsync(CancellationToken cancellationToken)
     {
         var res = await GetFromJsonAsync<IEnumerable<ResolutionModel>>("rest/api/2/resolution", cancellationToken);
         return res;
@@ -1004,8 +1081,9 @@ return issueResult
     /// Returns a resolution.
     /// </summary>
     /// <param name="resolutionId">Id of the resolution.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<ResolutionModel?> GetResolutionAsync(int resolutionId, CancellationToken cancellationToken = default)
+    public async Task<ResolutionModel?> GetResolutionAsync(int resolutionId, CancellationToken cancellationToken)
     {
         //ArgumentNullException.ThrowIfNullOrEmpty(resolutionId, nameof(resolutionId));
 
@@ -1025,6 +1103,7 @@ return issueResult
     /// <param name="maxResults">Maximum number of results.</param>
     /// <param name="fields">Fields to fill.</param>
     /// <param name="expand">Objects to expand.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     public async Task<IEnumerable<Issue>?> GetIssuesFromJqlAsync(string jql, int startAt = 0, int maxResults = 500, string? fields = null, string? expand = null, CancellationToken cancellationToken = default)
     {
@@ -1059,6 +1138,7 @@ return issueResult
     /// <summary>
     /// Returns general information about the current JIRA server.
     /// </summary>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     public async Task<ServerInfoModel?> GetServerInfoAsync(CancellationToken cancellationToken)
     {
@@ -1073,6 +1153,7 @@ return issueResult
     /// <summary>
     /// Returns a list of all statuses.
     /// </summary>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     public async Task<IEnumerable<StatusModel>?> GetStatusesAsync(CancellationToken cancellationToken)
     {
@@ -1084,6 +1165,7 @@ return issueResult
     /// Returns a full representation of the Status having the given id or name.
     /// </summary>
     /// <param name="statusIdOrName">Id or name of the status.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     public async Task<StatusModel?> GetStatusAsync(string statusIdOrName, CancellationToken cancellationToken)
     {
@@ -1100,6 +1182,7 @@ return issueResult
     /// <summary>
     /// Returns a list of all statuses.
     /// </summary>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     public async Task<IEnumerable<StatusCategoryModel>?> GetStatusCategoriesAsync(CancellationToken cancellationToken)
     {
@@ -1108,10 +1191,17 @@ return issueResult
     }
 
     /// <summary>
-    /// Returns a full representation of the Status having the given id or name.
+    /// Retrieves a full representation of a status category by its ID or name.
     /// </summary>
-    /// <param name="statusIdOrName">Id or name of the status.</param>
-    /// <returns>The task object representing the asynchronous operation.</returns>
+    /// <param name="statusCategoryIdOrName">The ID or name of the status category to retrieve.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation. The task result contains the status category
+    /// as a <see cref="StatusCategoryModel"/>, or <c>null</c> if the status category is not found.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="statusCategoryIdOrName"/> is <c>null</c> or empty.
+    /// </exception>
     public async Task<StatusCategoryModel?> GetStatusCategoryAsync(string statusCategoryIdOrName, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(statusCategoryIdOrName, nameof(statusCategoryIdOrName));
@@ -1128,6 +1218,7 @@ return issueResult
     /// Returns a user.
     /// </summary>
     /// <param name="username">Name of the user.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     /// <remarks>This resource cannot be accessed anonymously.</remarks>
     public async Task<UserModel?> GetUserAsync(string username, CancellationToken cancellationToken)
@@ -1146,8 +1237,9 @@ return issueResult
     /// Contains a full representation of a the specified project's versions.
     /// </summary>
     /// <param name="projectKey">Key of the project.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IEnumerable<IssueVersion>?> GetVersionsAsync(string projectKey, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<IssueVersion>?> GetVersionsAsync(string projectKey, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(projectKey, nameof(projectKey));
 
@@ -1159,8 +1251,9 @@ return issueResult
     /// Create a version.
     /// </summary>
     /// <param name="version">Class of the version to create.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IssueVersion?> CreateVersionAsync(IssueVersion version, CancellationToken cancellationToken = default)
+    public async Task<IssueVersion?> CreateVersionAsync(IssueVersion version, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(version, nameof(version));
 
@@ -1172,8 +1265,9 @@ return issueResult
     /// Returns a project version.
     /// </summary>
     /// <param name="versionId">Id of the version.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IssueVersion?> GetVersionAsync(string versionId, CancellationToken cancellationToken = default)
+    public async Task<IssueVersion?> GetVersionAsync(string versionId, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(versionId, nameof(versionId));
 
@@ -1185,8 +1279,9 @@ return issueResult
     /// Modify a version.
     /// </summary>
     /// <param name="version">Class of the version to update.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IssueVersion?> UpdateVersionAsync(IssueVersion version, CancellationToken cancellationToken = default)
+    public async Task<IssueVersion?> UpdateVersionAsync(IssueVersion version, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(version, nameof(version));
 
@@ -1200,6 +1295,7 @@ return issueResult
     /// <param name="versionId">Id of the version to delete.</param>
     /// <param name="moveFixIssuesTo">Id of the version to move fix issues to.</param>
     /// <param name="moveAffectedIssuesTo">Id of the version to move affected issues to.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     public async Task DeleteVersionAsync(string versionId, string? moveFixIssuesTo = null, string? moveAffectedIssuesTo = null, CancellationToken cancellationToken = default)
     {
@@ -1213,8 +1309,9 @@ return issueResult
     /// </summary>
     /// <param name="versionId">Id of the version to move.</param>
     /// <param name="versionIdAfter">Id of the version to move after.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IssueVersion?> MoveVersionAsync(string versionId, string versionIdAfter, CancellationToken cancellationToken = default)
+    public async Task<IssueVersion?> MoveVersionAsync(string versionId, string versionIdAfter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(versionId, nameof(versionId));
         ArgumentNullException.ThrowIfNullOrEmpty(versionIdAfter, nameof(versionIdAfter));
@@ -1229,8 +1326,9 @@ return issueResult
     /// </summary>
     /// <param name="versionId">Id of the version to move.</param>
     /// <param name="position">Position to move the version to.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IssueVersion?> MoveVersionAsync(string versionId, Position position, CancellationToken cancellationToken = default)
+    public async Task<IssueVersion?> MoveVersionAsync(string versionId, Position position, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(versionId, nameof(versionId));
 
@@ -1243,8 +1341,9 @@ return issueResult
     /// Returns a bean containing the number of fixed in and affected issues for the given version.
     /// </summary>
     /// <param name="versionId">Id of the version.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<int> VersionRelatedIssuesCountsAsync(string versionId, CancellationToken cancellationToken = default)
+    public async Task<int> VersionRelatedIssuesCountsAsync(string versionId, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(versionId, nameof(versionId));
 
@@ -1256,8 +1355,9 @@ return issueResult
     /// Returns the number of unresolved issues for the given version.
     /// </summary>
     /// <param name="versionId">Id of the version.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<int> VersionUnresolvedIssueCountAsync(string versionId, CancellationToken cancellationToken = default)
+    public async Task<int> VersionUnresolvedIssueCountAsync(string versionId, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(versionId, nameof(versionId));
 
@@ -1273,8 +1373,9 @@ return issueResult
     /// Returns all work logs for an issue.
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<IEnumerable<WorklogModel>?> GetIssueWorklogsAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<WorklogModel>?> GetIssueWorklogsAsync(string issueIdOrKey, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
 
@@ -1289,6 +1390,7 @@ return issueResult
     /// <param name="worklog">Worklog to add.</param>
     /// <param name="adjustEstimate">Adjust estimate flags.</param>
     /// <param name="value">Value for AdjustEstimate.New and AdjustEstimate.Manual.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
     public async Task AddIssueWorklogAsync(string issueIdOrKey, WorklogModel worklog, AdjustEstimate adjustEstimate = AdjustEstimate.Auto, string? value = null, CancellationToken cancellationToken = default)
     {
@@ -1311,8 +1413,9 @@ return issueResult
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <param name="worklogId">Id of the worklog.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<WorklogModel?> GetIssueWorklogAsync(string issueIdOrKey, string worklogId, CancellationToken cancellationToken = default)
+    public async Task<WorklogModel?> GetIssueWorklogAsync(string issueIdOrKey, string worklogId, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
         ArgumentNullException.ThrowIfNullOrEmpty(worklogId, nameof(worklogId));
@@ -1326,8 +1429,9 @@ return issueResult
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <param name="worklog">Worklog class to update.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task<WorklogModel?> UpdateIssueWorklogAsync(string issueIdOrKey, WorklogModel worklog, CancellationToken cancellationToken = default)
+    public async Task<WorklogModel?> UpdateIssueWorklogAsync(string issueIdOrKey, WorklogModel worklog, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
         ArgumentNullException.ThrowIfNull(worklog, nameof(worklog));
@@ -1346,8 +1450,9 @@ return issueResult
     /// </summary>
     /// <param name="issueIdOrKey">Id or key of the issue.</param>
     /// <param name="worklogId">Id of the worklog to delete.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>The task object representing the asynchronous operation.</returns>
-    public async Task DeleteIssueWorklogAsync(string issueIdOrKey, string worklogId, CancellationToken cancellationToken = default)
+    public async Task DeleteIssueWorklogAsync(string issueIdOrKey, string worklogId, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
         ArgumentNullException.ThrowIfNullOrEmpty(worklogId, nameof(worklogId));

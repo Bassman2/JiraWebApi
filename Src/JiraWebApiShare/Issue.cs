@@ -44,10 +44,10 @@ public sealed class Issue
 
     #region fields
 
-    /// <summary>
-    /// Name of the classes which should be expanded.
-    /// </summary>
-    /// <remarks>Not useable by LINQ.</remarks>
+    // /// <summary>
+    // /// Name of the classes which should be expanded.
+    // /// </summary>
+    // /// <remarks>Not useable by LINQ.</remarks>
     //public string? Expand { get; private set; }
 
     /// <summary>
@@ -66,9 +66,9 @@ public sealed class Issue
     /// </summary>
     public string? Key { get; }
 
-    /// <summary>
-    /// Σ Progress
-    /// </summary>
+    // /// <summary>
+    // /// Σ Progress
+    // /// </summary>
     //public Progress? AggregateProgress { get; private set; }
 
     /// <summary>
@@ -95,9 +95,9 @@ public sealed class Issue
     //    }
     //}
 
-    /// <summary>
-    /// Project version(s) for which the issue is (or was) manifesting.
-    /// </summary>
+    // /// <summary>
+    // /// Project version(s) for which the issue is (or was) manifesting.
+    // /// </summary>
     //[JqlFieldAttribute("affectedVersion", JqlFieldCompare.Comparable | JqlFieldCompare.Sortable | JqlFieldCompare.Include)]
     //public List<IssueVersion>? AffectedVersions
     //{
@@ -112,7 +112,7 @@ public sealed class Issue
     /// <summary>
     /// The person to whom the issue is currently assigned.
     /// </summary>
-   // [JqlFieldAttribute("assignee", JqlFieldCompare.Comparable | JqlFieldCompare.Include | JqlFieldCompare.Was | JqlFieldCompare.WasInclude | JqlFieldCompare.Changed)]
+    // [JqlFieldAttribute("assignee", JqlFieldCompare.Comparable | JqlFieldCompare.Include | JqlFieldCompare.Was | JqlFieldCompare.WasInclude | JqlFieldCompare.Changed)]
     public User? Assignee { get; }
     //{
     //    get => this.assignee;
@@ -121,15 +121,15 @@ public sealed class Issue
     //private bool assigneeChanged;
     //private User? assignee;
 
-    /// <summary>
-    /// Attachments of the JIRA issue.
-    /// </summary>
+    // /// <summary>
+    // /// Attachments of the JIRA issue.
+    // /// </summary>
     //public List<Attachment>? Attachments { get;  }
-        
 
-    /// <summary>
-    /// Comments of the JIRA issue.
-    /// </summary>
+
+    // /// <summary>
+    // /// Comments of the JIRA issue.
+    // /// </summary>
     //public List<Comment>? Comments { get;  set; }
 
     /// <summary>
@@ -173,19 +173,19 @@ public sealed class Issue
     /// The hardware or software environment to which the issue relates.
     /// </summary>
     public string? Environment { get; }
-    
-    /// <summary>
-    /// Search for issues that belong to a particular epic in GreenHopper. 
-    /// </summary>
-    /// <remarks>For LINQ use only.</remarks>
-    /// <remarks>Only available with GreenHopper 6.1.2 or later.</remarks>
+
+    // /// <summary>
+    // /// Search for issues that belong to a particular epic in GreenHopper. 
+    // /// </summary>
+    // /// <remarks>For LINQ use only.</remarks>
+    // /// <remarks>Only available with GreenHopper 6.1.2 or later.</remarks>
     //[JqlFieldAttribute("\"epic link\"", JqlFieldCompare.Comparable | JqlFieldCompare.Include)]
     //public string EpicLink { get { throw new NotSupportedException(ExceptionMessages.ForLinqUseOnly); } }
 
-    /// <summary>
-    /// Filter to use by LINQ.
-    /// </summary>
-    /// <remarks>For LINQ use only.</remarks>
+    // /// <summary>
+    // /// Filter to use by LINQ.
+    // /// </summary>
+    // /// <remarks>For LINQ use only.</remarks>
     //[JqlFieldAttribute("filter", JqlFieldCompare.Comparable | JqlFieldCompare.Include)]
     //public Filter Filter
     //{
@@ -213,9 +213,9 @@ public sealed class Issue
     public DateTime? LastViewed { get; set; }
 
 
-    /// <summary>
-    ///  A list of links to related issues.
-    /// </summary>
+    // /// <summary>
+    // ///  A list of links to related issues.
+    // /// </summary>
     //public IEnumerable<IssueLink>? Links { get;  set; }
 
     /// <summary>
@@ -233,9 +233,9 @@ public sealed class Issue
     /// </summary>
     public Priority? Priority { get; }
 
-    /// <summary>
-    /// Progress of the issue.
-    /// </summary>
+    // /// <summary>
+    // /// Progress of the issue.
+    // /// </summary>
     //public Progress? Progress { get; }
 
     /// <summary>
@@ -263,11 +263,11 @@ public sealed class Issue
     /// </summary>
     public DateTime? ResolutionDate { get; }
 
-    /// <summary>
-    /// The stage the issue is currently at in its lifecycle ('workflow'). 
-    /// </summary>
+    // /// <summary>
+    // /// The stage the issue is currently at in its lifecycle ('workflow'). 
+    // /// </summary>
     //public Status? Status { get; }
-    
+
     /// <summary>
     /// Subtask issues of this issue.
     /// </summary>
@@ -284,9 +284,9 @@ public sealed class Issue
     /// </summary>
     public long? TimeSpentSeconds { get; private set; }
 
-    /// <summary>
-    /// Time tracking of the issue.
-    /// </summary>
+    // /// <summary>
+    // /// Time tracking of the issue.
+    // /// </summary>
     //public TimeTracking? TimeTracking { get; }
 
     /// <summary>
@@ -294,11 +294,11 @@ public sealed class Issue
     /// </summary>
     public DateTime? UpdatedDate { get; set; }
 
-    /// <summary>
-    /// Custom fields of the issue.
-    /// </summary>
-    /// <param name="name">Name of the custom field.</param>
-    /// <returns>Value of the custom field.</returns>
+    // /// <summary>
+    // /// Custom fields of the issue.
+    // /// </summary>
+    // /// <param name="name">Name of the custom field.</param>
+    // /// <returns>Value of the custom field.</returns>
     //public CustomFieldValue? this[string name]
     //{
     //    get
@@ -325,6 +325,19 @@ public sealed class Issue
 
     #region Methods
 
+    /// <summary>
+    /// Creates a sub-issue (sub-task) for the current JIRA issue.
+    /// </summary>
+    /// <param name="issueType">The type of the sub-issue to create.</param>
+    /// <param name="reporter">The username of the reporter for the sub-issue.</param>
+    /// <param name="summary">A brief one-line summary of the sub-issue.</param>
+    /// <param name="description">A detailed description of the sub-issue.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation. The task result contains the created sub-issue,
+    /// or <c>null</c> if the creation failed.
+    /// </returns>
+    /// <exception cref="WebServiceException">Thrown if the JIRA service is not connected or is null.</exception>
     public async Task<Issue?> CreateSubIssueAsync(IssueType issueType, string reporter, string summary, string description, CancellationToken cancellationToken = default)
     {
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
