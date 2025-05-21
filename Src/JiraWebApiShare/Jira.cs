@@ -51,6 +51,7 @@ public sealed class Jira : IDisposable
     /// <returns>
     /// A task that represents the asynchronous operation. The task result contains a collection of 
     /// <see cref="Component"/> objects representing the components of the project, or <c>null</c> if no components are found.
+    /// </returns>
     public async Task<IEnumerable<Component>?> GetComponentsAsync(Project project, CancellationToken cancellationToken = default)
     {
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
@@ -193,10 +194,14 @@ public sealed class Jira : IDisposable
     }
 
     /// <summary>
-    /// Returns an issue priority.
+    /// Retrieves a specific issue priority by its unique identifier.
     /// </summary>
-    /// <param name="priorityId">Id of the priority.</param>
-    /// <returns>The task object representing the asynchronous operation.</returns>
+    /// <param name="priorityId">The ID of the priority to retrieve.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation. The task result contains the <see cref="Priority"/> object,
+    /// or <c>null</c> if the priority is not found.
+    /// </returns>
     public async Task<Priority?> GetPriorityAsync(int priorityId, CancellationToken cancellationToken = default)
     {
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
@@ -205,6 +210,16 @@ public sealed class Jira : IDisposable
         return res.CastModel<Priority>();
     }
 
+    /// <summary>
+    /// Retrieves a paginated asynchronous stream of all issue priorities from the JIRA server.
+    /// </summary>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>
+    /// An asynchronous enumerable of <see cref="Priority"/> objects representing the issue priorities.
+    /// </returns>
+    /// <remarks>
+    /// This method fetches priorities in pages, iterating through all available pages until all priorities are retrieved.
+    /// </remarks>
     public async IAsyncEnumerable<Priority> GetPrioritiesPagedAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
