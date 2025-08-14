@@ -51,6 +51,7 @@ public sealed class Jira : IDisposable
     /// <returns>
     /// A task that represents the asynchronous operation. The task result contains a collection of 
     /// <see cref="Component"/> objects representing the components of the project, or <c>null</c> if no components are found.
+    /// </returns>
     public async Task<IEnumerable<Component>?> GetComponentsAsync(Project project, CancellationToken cancellationToken = default)
     {
         WebServiceException.ThrowIfNullOrNotConnected(this.service);
@@ -403,6 +404,45 @@ public sealed class Jira : IDisposable
 
         var res = await service.GetCurrentUserAsync(cancellationToken);
         return res.CastModel<User>(); 
+    }
+
+    #endregion
+
+    #region Download
+
+    /// <summary>
+    /// Downloads a resource from the specified request URI and saves it to the given file path.
+    /// </summary>
+    /// <param name="requestUri">The URI of the resource to download.</param>
+    /// <param name="filePath">The file path where the downloaded resource will be saved.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A task that represents the asynchronous download operation.</returns>
+    public async Task DownloadAsync(string requestUri, string filePath, CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(requestUri, nameof(requestUri));
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(filePath, nameof(filePath));
+
+        await service.DownloadAsync(requestUri, filePath, cancellationToken);
+    }
+
+    /// <summary>
+    /// Downloads a resource from the specified request URI and returns it as a stream.
+    /// </summary>
+    /// <param name="requestUri">The URI of the resource to download.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>
+    /// A task that represents the asynchronous download operation. The task result contains a <see cref="System.IO.Stream"/>
+    /// representing the downloaded resource.
+    /// </returns>
+    public async Task<System.IO.Stream> DownloadAsync(string requestUri, CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(requestUri, nameof(requestUri));
+
+        return await service.DownloadAsync(requestUri, cancellationToken);
     }
 
     #endregion

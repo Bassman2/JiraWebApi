@@ -1461,4 +1461,23 @@ return issueResult
     }
 
     #endregion
+
+    #region Download
+
+    public async Task DownloadAsync(string requestUri, string filePath, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(requestUri, nameof(requestUri));
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(filePath, nameof(filePath));
+
+        await DownloadAsync(requestUri, filePath, cancellationToken);
+    }
+
+    public async Task<System.IO.Stream> DownloadAsync(string requestUri, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(requestUri, nameof(requestUri));
+
+        return await GetFromStreamAsync(requestUri, cancellationToken);
+    }
+
+    #endregion
 }
