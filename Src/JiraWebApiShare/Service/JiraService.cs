@@ -1469,7 +1469,7 @@ return issueResult
         ArgumentNullException.ThrowIfNullOrWhiteSpace(requestUri, nameof(requestUri));
         ArgumentNullException.ThrowIfNullOrWhiteSpace(filePath, nameof(filePath));
 
-        await DownloadAsync(requestUri, filePath, cancellationToken);
+        await base.DownloadAsync(requestUri, filePath, cancellationToken);
     }
 
     public async Task<System.IO.Stream> DownloadAsync(string requestUri, CancellationToken cancellationToken)
