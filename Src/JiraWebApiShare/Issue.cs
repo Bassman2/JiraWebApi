@@ -10,12 +10,12 @@
 [DebuggerDisplay("{Id}, {Key}")]
 public sealed class Issue 
 {
-    private readonly JiraService? service;
+    private readonly Jira? jira;
     private readonly JsonSerializerContext context = SourceGenerationContext.Default;
     
-    internal Issue(JiraService service, IssueModel model)
+    internal Issue(Jira jira, IssueModel model)
     {
-        this.service = service;
+        this.jira = jira;
         Id = int.Parse(model.Id!);
         Key = model.Key!;
         Self = model.Self;
@@ -35,8 +35,8 @@ public sealed class Issue
         Priority = model.Fields.GetJsonValue<Priority, PriorityModel>("priority", context);
         Resolution = model.Fields.GetJsonValue<Resolution, ResolutionModel>("resolution", context);
 
-        // class with service
-        Project = model.Fields.GetJsonValue<Project, ProjectModel>("project", service, context);
+        // class with jira
+        Project = model.Fields.GetJsonValue<Project, ProjectModel>("project", jira, context);
 
         
         
@@ -325,34 +325,34 @@ public sealed class Issue
 
     #region Methods
 
-    /// <summary>
-    /// Creates a sub-issue (sub-task) for the current JIRA issue.
-    /// </summary>
-    /// <param name="issueType">The type of the sub-issue to create.</param>
-    /// <param name="reporter">The username of the reporter for the sub-issue.</param>
-    /// <param name="summary">A brief one-line summary of the sub-issue.</param>
-    /// <param name="description">A detailed description of the sub-issue.</param>
-    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation. The task result contains the created sub-issue,
-    /// or <c>null</c> if the creation failed.
-    /// </returns>
-    /// <exception cref="WebServiceException">Thrown if the JIRA service is not connected or is null.</exception>
-    public async Task<Issue?> CreateSubIssueAsync(IssueType issueType, string reporter, string summary, string description, CancellationToken cancellationToken = default)
-    {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+    ///// <summary>
+    ///// Creates a sub-issue (sub-task) for the current JIRA issue.
+    ///// </summary>
+    ///// <param name="issueType">The type of the sub-issue to create.</param>
+    ///// <param name="reporter">The username of the reporter for the sub-issue.</param>
+    ///// <param name="summary">A brief one-line summary of the sub-issue.</param>
+    ///// <param name="description">A detailed description of the sub-issue.</param>
+    ///// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    ///// <returns>
+    ///// A task that represents the asynchronous operation. The task result contains the created sub-issue,
+    ///// or <c>null</c> if the creation failed.
+    ///// </returns>
+    ///// <exception cref="WebServiceException">Thrown if the JIRA jira is not connected or is null.</exception>
+    //public async Task<Issue?> CreateSubIssueAsync(IssueType issueType, string reporter, string summary, string description, CancellationToken cancellationToken = default)
+    //{
+    //    WebServiceException.ThrowIfNullOrNotConnected(this.jira);
 
-        IssueModel model = new() { Fields = [] };
-        model.Fields.Add("parent", new IssueModel() { Key = this.Key });
-        model.Fields.Add("project", new ProjectModel() { Id = this.Project!.Id });
-        model.Fields.Add("issuetype", new IssueTypeModel() { Id = issueType.Id });
-        model.Fields.Add("reporter", new UserModel() { Name = reporter });
-        model.Fields.Add("summary", summary);
-        model.Fields.Add("description", description);
+    //    IssueModel model = new() { Fields = [] };
+    //    model.Fields.Add("parent", new IssueModel() { Key = this.Key });
+    //    model.Fields.Add("project", new ProjectModel() { Id = this.Project!.Id });
+    //    model.Fields.Add("issuetype", new IssueTypeModel() { Id = issueType.Id });
+    //    model.Fields.Add("reporter", new UserModel() { Name = reporter });
+    //    model.Fields.Add("summary", summary);
+    //    model.Fields.Add("description", description);
 
-        var res = await service.CreateIssueAsync(model, cancellationToken);
-        return res.CastModel<Issue>(service);
-    }
+    //    var res = await jira.CreateIssueAsync(model, cancellationToken);
+    //    return res.CastModel<Issue>(jira);
+    //}
 
     #endregion
 }

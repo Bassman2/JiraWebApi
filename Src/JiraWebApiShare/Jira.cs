@@ -3,43 +3,210 @@
 /// <summary>
 /// Represents a JIRA client that provides access to various JIRA resources and operations.
 /// </summary>
-public sealed class Jira : IDisposable
+public sealed class Jira : JsonService
 {
-    private JiraService? service;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="Jira"/> class using a store key and application name.
     /// </summary>
-    /// <param name="storeKey">The key to retrieve the host and token from the key store.</param>
-    /// <param name="appName">The name of the application using the JIRA client.</param>
-    public Jira(string storeKey, string appName)
-        : this(new Uri(KeyStore.Key(storeKey)?.Host!), KeyStore.Key(storeKey)!.Token!, appName)
+    /// <param name="storeKey">The key used to store authentication or configuration data.</param>
+    /// <param name="appName">The name of the application using the Jira API.</param>
+    public Jira(string storeKey, string appName) : base(storeKey, appName, SourceGenerationContext.Default)
     { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Jira"/> class using a host URI, token, and application name.
+    /// Initializes a new instance of the <see cref="Jira"/> class using a host URI, an optional authenticator, and an application name.
     /// </summary>
-    /// <param name="host">The URI of the JIRA host.</param>
-    /// <param name="token">The authentication token for accessing the JIRA API.</param>
-    /// <param name="appName">The name of the application using the JIRA client.</param>
-    public Jira(Uri host, string token, string appName)
-    {
-        service = new(host, new BearerAuthenticator(token), appName);
-    }
+    /// <param name="host">The base URI of the Jira API host.</param>
+    /// <param name="authenticator">The authenticator used for API authentication, or <c>null</c> for unauthenticated access.</param>
+    /// <param name="appName">The name of the application using the Jira API.</param>
+    public Jira(Uri host, IAuthenticator? authenticator, string appName) : base(host, authenticator, appName, SourceGenerationContext.Default)
+    { }
 
     /// <summary>
-    /// Disposes the resources used by the <see cref="Jira"/> instance.
+    /// Gets the URL used to test authentication with the Artifactory API.
     /// </summary>
-    public void Dispose()
+    protected override string? AuthenticationTestUrl => "/rest/api/2/serverInfo";
+
+    /// <summary>
+    /// Handles errors returned from HTTP responses by reading the error content and throwing a <see cref="WebServiceException"/>.
+    /// </summary>
+    /// <param name="response">The HTTP response message containing the error.</param>
+    /// <param name="memberName">The name of the member where the error occurred.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    protected override async Task ErrorHandlingAsync(HttpResponseMessage response, string memberName, CancellationToken cancellationToken)
     {
-        if (this.service != null)
+        if (response.Content is JsonContent)
         {
-            this.service.Dispose();
-            this.service = null;
+            //var error = await ReadFromJsonAsync<ErrorModel>(response, cancellationToken);
+
+            JsonTypeInfo<ErrorModel> jsonTypeInfoOut = (JsonTypeInfo<ErrorModel>)context.GetTypeInfo(typeof(ErrorModel))!;
+            var error = await response.Content.ReadFromJsonAsync<ErrorModel>(jsonTypeInfoOut, cancellationToken);
+
+            throw new WebServiceException(error?.ToString(), response.RequestMessage?.RequestUri, response.StatusCode, response.ReasonPhrase, memberName);
         }
-        GC.SuppressFinalize(this);
+        throw new WebServiceException("", response.RequestMessage?.RequestUri, response.StatusCode, response.ReasonPhrase, memberName);
     }
 
+    #region Attachments
+
+    ///// <summary>
+    ///// Returns the meta informations for an attachments, specifically if they are enabled and the maximum upload size allowed.
+    ///// </summary>
+    ///// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    ///// <returns>The task object representing the asynchronous operation.</returns>
+    //public async Task<AttachmentMetaModel?> GetAttachmentMetaAsync(CancellationToken cancellationToken)
+    //{
+    //    var res = await GetFromJsonAsync<AttachmentMetaModel>("rest/api/2/attachment/meta", cancellationToken);
+    //    return res;
+    //}
+
+    ///// <summary>
+    ///// Returns the meta-data for an attachment, including the URI of the actual attached file.
+    ///// </summary>
+    ///// <param name="attachmentId">The id of the attachment to get.</param>
+    ///// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    ///// <returns>The task object representing the asynchronous operation.</returns>
+    //public async Task<AttachmentModel?> GetAttachmentAsync(string attachmentId, CancellationToken cancellationToken)
+    //{
+    //    ArgumentNullException.ThrowIfNullOrEmpty(attachmentId, nameof(attachmentId));
+
+    //    var res = await GetFromJsonAsync<AttachmentModel>($"rest/api/2/attachment/{attachmentId}", cancellationToken);
+    //    return res;
+    //}
+
+    ///// <summary>
+    ///// Remove an attachment from an issue.
+    ///// </summary>
+    ///// <param name="attachmentId">The id of the attachment to delete.</param>
+    ///// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    ///// <returns>The task object representing the asynchronous operation.</returns>
+    //public async Task DeleteAttachmentAsync(string attachmentId, CancellationToken cancellationToken)
+    //{
+    //    ArgumentNullException.ThrowIfNullOrEmpty(attachmentId, nameof(attachmentId));
+
+    //    await DeleteAsync($"rest/api/2/attachment/{attachmentId}", cancellationToken);
+    //}
+
+    ///// <summary>
+    ///// Add one or more attachments to an issue.
+    ///// </summary>
+    ///// <param name="issueIdOrKey">Id or key of the issue.</param>
+    ///// <param name="files">List with attachments to add.</param>
+    ///// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    ///// <returns>The task object representing the asynchronous operation.</returns>
+    //public async Task<IEnumerable<AttachmentModel>?> AddAttachmentsAsync(string issueIdOrKey, IEnumerable<KeyValuePair<string, Stream>> files, CancellationToken cancellationToken)
+    //{
+    //    ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+    //    ArgumentNullException.ThrowIfNull(files, nameof(files));
+
+    //    var res = await PostFilesFromJsonAsync<IEnumerable<AttachmentModel>>($"rest/api/2/issue/{issueIdOrKey}/attachments", files, cancellationToken);
+    //    return res;
+    //}
+
+    ///// <summary>
+    ///// Get the date stream of an attachment.
+    ///// </summary>
+    ///// <param name="attachmentUrl">Url of the attachment.</param>
+    ///// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    ///// <returns>The task object representing the asynchronous operation.</returns>
+    //public async Task<Stream> GetAttachmentStreamAsync(Uri attachmentUrl, CancellationToken cancellationToken)
+    //{
+    //    ArgumentNullException.ThrowIfNull(attachmentUrl, nameof(attachmentUrl));
+
+    //    return await GetFromStreamAsync(attachmentUrl.ToString(), cancellationToken);
+    //}
+
+    #endregion
+
+    #region Comment
+
+    ///// <summary>
+    ///// Returns all comments for an issue.
+    ///// </summary>
+    ///// <param name="issueIdOrKey">Id or key of the issue.</param>
+    ///// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    ///// <returns>The task object representing the asynchronous operation.</returns>
+    //public async Task<IEnumerable<CommentModel>?> GetCommentsAsync(string issueIdOrKey, CancellationToken cancellationToken)
+    //{
+    //    ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+
+    //    var res = await GetFromJsonAsync<CommentListModel>($"rest/api/2/issue/{issueIdOrKey}/comment", cancellationToken);
+    //    return res?.Comments;
+    //}
+
+    ///// <summary>
+    ///// Adds a new comment to an issue.
+    ///// </summary>
+    ///// <param name="issueIdOrKey">Id or key of the issue.</param>
+    ///// <param name="comment">Comment class to add.</param>
+    ///// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    ///// <returns>The task object representing the asynchronous operation.</returns>
+    //public async Task<CommentModel?> AddCommentAsync(string issueIdOrKey, CommentModel comment, CancellationToken cancellationToken)
+    //{
+    //    ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+    //    ArgumentNullException.ThrowIfNull(comment, nameof(comment));
+
+    //    var res = await PostAsJsonAsync<CommentModel, CommentModel>($"rest/api/2/issue/{issueIdOrKey}/comment", comment, cancellationToken);
+    //    return res;
+    //}
+
+    ///// <summary>
+    ///// Returns all comments for an issue.
+    ///// </summary>
+    ///// <param name="issueIdOrKey">Id or key of the issue.</param>
+    ///// <param name="commentId">Id of the comment.</param>
+    ///// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    ///// <returns>The task object representing the asynchronous operation.</returns>
+    //public async Task<CommentModel?> GetCommentAsync(string issueIdOrKey, string commentId, CancellationToken cancellationToken)
+    //{
+    //    ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+    //    ArgumentNullException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
+
+    //    var res = await GetFromJsonAsync<CommentModel>($"rest/api/2/issue/{issueIdOrKey}/comment/{commentId}", cancellationToken);
+    //    return res;
+    //}
+
+    ///// <summary>
+    ///// Updates an existing comment.
+    ///// </summary>
+    ///// <param name="issueIdOrKey">Id or key of the issue.</param>
+    ///// <param name="comment">Class of the comment to update.</param>
+    ///// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    ///// <returns>The task object representing the asynchronous operation.</returns>
+    ///// <remarks>Json bug in JIRA 5.0.4</remarks>
+    //public async Task<CommentModel?> UpdateCommentAsync(string issueIdOrKey, CommentModel comment, CancellationToken cancellationToken)
+    //{
+    //    ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+    //    ArgumentNullException.ThrowIfNull(comment, nameof(comment));
+
+    //    // TODO find a way to suppress deserialize
+    //    DateTime? created = comment.Created;
+    //    DateTime? updated = comment.Updated;
+    //    comment.Created = null;
+    //    comment.Updated = null;
+    //    CommentModel? res = await PutAsJsonAsync<CommentModel, CommentModel>($"rest/api/2/issue/{issueIdOrKey}/comment/{comment.Id}", comment, cancellationToken);
+    //    comment.Created = created;
+    //    comment.Updated = updated;
+    //    return res;
+    //}
+
+    ///// <summary>
+    ///// Deletes an existing comment.
+    ///// </summary>
+    ///// <param name="issueIdOrKey">Id or key of the issue.</param>
+    ///// <param name="commentId">Id of the comment.</param>
+    ///// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    ///// <returns>The task object representing the asynchronous operation.</returns>
+    //public async Task DeleteCommentAsync(string issueIdOrKey, string commentId, CancellationToken cancellationToken)
+    //{
+    //    ArgumentNullException.ThrowIfNullOrEmpty(issueIdOrKey, nameof(issueIdOrKey));
+    //    ArgumentNullException.ThrowIfNullOrEmpty(commentId, nameof(commentId));
+
+    //    await DeleteAsync($"rest/api/2/issue/{issueIdOrKey}/comment/{commentId}", cancellationToken);
+    //}
+
+    #endregion
 
     #region Component
 
@@ -54,9 +221,17 @@ public sealed class Jira : IDisposable
     /// </returns>
     public async Task<IEnumerable<Component>?> GetComponentsAsync(Project project, CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        WebServiceException.ThrowIfNotConnected(client);
 
-        var res = await service.GetComponentsAsync(project.Id, cancellationToken);
+        var res = await GetFromJsonAsync<IEnumerable<ComponentModel>>($"rest/api/2/project/{project.Id}/components", cancellationToken);
+        return res.CastModel<Component>();
+    }
+
+    internal async Task<IEnumerable<Component>?> GetComponentsAsync(string projectId, CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNotConnected(client);
+
+        var res = await GetFromJsonAsync<IEnumerable<ComponentModel>>($"rest/api/2/project/{projectId}/components", cancellationToken);
         return res.CastModel<Component>();
     }
 
@@ -70,9 +245,9 @@ public sealed class Jira : IDisposable
     /// </returns>
     public async Task<Component?> GetComponentAsync(long componentId, CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        WebServiceException.ThrowIfNotConnected(client);
 
-        var res = await service.GetComponentAsync(componentId, cancellationToken);
+        var res = await GetFromJsonAsync<ComponentModel>($"rest/api/2/component/{componentId}", cancellationToken);
         return res.CastModel<Component>();
     }
 
@@ -88,14 +263,25 @@ public sealed class Jira : IDisposable
     /// <returns>
     /// A task that represents the asynchronous operation. The task result contains the <see cref="Issue"/> object, or <c>null</c> if the issue is not found.
     /// </returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="issueKey"/> is <c>null</c> or empty.</exception>
-    public async Task<Issue?> GetIssueAsync(string issueKey, CancellationToken cancellationToken = default)
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="issueIdOrKey"/> is <c>null</c> or empty.</exception>
+    public async Task<Issue?> GetIssueAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
-        ArgumentNullException.ThrowIfNullOrWhiteSpace(issueKey, nameof(issueKey));
+        WebServiceException.ThrowIfNotConnected(client);
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(issueIdOrKey, nameof(issueIdOrKey));
 
-        var res = await service.GetIssueAsync(issueKey, null, null, cancellationToken);
-        return res.CastModel<Issue>(service);
+        try
+        {
+            var res = await GetFromJsonAsync<IssueModel>($"rest/api/2/issue/{issueIdOrKey}", cancellationToken);
+            return res.CastModel<Issue>(this); 
+        }
+        catch (WebServiceException ex)
+        {
+            if (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            throw;
+        }
     }
 
     /// <summary>
@@ -115,11 +301,11 @@ public sealed class Jira : IDisposable
     /// Thrown if <paramref name="project"/>, <paramref name="issueType"/>, or <paramref name="summary"/> is <c>null</c>.
     /// </exception>
     /// <exception cref="WebServiceException">
-    /// Thrown if the JIRA service is not connected or is <c>null</c>.
+    /// Thrown if the JIRA jira is not connected or is <c>null</c>.
     /// </exception>
     public async Task<Issue?> CreateIssueAsync(Project project, IssueType issueType, string reporter, string summary, string description, CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        WebServiceException.ThrowIfNotConnected(client);
         ArgumentNullException.ThrowIfNull(project, nameof(project));
         ArgumentNullException.ThrowIfNullOrWhiteSpace(project.Id, nameof(project.Id));
         ArgumentNullException.ThrowIfNull(issueType, nameof(issueType));
@@ -132,8 +318,9 @@ public sealed class Jira : IDisposable
         model.Fields.Add("summary", summary);
         model.Fields.Add("description", description);
 
-        var res = await service.CreateIssueAsync(model, cancellationToken);
-        return res.CastModel<Issue>(service);
+        IssueModel? res = await PostAsJsonAsync<IssueModel, IssueModel>("rest/api/2/issue", model, cancellationToken);
+
+        return res.CastModel<Issue>(this);
     }
 
     /// <summary>
@@ -151,11 +338,11 @@ public sealed class Jira : IDisposable
     /// as an <see cref="Issue"/>, or <c>null</c> if the creation failed.
     /// </returns>
     /// <exception cref="WebServiceException">
-    /// Thrown if the JIRA service is not connected or is <c>null</c>.
+    /// Thrown if the JIRA jira is not connected or is <c>null</c>.
     /// </exception>
     public async Task<Issue?> CreateSubIssueAsync(string parentKey, string projectId, int issueTypeId, string reporter, string summary, string description, CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        WebServiceException.ThrowIfNotConnected(client);
 
         IssueModel model = new() { Fields = [] };
         model.Fields.Add("parent", new IssueModel() { Key = parentKey });
@@ -165,8 +352,8 @@ public sealed class Jira : IDisposable
         model.Fields.Add("summary", summary);
         model.Fields.Add("description", description);
 
-        var res = await service.CreateIssueAsync(model, cancellationToken);
-        return res.CastModel<Issue>(service);
+        var res = await PostAsJsonAsync<IssueModel, IssueModel>("rest/api/2/issue", model, cancellationToken);
+        return res.CastModel<Issue>(this);
     }
 
     #endregion
@@ -179,28 +366,27 @@ public sealed class Jira : IDisposable
     /// <returns>The task object representing the asynchronous operation.</returns>
     public async Task<IEnumerable<IssueType>?> GetIssueTypesAsync(CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        WebServiceException.ThrowIfNotConnected(client);
 
-        var res = await service.GetIssueTypesAsync(cancellationToken);
+        var res = await GetFromJsonAsync<IEnumerable<IssueTypeModel>>("rest/api/2/issuetype", cancellationToken);
         return res.CastModel<IssueType>();
     }
 
     /// <summary>
     /// Retrieves a specific issue type by its name from the JIRA server.
     /// </summary>
-    /// <param name="name">The name of the issue type to retrieve.</param>
+    /// <param name="issueTypeId">The issueTypeId of the issue type to retrieve.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>
     /// A task that represents the asynchronous operation. The task result contains the <see cref="IssueType"/> object,
     /// or <c>null</c> if the issue type is not found.
     /// </returns>
-    public async Task<IssueType?> GetIssueTypeAsync(string name, CancellationToken cancellationToken = default)
+    public async Task<IssueType?> GetIssueTypeAsync(string issueTypeId, CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        WebServiceException.ThrowIfNotConnected(client);
 
-        var res = await service.GetIssueTypesAsync(cancellationToken);
-        var issueType = res?.FirstOrDefault(i => string.Equals(i.Name, name, StringComparison.OrdinalIgnoreCase));
-        return issueType.CastModel<IssueType>();
+        var res = await GetFromJsonAsync<IssueTypeModel>($"rest/api/2/issuetype/{issueTypeId}", cancellationToken);
+        return res.CastModel<IssueType>();
     }
 
     #endregion
@@ -213,9 +399,9 @@ public sealed class Jira : IDisposable
     /// <returns>The task object representing the asynchronous operation.</returns>
     public async Task<IEnumerable<Priority>?> GetPrioritiesAsync(CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        WebServiceException.ThrowIfNotConnected(client);
 
-        var res = await service.GetPrioritiesAsync(cancellationToken);
+        var res = await GetFromJsonAsync<IEnumerable<PriorityModel>>("rest/api/2/priority", cancellationToken);
         return res.CastModel<Priority>();
     }
 
@@ -230,9 +416,9 @@ public sealed class Jira : IDisposable
     /// </returns>
     public async Task<Priority?> GetPriorityAsync(int priorityId, CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        WebServiceException.ThrowIfNotConnected(client);
 
-        var res = await service.GetPriorityAsync(priorityId, cancellationToken);
+        var res = await GetFromJsonAsync<PriorityModel>($"rest/api/2/priority/{priorityId}", cancellationToken);
         return res.CastModel<Priority>();
     }
 
@@ -248,16 +434,29 @@ public sealed class Jira : IDisposable
     /// </remarks>
     public async IAsyncEnumerable<Priority> GetPrioritiesPagedAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        WebServiceException.ThrowIfNotConnected(client);
 
-        var res = service.GetPrioritiesPagedAsync(cancellationToken);
-        //if (res == null)
-        //{
-        //    yield break;
-        //}
-        await foreach (var item in res)
+        long total = 0;
+        long startAt = 0;
+        int maxResults = 100;
+        while (startAt > total)
         {
-            yield return item.CastModel<Priority>()!;
+            string requestUri = CombineUrl("rest/api/2/priority/page", ("startAt", startAt), ("maxResults", maxResults));
+            var res = await GetFromJsonAsync<PriorityPageModel>(requestUri, cancellationToken);
+            if (res == null || res.Values == null)
+            {
+                yield break;
+            }
+            foreach (var item in res.Values)
+            {
+                yield return item.CastModel<Priority>()!;
+            }
+            total = res.Total;
+            startAt = res.Values.Count();
+            //if (res == null)
+            //{
+            //    yield break;
+            //}
         }
     }
 
@@ -272,10 +471,10 @@ public sealed class Jira : IDisposable
     /// <remarks>Only the fields Self, Id, Key, Name and AvatarUrls will be filled by GetProjectsAsync. Call GetProjectAsync to get all fields. </remarks>
     public async Task<IEnumerable<Project>?> GetProjectsAsync(CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        WebServiceException.ThrowIfNotConnected(client);
 
-        var res = await service.GetProjectsAsync(cancellationToken);
-        return res.CastModel<Project>(this.service);  //res?.Select(static i => (Project)i!); 
+        var res = await GetFromJsonAsync<IEnumerable<ProjectModel>>("rest/api/2/project", cancellationToken);
+        return res.CastModel<Project>(this); 
     }
 
     /// <summary>
@@ -287,12 +486,12 @@ public sealed class Jira : IDisposable
     /// A task that represents the asynchronous operation. The task result contains the <see cref="Project"/> object,
     /// or <c>null</c> if the project is not found.
     /// </returns>
-    public async Task<Project?> GetProjectByKeyAsync(string projectKey, CancellationToken cancellationToken = default)
+    public async Task<Project?> GetProjectByKeyAsync(string projectIdOrKey, CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        WebServiceException.ThrowIfNotConnected(client);
 
-        var res = await service.GetProjectAsync(projectKey, cancellationToken);
-        return res.CastModel<Project>(this.service);
+        var res = await GetFromJsonAsync<ProjectModel>($"rest/api/2/project/{projectIdOrKey}", cancellationToken);
+        return res.CastModel<Project>(this);
     }
 
     #endregion
@@ -309,9 +508,9 @@ public sealed class Jira : IDisposable
     /// </returns>
     public async Task<IEnumerable<ProjectType>?> GetProjectTypesAsync(CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        WebServiceException.ThrowIfNotConnected(client);
 
-        var res = await service.GetProjectTypesAsync(cancellationToken);
+        var res = await GetFromJsonAsync<IEnumerable<ProjectTypeModel>>("rest/api/2/project/type", cancellationToken);
         return res.CastModel<ProjectType>();
     }
 
@@ -326,9 +525,9 @@ public sealed class Jira : IDisposable
     /// </returns>
     public async Task<ProjectType?> GetProjectTypeAsync(string projectTypeKey, CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        WebServiceException.ThrowIfNotConnected(client);
 
-        var res = await service.GetProjectTypeAsync(projectTypeKey, cancellationToken);
+        var res = await GetFromJsonAsync<ProjectTypeModel>($"rest/api/2/project/type/{projectTypeKey}", cancellationToken);
         return res.CastModel<ProjectType>();
     }
 
@@ -343,9 +542,9 @@ public sealed class Jira : IDisposable
     /// </returns>
     public async Task<ProjectType?> GetAccessibleProjectTypeAsync(string projectTypeKey, CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        WebServiceException.ThrowIfNotConnected(client);
 
-        var res = await service.GetAccessibleProjectTypeAsync(projectTypeKey, cancellationToken);
+        var res = await GetFromJsonAsync<ProjectTypeModel>($"rest/api/2/project/type/{projectTypeKey}/accessible", cancellationToken);
         return res.CastModel<ProjectType>();
     }
 
@@ -364,13 +563,13 @@ public sealed class Jira : IDisposable
     /// with the metadata needed to create an issue of the specified type, or <c>null</c> if no metadata is available.
     /// </returns>
     /// <exception cref="WebServiceException">
-    /// Thrown if the JIRA service is not connected or is <c>null</c>.
+    /// Thrown if the JIRA jira is not connected or is <c>null</c>.
     /// </exception>
     public async Task<CreateMeta?> GetCreateMetaAsync(string projectKey, IssueType issueType, CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        WebServiceException.ThrowIfNotConnected(client);
 
-        var res = await service.GetCreateMetaAsync(projectKey, issueType.Id ?? 0, cancellationToken);
+        var res = await GetFromJsonAsync<CreateMetaModel>($"rest/api/2/issue/createmeta/{projectKey}/issuetypes/{issueType}", cancellationToken);
         return res.CastModel<CreateMeta>();
     }
 
@@ -384,13 +583,13 @@ public sealed class Jira : IDisposable
     /// with the metadata needed to edit the specified issue, or <c>null</c> if no metadata is available.
     /// </returns>
     /// <exception cref="WebServiceException">
-    /// Thrown if the JIRA service is not connected or is <c>null</c>.
+    /// Thrown if the JIRA jira is not connected or is <c>null</c>.
     /// </exception>
     public async Task<CreateMeta?> GetEditMetaAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        WebServiceException.ThrowIfNotConnected(client);
 
-        var res = await service.GetEditMetaAsync(issueIdOrKey, cancellationToken);
+        var res = await GetFromJsonAsync<CreateMetaModel>($"rest/api/2/issue/{issueIdOrKey}/editmeta", cancellationToken);
         return res.CastModel<CreateMeta>();
     }
 
@@ -408,9 +607,9 @@ public sealed class Jira : IDisposable
     /// </returns>
     public async Task<IEnumerable<Resolution>?> GetResolutionsAsync(CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        WebServiceException.ThrowIfNotConnected(client);
 
-        var res = await service.GetResolutionsAsync(cancellationToken);
+        var res = await GetFromJsonAsync<IEnumerable<ResolutionModel>>("rest/api/2/resolution", cancellationToken);
         return res.CastModel<Resolution>();
     }
 
@@ -425,9 +624,9 @@ public sealed class Jira : IDisposable
     /// </returns>
     public async Task<Resolution?> GetResolutionAsync(int resolutionId, CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        WebServiceException.ThrowIfNotConnected(client);
 
-        var res = await service.GetResolutionAsync(resolutionId, cancellationToken);
+        var res = await GetFromJsonAsync<ResolutionModel>($"rest/api/2/resolution/{resolutionId}", cancellationToken);
         return res.CastModel<Resolution>();
     }
 
@@ -441,9 +640,9 @@ public sealed class Jira : IDisposable
     /// <returns>The task object representing the asynchronous operation.</returns>
     public async Task<ServerInfo?> GetServerInfoAsync(CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        WebServiceException.ThrowIfNotConnected(client);
 
-        var res = await service.GetServerInfoAsync(cancellationToken);
+        var res = await GetFromJsonAsync<ServerInfoModel>("/rest/api/2/serverInfo", cancellationToken);
         return res.CastModel<ServerInfo>();
     }
 
@@ -461,43 +660,27 @@ public sealed class Jira : IDisposable
     /// </returns>
     public async Task<IEnumerable<Status>?> GetStatusesAsync(CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        WebServiceException.ThrowIfNotConnected(client);
 
-        var res = await service.GetStatusesAsync(cancellationToken);
+        var res = await GetFromJsonAsync<IEnumerable<StatusModel>>("rest/api/2/status", cancellationToken);
         return res.CastModel<Status>();
     }
 
     /// <summary>
     /// Retrieves a specific issue status by its unique identifier.
     /// </summary>
-    /// <param name="statusId">The ID of the status to retrieve.</param>
+    /// <param name="statusIdOrName">The ID of the status to retrieve.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>
     /// A task that represents the asynchronous operation. The task result contains the <see cref="Status"/> object,
     /// or <c>null</c> if the status is not found.
     /// </returns>
-    public async Task<Status?> GetStatusAsync(int statusId, CancellationToken cancellationToken = default)
+    public async Task<Status?> GetStatusAsync(string statusIdOrName, CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        WebServiceException.ThrowIfNotConnected(client);
+        ArgumentNullException.ThrowIfNullOrEmpty(statusIdOrName, nameof(statusIdOrName));
 
-        var res = await service.GetStatusAsync(statusId.ToString(), cancellationToken);
-        return res.CastModel<Status>();
-    }
-
-    /// <summary>
-    /// Retrieves a specific issue status by its name from the JIRA server.
-    /// </summary>
-    /// <param name="statusName">The name of the status to retrieve.</param>
-    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation. The task result contains the <see cref="Status"/> object,
-    /// or <c>null</c> if the status is not found.
-    /// </returns>
-    public async Task<Status?> GetStatusAsync(string statusName, CancellationToken cancellationToken = default)
-    {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
-
-        var res = await service.GetStatusAsync(statusName, cancellationToken);
+        var res = await GetFromJsonAsync<StatusModel>($"rest/api/2/status/{statusIdOrName}", cancellationToken);
         return res.CastModel<Status>();
     }
 
@@ -515,46 +698,30 @@ public sealed class Jira : IDisposable
     /// </returns>
     public async Task<IEnumerable<StatusCategory>?> GetStatusCategoriesAsync(CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        WebServiceException.ThrowIfNotConnected(client);
 
-        var res = await service.GetStatusCategoriesAsync(cancellationToken);
+        var res = await GetFromJsonAsync<IEnumerable<StatusCategoryModel>>("rest/api/2/statuscategory", cancellationToken);
         return res.CastModel<StatusCategory>();
     }
 
     /// <summary>
     /// Retrieves a specific status category by its unique identifier from the JIRA server.
     /// </summary>
-    /// <param name="statusCategoryId">The ID of the status category to retrieve.</param>
+    /// <param name="statusCategoryIdOrName">The ID of the status category to retrieve.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>
     /// A task that represents the asynchronous operation. The task result contains the <see cref="StatusCategory"/> object,
     /// or <c>null</c> if the status category is not found.
     /// </returns>
-    public async Task<StatusCategory?> GetStatusCategoryAsync(int statusCategoryId, CancellationToken cancellationToken = default)
+    public async Task<StatusCategory?> GetStatusCategoryAsync(string statusCategoryIdOrName, CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        WebServiceException.ThrowIfNotConnected(client);
+        ArgumentNullException.ThrowIfNullOrEmpty(statusCategoryIdOrName, nameof(statusCategoryIdOrName));
 
-        var res = await service.GetStatusCategoryAsync(statusCategoryId.ToString(), cancellationToken);
+        var res = await GetFromJsonAsync<StatusCategoryModel>($"rest/api/2/statuscategory/{statusCategoryIdOrName}", cancellationToken);
         return res.CastModel<StatusCategory>();
     }
-
-    /// <summary>
-    /// Retrieves a specific status category by its name from the JIRA server.
-    /// </summary>
-    /// <param name="statusCategoryName">The name of the status category to retrieve.</param>
-    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation. The task result contains the <see cref="StatusCategory"/> object,
-    /// or <c>null</c> if the status category is not found.
-    /// </returns>
-    public async Task<StatusCategory?> GetStatusCategoryAsync(string statusCategoryName, CancellationToken cancellationToken = default)
-    {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
-
-        var res = await service.GetStatusCategoryAsync(statusCategoryName, cancellationToken);
-        return res.CastModel<StatusCategory>();
-    }
-
+    
     #endregion
 
     #region User
@@ -573,9 +740,10 @@ public sealed class Jira : IDisposable
     /// </remarks>
     public async Task<User?> GetUserAsync(string username, CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        WebServiceException.ThrowIfNotConnected(client);
+        ArgumentNullException.ThrowIfNullOrEmpty(username, nameof(username));
 
-        var res = await service.GetUserAsync(username, cancellationToken);
+        var res = await GetFromJsonAsync<UserModel>($"rest/api/2/user?username={username}", cancellationToken);
         return res.CastModel<User>(); 
     }
 
@@ -592,10 +760,22 @@ public sealed class Jira : IDisposable
     /// </remarks>
     public async Task<User?> GetCurrentUserAsync(CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        WebServiceException.ThrowIfNotConnected(client);
 
-        var res = await service.GetCurrentUserAsync(cancellationToken);
+        var res = await GetFromJsonAsync<UserModel>("rest/api/2/myself", cancellationToken);
         return res.CastModel<User>(); 
+    }
+
+    #endregion
+
+    #region Version
+    
+    public override async Task<string?> GetVersionStringAsync(CancellationToken cancellationToken = default)
+    {
+        WebServiceException.ThrowIfNotConnected(client);
+
+        var res = await GetFromJsonAsync<ServerInfoModel>("/rest/api/2/serverInfo", cancellationToken);
+        return res?.Version;
     }
 
     #endregion
@@ -611,12 +791,12 @@ public sealed class Jira : IDisposable
     /// <returns>A task that represents the asynchronous download operation.</returns>
     public async Task DownloadAsync(string requestUri, string filePath, CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
-
+        WebServiceException.ThrowIfNotConnected(client);
         ArgumentNullException.ThrowIfNullOrWhiteSpace(requestUri, nameof(requestUri));
         ArgumentNullException.ThrowIfNullOrWhiteSpace(filePath, nameof(filePath));
 
-        await service.DownloadAsync(requestUri, filePath, cancellationToken);
+
+        await base.DownloadAsync(requestUri, filePath, cancellationToken);
     }
 
     /// <summary>
@@ -630,11 +810,11 @@ public sealed class Jira : IDisposable
     /// </returns>
     public async Task<System.IO.Stream> DownloadAsync(string requestUri, CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        WebServiceException.ThrowIfNotConnected(client);
 
         ArgumentNullException.ThrowIfNullOrWhiteSpace(requestUri, nameof(requestUri));
 
-        return await service.DownloadAsync(requestUri, cancellationToken);
+        return await GetFromStreamAsync(requestUri, cancellationToken);
     }
 
     #endregion

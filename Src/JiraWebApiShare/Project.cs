@@ -6,11 +6,11 @@
 [DebuggerDisplay("{Id} {Key} {Name}")]
 public sealed class Project
 {
-    private readonly JiraService? service;
+    private readonly Jira? jira;
 
-    internal Project(JiraService service, ProjectModel model)
+    internal Project(Jira jira, ProjectModel model)
     {
-        this.service = service;
+        this.jira = jira;
         Self = model.Self;
         Id = model.Id!;
         Key = model.Key!;
@@ -107,25 +107,25 @@ public sealed class Project
 
     #endregion
 
-    /// <summary>
-    /// Retrieves the metadata required to create an issue of the specified type in this JIRA project.
-    /// </summary>
-    /// <param name="issueTypeId">The ID of the issue type for which to retrieve creation metadata.</param>
-    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation. The task result contains a <see cref="CreateMeta"/> object
-    /// with the metadata needed to create an issue of the specified type, or <c>null</c> if no metadata is available.
-    /// </returns>
-    /// <exception cref="WebServiceException">
-    /// Thrown if the JIRA service is not connected or is <c>null</c>.
-    /// </exception>
-    public async Task<CreateMeta?> GetCreateMetaAsync(int issueTypeId, CancellationToken cancellationToken = default)
-    {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+    ///// <summary>
+    ///// Retrieves the metadata required to create an issue of the specified type in this JIRA project.
+    ///// </summary>
+    ///// <param name="issueTypeId">The ID of the issue type for which to retrieve creation metadata.</param>
+    ///// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    ///// <returns>
+    ///// A task that represents the asynchronous operation. The task result contains a <see cref="CreateMeta"/> object
+    ///// with the metadata needed to create an issue of the specified type, or <c>null</c> if no metadata is available.
+    ///// </returns>
+    ///// <exception cref="WebServiceException">
+    ///// Thrown if the JIRA jira is not connected or is <c>null</c>.
+    ///// </exception>
+    //public async Task<CreateMeta?> GetCreateMetaAsync(int issueTypeId, CancellationToken cancellationToken = default)
+    //{
+    //    WebServiceException.ThrowIfNullOrNotConnected(this.jira);
 
-        var res = await service.GetCreateMetaAsync(this.Key, issueTypeId, cancellationToken);
-        return res.CastModel<CreateMeta>();
-    }
+    //    var res = await jira.GetCreateMetaAsync(this.Key, issueTypeId, cancellationToken);
+    //    return res.CastModel<CreateMeta>();
+    //}
 
     /// <summary>
     /// Retrieves the metadata required to edit an existing issue in this JIRA project.
@@ -137,51 +137,51 @@ public sealed class Project
     /// with the metadata needed to edit the specified issue, or <c>null</c> if no metadata is available.
     /// </returns>
     /// <exception cref="WebServiceException">
-    /// Thrown if the JIRA service is not connected or is <c>null</c>.
+    /// Thrown if the JIRA jira is not connected or is <c>null</c>.
     /// </exception>
     public async Task<CreateMeta?> GetEditMetaAsync(string issueIdOrKey, CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        WebServiceException.ThrowIfNullOrNotConnected(this.jira);
 
-        var res = await service.GetEditMetaAsync(issueIdOrKey, cancellationToken);
+        var res = await jira.GetEditMetaAsync(issueIdOrKey, cancellationToken);
         return res.CastModel<CreateMeta>();
     }
 
-    /// <summary>
-    /// Creates a new issue in this JIRA project with the specified type, reporter, summary, and description.
-    /// </summary>
-    /// <param name="issueType">The type of the issue to create.</param>
-    /// <param name="reporter">The username of the reporter for the new issue.</param>
-    /// <param name="summary">A brief one-line summary of the issue.</param>
-    /// <param name="description">A detailed description of the issue.</param>
-    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>
-    /// A task that represents the asynchronous operation. The task result contains the created <see cref="Issue"/>,
-    /// or <c>null</c> if the creation failed.
-    /// </returns>
-    /// <exception cref="WebServiceException">
-    /// Thrown if the JIRA service is not connected or is <c>null</c>.
-    /// </exception>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown if <paramref name="issueType"/> is <c>null</c>.
-    /// </exception>
-    public async Task<Issue?> CreateIssueAsync(IssueType issueType, string reporter, string summary, string description, CancellationToken cancellationToken = default)
-    {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
-        
-        ArgumentNullException.ThrowIfNull(issueType, nameof(issueType));
-        //ArgumentNullException.ThrowIfNullOrWhiteSpace(issueType.Id, nameof(issueType.Id));
+    ///// <summary>
+    ///// Creates a new issue in this JIRA project with the specified type, reporter, summary, and description.
+    ///// </summary>
+    ///// <param name="issueType">The type of the issue to create.</param>
+    ///// <param name="reporter">The username of the reporter for the new issue.</param>
+    ///// <param name="summary">A brief one-line summary of the issue.</param>
+    ///// <param name="description">A detailed description of the issue.</param>
+    ///// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    ///// <returns>
+    ///// A task that represents the asynchronous operation. The task result contains the created <see cref="Issue"/>,
+    ///// or <c>null</c> if the creation failed.
+    ///// </returns>
+    ///// <exception cref="WebServiceException">
+    ///// Thrown if the JIRA jira is not connected or is <c>null</c>.
+    ///// </exception>
+    ///// <exception cref="ArgumentNullException">
+    ///// Thrown if <paramref name="issueType"/> is <c>null</c>.
+    ///// </exception>
+    //public async Task<Issue?> CreateIssueAsync(IssueType issueType, string reporter, string summary, string description, CancellationToken cancellationToken = default)
+    //{
+    //    WebServiceException.ThrowIfNullOrNotConnected(this.jira);
 
-        IssueModel model = new() { Fields = [] };
-        model.Fields.Add("project", new ProjectModel() { Id = this.Id });
-        model.Fields.Add("issuetype", new IssueTypeModel() { Id = issueType.Id });
-        model.Fields.Add("reporter", new UserModel() { Name = reporter });
-        model.Fields.Add("summary", summary);
-        model.Fields.Add("description", description);
+    //    ArgumentNullException.ThrowIfNull(issueType, nameof(issueType));
+    //    //ArgumentNullException.ThrowIfNullOrWhiteSpace(issueType.Id, nameof(issueType.Id));
 
-        var res = await service.CreateIssueAsync(model, cancellationToken);
-        return res.CastModel<Issue>(service);
-    }
+    //    IssueModel model = new() { Fields = [] };
+    //    model.Fields.Add("project", new ProjectModel() { Id = this.Id });
+    //    model.Fields.Add("issuetype", new IssueTypeModel() { Id = issueType.Id });
+    //    model.Fields.Add("reporter", new UserModel() { Name = reporter });
+    //    model.Fields.Add("summary", summary);
+    //    model.Fields.Add("description", description);
+
+    //    var res = await jira.CreateIssueAsync(model, cancellationToken);
+    //    return res.CastModel<Issue>(jira);
+    //}
 
     /// <summary>
     /// Retrieves all components defined for this JIRA project.
@@ -192,13 +192,13 @@ public sealed class Project
     /// <see cref="Component"/> objects representing the components of the project, or <c>null</c> if no components are found.
     /// </returns>
     /// <exception cref="WebServiceException">
-    /// Thrown if the JIRA service is not connected or is <c>null</c>.
+    /// Thrown if the JIRA jira is not connected or is <c>null</c>.
     /// </exception>
     public async Task<IEnumerable<Component>?> GetComponentsAsync(CancellationToken cancellationToken = default)
     {
-        WebServiceException.ThrowIfNullOrNotConnected(this.service);
+        WebServiceException.ThrowIfNullOrNotConnected(this.jira);
 
-        var res = await service.GetComponentsAsync(Id, cancellationToken);
+        var res = await jira.GetComponentsAsync(Id, cancellationToken);
         return res.CastModel<Component>();
     }
 }
