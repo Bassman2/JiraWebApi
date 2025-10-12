@@ -1,0 +1,20 @@
+<Solution>
+  <Folder Name="/Doc/">
+    <Project Path="Doc/JiraWebApiDoc/JiraWebApiDoc.shfbproj" Type="7cf6df6d-3b04-46f8-a40b-537d21bca0b4" Id="1383faf4-af5a-4016-acc8-902fc6c31ad7">
+      <BuildDependency Project="Src/JiraWebApi80/JiraWebApi80.csproj" />
+      <BuildDependency Project="Src/JiraWebApi90/JiraWebApi90.csproj" />
+      <Build Solution="Debug|*" Project="false" />
+    </Project>
+  </Folder>
+  <Folder Name="/Src/">
+    <Project Path="../WebServiceClient/Src/WebServiceClientShare/WebServiceClientShare.shproj" />
+    <Project Path="Src/JiraWebApi80/JiraWebApi80.csproj" />
+    <Project Path="Src/JiraWebApi90/JiraWebApi90.csproj" />
+    <Project Path="Src/JiraWebApiShare/JiraWebApiShare.shproj" />
+  </Folder>
+  <Folder Name="/Test/">
+    <Project Path="Test/JiraWebApiUnitTest80/JiraWebApiUnitTest80.csproj" />
+    <Project Path="Test/JiraWebApiUnitTest90/JiraWebApiUnitTest90.csproj" />
+    <Project Path="Test/JiraWebApiUnitTestShare/JiraWebApiUnitTestShare.shproj" />
+  </Folder>
+</Solution>
