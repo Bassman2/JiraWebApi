@@ -5,6 +5,10 @@ JIRA Web API
 
 [NuGet Package](https://www.nuget.org/packages/JiraWebApi/)
 
+## Documentation
+
+[Pages](https://bassman2.github.io/JiraWebApi/)
+
 ## Donate
 
 You are welcome to support this project. 
