@@ -35,7 +35,7 @@ public class JiraStatusUnitTest : JiraBaseUnitTest
     {
         using var jira = new Jira(storeKey, appName);
 
-        var status = await jira.GetStatusAsync(1);
+        var status = await jira.GetStatusAsync("1");
 
         Assert.IsNotNull(status);
 
