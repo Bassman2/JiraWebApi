@@ -16,7 +16,7 @@ public class JiraIssueGetUnitTest : JiraBaseUnitTest
         Assert.AreEqual(3518039, issue.Id, nameof(issue.Id));
         Assert.AreEqual(mainGetIssue, issue.Key, nameof(issue.Key));
 
-        Assert.AreEqual(null, issue.IssueType?.Name,  nameof(issue.IssueType.Name));
+        Assert.IsNull(issue.IssueType?.Name,  nameof(issue.IssueType.Name));
         Assert.AreEqual("Main Test Ticket", issue.Summary, nameof(issue.Summary));
         Assert.AreEqual("Description of the issue", issue.Description, nameof(issue.Description));
     }

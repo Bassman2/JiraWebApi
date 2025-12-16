@@ -19,7 +19,7 @@ public class JiraResolutionUnitTest : JiraBaseUnitTest
         Assert.AreEqual(1, resolution.Id, nameof(resolution.Id));
         Assert.AreEqual("Fixed", resolution.Name, nameof(resolution.Name));
         Assert.AreEqual("A fix for this issue is checked into the tree and tested.", resolution.Description, nameof(resolution.Description));
-        Assert.AreEqual(null, resolution.IconUrl, nameof(resolution.IconUrl));
+        Assert.IsNull(resolution.IconUrl, nameof(resolution.IconUrl));
     }
 
     [TestMethod]
@@ -34,6 +34,6 @@ public class JiraResolutionUnitTest : JiraBaseUnitTest
         Assert.AreEqual(1, resolution.Id, nameof(resolution.Id));
         Assert.AreEqual("Fixed", resolution.Name, nameof(resolution.Name));
         Assert.AreEqual("A fix for this issue is checked into the tree and tested.", resolution.Description, nameof(resolution.Description));
-        Assert.AreEqual(null, resolution.IconUrl, nameof(resolution.IconUrl));
+        Assert.IsNull(resolution.IconUrl, nameof(resolution.IconUrl));
     }
 }

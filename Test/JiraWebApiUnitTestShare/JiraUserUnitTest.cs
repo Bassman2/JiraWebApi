@@ -20,8 +20,8 @@ public class JiraUserUnitTest : JiraBaseUnitTest
         Assert.AreEqual(new Uri(baseUri, $"secure/useravatar?size=medium&ownerId={testUserKey}&avatarId=10209"), user.AvatarUrls?.AvatarUrl32, nameof(user.AvatarUrls.AvatarUrl32));
         Assert.AreEqual(new Uri(baseUri, $"secure/useravatar?ownerId={testUserKey}&avatarId=10209"), user.AvatarUrls?.AvatarUrl48, nameof(user.AvatarUrls.AvatarUrl48));
         Assert.AreEqual(testUserDisplayName, user.DisplayName, nameof(user.DisplayName));
-        Assert.AreEqual(true, user.IsActive, nameof(user.IsActive));
-        Assert.AreEqual(false, user.IsDeleted, nameof(user.IsDeleted));
+        Assert.IsTrue(user.IsActive, nameof(user.IsActive));
+        Assert.IsFalse(user.IsDeleted, nameof(user.IsDeleted));
         Assert.AreEqual("Europe/Berlin", user.TimeZone, nameof(user.TimeZone));
         Assert.AreEqual("en_UK", user.Locale, nameof(user.Locale));
     }
@@ -43,8 +43,8 @@ public class JiraUserUnitTest : JiraBaseUnitTest
         Assert.AreEqual(new Uri(baseUri, $"secure/useravatar?size=medium&ownerId={testUserKey}&avatarId=10209"), user.AvatarUrls?.AvatarUrl32, nameof(user.AvatarUrls.AvatarUrl32));
         Assert.AreEqual(new Uri(baseUri, $"secure/useravatar?ownerId={testUserKey}&avatarId=10209"), user.AvatarUrls?.AvatarUrl48, nameof(user.AvatarUrls.AvatarUrl48));
         Assert.AreEqual(testUserDisplayName, user.DisplayName, nameof(user.DisplayName));
-        Assert.AreEqual(true, user.IsActive, nameof(user.IsActive));
-        Assert.AreEqual(false, user.IsDeleted, nameof(user.IsDeleted));
+        Assert.IsTrue(user.IsActive, nameof(user.IsActive));
+        Assert.IsFalse(user.IsDeleted, nameof(user.IsDeleted));
         Assert.AreEqual("Europe/Berlin", user.TimeZone, nameof(user.TimeZone));
         Assert.AreEqual("en_UK", user.Locale, nameof(user.Locale));
     }
