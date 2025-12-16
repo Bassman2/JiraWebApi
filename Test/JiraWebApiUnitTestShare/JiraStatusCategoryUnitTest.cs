@@ -28,7 +28,7 @@ public class JiraStatusCategoryUnitTest : JiraBaseUnitTest
     {
         using var jira = new Jira(storeKey, appName);
 
-        var statusCategory = await jira.GetStatusCategoryAsync(1);
+        var statusCategory = await jira.GetStatusCategoryAsync("1");
 
         Assert.IsNotNull(statusCategory, nameof(statusCategory));
         Assert.AreEqual(new Uri(apiUri, "statuscategory/1"), statusCategory.Self, nameof(statusCategory.Self));
