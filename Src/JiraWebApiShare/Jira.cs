@@ -23,6 +23,18 @@ public sealed class Jira : JsonService
     { }
 
     /// <summary>
+    /// Configures the provided <see cref="HttpClient"/> instance with specific default headers required for API requests.
+    /// This includes setting the User-Agent, Accept, and API version headers.
+    /// </summary>
+    /// <param name="client">The <see cref="HttpClient"/> to configure for GitHub API usage.</param>
+    /// <param name="appName">The name of the application, used as the User-Agent header value.</param>
+    protected override void InitializeClient(HttpClient client, string appName)
+    {
+        client.DefaultRequestHeaders.Add("User-Agent", appName);
+        client.DefaultRequestHeaders.Add("Accept", "application/json");
+    }
+
+    /// <summary>
     /// Gets the URL used to test authentication with the Artifactory API.
     /// </summary>
     protected override string? AuthenticationTestUrl => "/rest/api/2/serverInfo";
